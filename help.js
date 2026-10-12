@@ -7,32 +7,6 @@
   const footBack = document.getElementById("help-back-foot");
   const home = document.getElementById("help-home");
 
-  let helpDepth = 1;
-  const historyPush = history.pushState.bind(history);
-  history.pushState = function () {
-    helpDepth += 1;
-    return historyPush.apply(history, arguments);
-  };
-  window.addEventListener("popstate", function () {
-    if (helpDepth > 1) helpDepth -= 1;
-  });
-
-  function bindOrderReturn(link) {
-    if (!link || !fromOrder) return;
-    link.addEventListener("click", function (ev) {
-      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button !== 0) return;
-      const ref = document.referrer || "";
-      const cameFromOrder = ref.indexOf("help.html") < 0 && (ref.indexOf("index.html") >= 0 || /\/sample-1man\/?(?:$|\?)/.test(ref));
-      if (!cameFromOrder) return;
-      ev.preventDefault();
-      history.go(-helpDepth);
-    });
-  }
-
-  bindOrderReturn(stickyBack);
-  bindOrderReturn(footBack);
-  document.querySelectorAll(".help-back-local").forEach(bindOrderReturn);
-
   document.querySelectorAll(".help-back-local").forEach((link) => {
     link.hidden = !fromOrder;
   });

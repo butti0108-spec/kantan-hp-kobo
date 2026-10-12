@@ -1,12 +1,14 @@
 /**
- * Static + review API for the standalone workshop repo.
- * Web root is this folder (maker-base.css is local).
+ * Static + review API for sample-1man.
+ * Serves the portfolio root (parent of this folder) for shared assets / review APIs.
+ * Maker CSS is local: sample-1man/maker-base.css（../style.css は使わない）.
  *
- *   node _static-server.js [port]
+ *   node sample-1man/_static-server.js [port]
  *
  * Open:
- *   http://127.0.0.1:8765/index.html
- *   http://127.0.0.1:8765/index.html?review=1
+ *   http://127.0.0.1:8765/sample-1man/index.html
+ *   http://127.0.0.1:8765/sample-1man/index.html?review=1
+ *   (旧) http://127.0.0.1:8765/sample-1man/review-dash/ → 上記へ誘導
  */
 const http = require("http");
 const fs = require("fs");
@@ -14,7 +16,7 @@ const path = require("path");
 const { URL } = require("url");
 
 const sampleRoot = __dirname;
-const webRoot = sampleRoot;
+const portfolioRoot = path.resolve(sampleRoot, "..");
 const sushiRoot = path.join(sampleRoot, "sushi-samples");
 const port = Number(process.argv[2] || process.env.SAMPLE1MAN_PORT || 8765);
 
@@ -277,8 +279,6 @@ const server = http.createServer(async (req, res) => {
   try {
     const u = new URL(req.url || "/", "http://127.0.0.1");
     let pathname = u.pathname;
-    if (pathname === "/sample-1man") pathname = "/";
-    else if (pathname.startsWith("/sample-1man/")) pathname = pathname.slice("/sample-1man".length);
     if (pathname.length > 1 && pathname.endsWith("/")) pathname = pathname.slice(0, -1);
     const query = parseQuery(u.searchParams.toString());
 
@@ -286,17 +286,17 @@ const server = http.createServer(async (req, res) => {
       return send(res, 204, "text/plain", "");
     }
 
-    if (req.method === "POST" && pathname === "/sushi-samples/__capture-save") {
+    if (req.method === "POST" && pathname === "/sample-1man/sushi-samples/__capture-save") {
       return await handleCaptureSave(req, res, query);
     }
-    if (req.method === "POST" && pathname === "/sushi-samples/__draft-save") {
+    if (req.method === "POST" && pathname === "/sample-1man/sushi-samples/__draft-save") {
       return await handleDraftSave(req, res, query);
     }
-    if (req.method === "POST" && pathname === "/sushi-samples/__review-decision") {
+    if (req.method === "POST" && pathname === "/sample-1man/sushi-samples/__review-decision") {
       return await handleReviewDecision(req, res, query);
     }
 
-    if (req.method === "POST" && pathname === "/free-photo-gallery/__catalog-save") {
+    if (req.method === "POST" && pathname === "/sample-1man/free-photo-gallery/__catalog-save") {
       const galleryRoot = path.join(sampleRoot, "free-photo-gallery");
       const catalogPath = path.join(galleryRoot, "catalog.json");
       if (!fs.existsSync(catalogPath)) {
@@ -327,7 +327,7 @@ const server = http.createServer(async (req, res) => {
       );
     }
 
-    if (req.method === "POST" && pathname === "/free-photo-gallery/__image-save") {
+    if (req.method === "POST" && pathname === "/sample-1man/free-photo-gallery/__image-save") {
       const rel = String(query.path || "").replace(/\\/g, "/");
       if (!rel || rel.includes("..") || rel.startsWith("/")) {
         return send(res, 400, "application/json; charset=utf-8", JSON.stringify({ ok: false, reason: "bad-path" }));
@@ -361,8 +361,23 @@ const server = http.createServer(async (req, res) => {
       );
     }
 
-    if (pathname === "/") pathname = "/index.html";
+    if (pathname === "/") pathname = "/sample-1man/index.html";
     if (pathname.endsWith("/")) pathname = pathname + "index.html";
+
+    /* Legacy mistaken root: /review-dash → /sample-1man/review-dash */
+    if (
+      pathname === "/review-dash" ||
+      pathname === "/review-dash/index.html" ||
+      pathname.startsWith("/review-dash/") ||
+      pathname === "/index.html" ||
+      pathname.startsWith("/sushi-samples/") ||
+      pathname === "/sample-overrides.css" ||
+      pathname.startsWith("/sample-overrides.css") ||
+      pathname === "/script.js" ||
+      pathname === "/sushi-belt.js"
+    ) {
+      pathname = "/sample-1man" + pathname;
+    }
 
     if (req.method !== "GET" && req.method !== "HEAD") {
       return send(
@@ -373,7 +388,7 @@ const server = http.createServer(async (req, res) => {
       );
     }
 
-    const fp = safeJoin(webRoot, pathname);
+    const fp = safeJoin(portfolioRoot, pathname);
     if (!fp) {
       return send(res, 403, "application/json; charset=utf-8", '{"ok":false,"reason":"forbidden"}');
     }
@@ -391,7 +406,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(port, "127.0.0.1", () => {
-  console.log("READY http://127.0.0.1:" + port + "/index.html");
-  console.log("REVIEW http://127.0.0.1:" + port + "/index.html?review=1");
-  console.log("root=" + webRoot);
+  console.log("READY http://127.0.0.1:" + port + "/sample-1man/index.html");
+  console.log("REVIEW http://127.0.0.1:" + port + "/sample-1man/index.html?review=1");
+  console.log("root=" + portfolioRoot);
 });

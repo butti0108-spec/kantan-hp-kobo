@@ -2319,8 +2319,6 @@
     sampleKeptImagePaths: null,
     copyDirIds: [],
     copyDirForbid: [],
-    copyDirAnswered: [],
-    copyDirCursor: 0,
     copyFieldSource: {},
     copyHeroOnPhoto: null,
     copyScreenReturn: null,
@@ -2887,7 +2885,6 @@
       el.style.background = GRADIENT_BG_KEYS.has(key) ? swatchBackgroundForSlot(stepId, hex) : hex;
     }
     syncPickLabelInk(el, hex);
-    syncWholeColorMark(stepId);
   }
 
   function renderPickGradCompass(stepId) {
@@ -3213,13 +3210,10 @@
     const wrap = host && host.closest ? host.closest(".gct-honey-wrap") : null;
     const inColorRow = !!(wrap && wrap.closest(".layout-color-body"));
     const denom = 2 * (Math.sqrt(3) * rings + 1);
-    /* 色調整は欄の幅まで。広い画面では今までと同じ 15.5rem で頭打ち */
+    /* 色調整のハニカムは残り幅で縮めない。表示を拡大すると文字と同じく大きくなる */
     if (inColorRow && !(typeof forceAvail === "number" && forceAvail > 0)) {
       const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-      const cap = Math.max(3.2, (15.5 * rootPx) / denom);
-      const hostW = Math.max(0, (wrap && wrap.clientWidth) || (host && host.clientWidth) || 0);
-      if (hostW > 8) return Math.max(3.2, Math.min(cap, (hostW - 4) / denom));
-      return cap;
+      return Math.max(3.2, (15.5 * rootPx) / denom);
     }
     const hostW = Math.max(
       0,
@@ -3520,7 +3514,7 @@
 
   function colorPickModeNow() {
     if (!store.colorPickMode || typeof store.colorPickMode !== "object") store.colorPickMode = {};
-    return store.colorPickMode[colorPickModeKey()] || "few";
+    return store.colorPickMode[colorPickModeKey()] || "";
   }
 
   function fewColorChoices() {
@@ -3576,7 +3570,6 @@
     });
     if (few) few.hidden = mode !== "few";
     if (mode === "few" && stepId) renderFewColors(stepId);
-    syncAccentBarFieldVisibility();
   }
 
   function bindColorPickMode() {
@@ -3590,18 +3583,11 @@
       const mode = btn.getAttribute("data-color-pick-mode") || "";
       store.colorPickMode[colorPickModeKey()] = mode;
       const stepId = store.guidedColorEditStepId;
-      if (mode === "few" && stepId) {
-        store.gradDirHintOpen = false;
-        clearSlotGradient(stepId);
-        window.setTimeout(syncOpenColorPreview, 60);
-        return;
-      }
       if (stepId) renderGctPickUi(stepId, { forceHoney: true });
       if (mode === "all") {
         const hex = currentPickHex();
         if (hex) syncHoneyShadeSlider(hex);
       }
-      window.setTimeout(syncOpenColorPreview, 60);
     });
   }
 
@@ -3621,14 +3607,9 @@
     const targetPartner = document.getElementById("gct-pick-target-partner");
     if (!host) return;
     syncColorPickModeUi(stepId);
-    syncWholeColorMark(stepId);
     if (colorPickModeNow() !== "all") {
       store.partnerPickMode = false;
-      if (colorPickModeNow() === "few") {
-        const gradBox = document.getElementById("gct-pick-grad");
-        if (gradBox) gradBox.hidden = true;
-        syncPickUndoButton();
-      }
+      if (colorPickModeNow() === "few") syncPickUndoButton();
       return;
     }
     if (pickTag) {
@@ -3648,8 +3629,6 @@
       shadeHost.hidden = true;
     }
     const inColorRow = !!(host.closest && host.closest(".layout-color-body"));
-    const form = document.getElementById("order-form");
-    const keepFormScroll = inColorRow && form ? form.scrollTop : null;
     if (gradBox) gradBox.hidden = inColorRow ? !(canGrad && slotGradStarted(stepId)) : !canGrad;
     if (targetPartner) targetPartner.hidden = !canGrad;
     if (targetMain) targetMain.classList.toggle("is-active", !partnerMode);
@@ -3697,21 +3676,15 @@
       onHoneyPick
     );
 
+    const form = document.getElementById("order-form");
     const wrap = host.closest(".gct-honey-wrap") || host;
-    if (keepFormScroll != null && form) {
-      form.scrollTop = keepFormScroll;
-      window.requestAnimationFrame(() => {
-        form.scrollTop = keepFormScroll;
-      });
-    } else {
-      /* 現在色・グラデが上だとハニカムが #order-form の折りたたみ外に出る → 開いた直後に見える位置へ */
-      wrap.scrollIntoView({ block: "nearest", inline: "nearest" });
-      if (form) {
-        const fr = form.getBoundingClientRect();
-        const wr = wrap.getBoundingClientRect();
-        if (wr.top < fr.top + 8 || wr.top > fr.bottom - 120) {
-          form.scrollTop += wr.top - fr.top - 12;
-        }
+    /* 現在色・グラデが上だとハニカムが #order-form の折りたたみ外に出る → 開いた直後に見える位置へ */
+    wrap.scrollIntoView({ block: "nearest", inline: "nearest" });
+    if (form) {
+      const fr = form.getBoundingClientRect();
+      const wr = wrap.getBoundingClientRect();
+      if (wr.top < fr.top + 8 || wr.top > fr.bottom - 120) {
+        form.scrollTop += wr.top - fr.top - 12;
       }
     }
 
@@ -4250,13 +4223,8 @@
     return {
       version: 17,
       savedAt: new Date().toISOString(),
-        wizardStepIndex: store.wizardStepIndex,
-        easyFlowStepId: (function () {
-          const flow = getFlowSteps();
-          const step = flow[store.wizardStepIndex];
-          return step && step.id ? step.id : null;
-        })(),
-        selfEditingStepId: store.selfEditingStepId,
+      wizardStepIndex: store.wizardStepIndex,
+      selfEditingStepId: store.selfEditingStepId,
       uiMode: store.uiMode,
       sitePurpose: store.sitePurpose,
       layoutPattern: store.layoutPattern,
@@ -6272,7 +6240,10 @@
   }
 
   function getEasyCopyFlowTail() {
-    /* 言葉は記載項目の前に一度だけ。文章の前には重ねない */
+    /* 一覧が本線。一括おまかせ画面は出さない。キーワード時だけ言葉選びを挟む */
+    if (store.copyPathMode === "keyword") {
+      return ["easy-copy-dirs", "easy-copy-omakase"];
+    }
     return ["easy-copy-omakase"];
   }
 
@@ -6282,45 +6253,18 @@
   }
 
   function getEasyFlowStepIds() {
-    /* 言葉は先頭側へ直接入れる。getEasyCopyFlowTail では重ねない */
-    const ids = [];
-    if (store.copyPathMode !== "omakase") ids.push("easy-copy-dirs");
-    ids.push("easy-basics", "easy-color", "easy-color-stage");
-    ids.push("easy-img-wire", "easy-site-name", "easy-copy-omakase", "easy-done");
+    let ids = ["easy-basics", "easy-color", "easy-site-name"];
+    if (easyCatchOn()) ids.push("easy-catch");
+    ids = ids
+      .concat(getEasyImageFlowMid())
+      .concat(getEasyCopyFlowTail());
+    ids.push("easy-color-stage", "easy-done");
     if (store.copyScreenReturn === "hub" && ids.indexOf("easy-copy-frame") < 0) {
-      const at = ids.indexOf("easy-copy-omakase");
+      const at = ids.indexOf("easy-copy-path");
       if (at >= 0) ids.splice(at + 1, 0, "easy-copy-frame");
       else ids.push("easy-copy-frame");
     }
     return ids;
-  }
-
-  function placeEasyFlowResume(data) {
-    if (!store.easyFlowActive || store.uiMode !== "guided") return;
-    if (store.entryBranch !== "sample" && !store.blankCanvas) return;
-    const flow = getEasyFlowStepIds();
-    if (!flow.length) return;
-    const saved = data && typeof data.easyFlowStepId === "string" ? data.easyFlowStepId : "";
-    if (saved === "easy-catch") {
-      const imgAt = flow.indexOf("easy-img-wire");
-      store.wizardStepIndex = imgAt >= 0 ? imgAt : 0;
-      return;
-    }
-    if (saved && flow.indexOf(saved) >= 0) {
-      store.wizardStepIndex = flow.indexOf(saved);
-      return;
-    }
-    /* 工程IDが無い古い保存。言葉を先頭へ足した分だけ番号を進めて、以前の画面に戻す */
-    let idx = Number(data && data.wizardStepIndex);
-    if (!Number.isFinite(idx) || idx < 0) idx = 0;
-    if (flow[0] === "easy-copy-dirs") idx += 1;
-    if (idx >= flow.length) idx = flow.length - 1;
-    /* keyword で言葉が文章の前にあった保存は、言葉画面を二重に出さない */
-    if (store.copyPathMode === "keyword" && flow[idx] === "easy-copy-dirs") {
-      const basicsAt = flow.indexOf("easy-basics");
-      if (basicsAt >= 0) idx = basicsAt;
-    }
-    store.wizardStepIndex = idx;
   }
 
   function getFlowSteps() {
@@ -6484,10 +6428,9 @@
   }
 
   function easyFlowStageLabels() {
-    const labels = ["見本", "利用用途"];
-    if (store.copyPathMode !== "omakase") labels.push("どの言葉を使いますか");
-    labels.push("記載項目", "配色", "色調整");
-    labels.push("画像", "文章", "確定");
+    const labels = ["見本", "利用用途", "記載項目", "配色"];
+    if (easyCatchOn()) labels.push("キャッチ");
+    labels.push("画像", "文章", "色調整", "確定");
     return labels;
   }
 
@@ -6517,13 +6460,11 @@
     const at = function (name) {
       return easyFlowStageLabels().indexOf(name) + 1;
     };
-    if (id === "easy-copy-dirs") return at("どの言葉を使いますか");
     if (id === "easy-basics") return at("記載項目");
-    if (id === "easy-color") return at("配色");
-    if (id === "easy-color-stage") return at("色調整");
+    if (id === "easy-color" || id === "easy-site-name") return at("配色");
     if (id === "easy-catch") return at("キャッチ");
+    if (id === "easy-color-stage") return at("色調整");
     if (id === "easy-img-path" || id === "easy-img-wire" || id === "easy-img-omakase") return at("画像");
-    if (id === "easy-site-name") return at("文章");
     if (
       id === "easy-copy-path" ||
       id === "easy-copy-dirs" ||
@@ -6538,7 +6479,6 @@
   }
 
   function easyStageTargetId(name) {
-    if (name === "どの言葉を使いますか") return "easy-copy-dirs";
     if (name === "記載項目") return "easy-basics";
     if (name === "配色") return "easy-color";
     if (name === "キャッチ") return "easy-catch";
@@ -6629,6 +6569,7 @@
   function easyDoneImageLoc(name) {
     if (name === "logo_image") return { kind: "logo" };
     if (name === "hero_image") {
+      if (typeof easyCatchOn === "function" && easyCatchOn()) return { kind: "catch" };
       return { kind: "image", blockId: "hero", slot: "hero", openKey: "hero" };
     }
     if (String(name).indexOf("about_image_") === 0) {
@@ -6696,9 +6637,8 @@
       return;
     }
     if (gap.sectionId === "hero") {
-      setCopyListOpen({ kind: "item", sectionId: "hero", itemIndex: null });
-      store.copyListFocusField = gap.focus || "hero_title";
-      openEasyStage("文章", { keepGapReturn: true });
+      store.catchPage = catchWordsAreOn() ? "write" : "ask";
+      openEasyStage("キャッチ", { keepGapReturn: true });
       store.easyGapReturn = "easy-done";
       return;
     }
@@ -8436,7 +8376,7 @@
     }
     if (stepId === "easy-copy-dirs") {
       if (!Array.isArray(store.copyDirIds) || store.copyDirIds.length < 1) {
-        return "使いたいを一つ以上選んでから、「" + action + "」を押してください。";
+        return "方向を1つ以上選んでから、「" + action + "」を押してください。";
       }
       return "";
     }
@@ -8465,7 +8405,13 @@
       }
       return "";
     }
-    if (stepId === "easy-img-wire") return "";
+    if (stepId === "easy-img-wire") {
+      const miss = collectVisibleImageSlots().filter(function (slot) {
+        return !inputHasFile(slot.input);
+      });
+      if (miss.length) return "見えている枠に写真があると、次へ進めます。";
+      return "";
+    }
     if (stepId === "easy-loading" || stepId === "easy-done") return "";
     if (stepId === "purpose" && !readSitePurposeFromForm()) {
       return "用途を選んでから、「" + action + "」を押してください。";
@@ -9086,274 +9032,7 @@
   let catchSavedAccordionId = null;
   let catchSavedHeroInner = null;
 
-  /* 注文画面の工程を、ブラウザの戻る・進むと同じ順に残す */
-  let atelierNavTrail = [];
-  let atelierNavAt = -1;
-  let atelierNavReady = false;
-  let atelierNavLock = 0;
-  let atelierNavTimer = 0;
-
-  function atelierNavKeyFor(id, index, sub) {
-    let key = "step:" + id + ":" + index;
-    if (id === "easy-copy-dirs") {
-      key += ":c" + (sub != null ? sub : (Number(store.copyDirCursor) || 0));
-    } else if (id === "easy-catch") {
-      key += ":p" + (sub != null ? sub : (store.catchPage || "imageAsk"));
-    } else if (id === "easy-copy-frame") {
-      key += ":f" + (sub != null ? sub : (Number(store.copyFrameIndex) || 0));
-    }
-    return key;
-  }
-
-  function atelierNavKey() {
-    const gate = document.getElementById("entry-gate");
-    if (gate && !gate.hidden && document.body.classList.contains("entry-gate-open")) {
-      return "gate:" + (gate.dataset.entryStep || "");
-    }
-    const flow = getFlowSteps();
-    const step = flow[store.wizardStepIndex];
-    if (!step) return "step:none:0";
-    const key = atelierNavKeyFor(step.id, store.wizardStepIndex);
-    if (store.catchInline) return key + ":inline";
-    return key + atelierNavColorMark();
-  }
-
-  function atelierNavColorMark() {
-    const rows = document.getElementById("layout-color-rows");
-    if (!rows) return "";
-    const sub = rows.querySelector(".layout-color-sub.is-open");
-    if (sub) {
-      const group = sub.closest(".layout-color-group");
-      const gid = group ? group.getAttribute("data-color-group") || "" : "";
-      const stepId = sub.getAttribute("data-color-step") || "";
-      const colorKey = sub.getAttribute("data-color-key") || "";
-      return ":cg:" + gid + "/" + stepId + "/" + colorKey;
-    }
-    const direct = rows.querySelector(":scope > .layout-color-row.is-open:not(.layout-color-group)");
-    if (direct) {
-      const stepId = direct.getAttribute("data-color-step") || "";
-      const colorKey = direct.getAttribute("data-color-key") || "";
-      return ":cd:" + stepId + "/" + colorKey;
-    }
-    const group = rows.querySelector(":scope > .layout-color-group.is-open");
-    if (group) return ":cg:" + (group.getAttribute("data-color-group") || "");
-    return "";
-  }
-
-  function atelierNavColorChild(parentKey, childKey) {
-    if (!parentKey || !childKey || childKey.length <= parentKey.length) return false;
-    if (childKey.indexOf(parentKey) !== 0) return false;
-    const rest = childKey.slice(parentKey.length);
-    if (rest.indexOf(":cg:") === 0 || rest.indexOf(":cd:") === 0) return true;
-    return rest.charAt(0) === "/" && (parentKey.indexOf(":cg:") >= 0 || parentKey.indexOf(":cd:") >= 0);
-  }
-
-  function atelierNavPack(key, at) {
-    return { atelierNav: { key: key, at: at, trail: atelierNavTrail.slice() } };
-  }
-
-  function atelierNavSeedKeys() {
-    const keys = [];
-    const gate = document.getElementById("entry-gate");
-    const gateOpen = !!(gate && !gate.hidden && document.body.classList.contains("entry-gate-open"));
-    if (gateOpen) {
-      const cur = gate.dataset.entryStep || "branch";
-      const order = ["save", "branch"];
-      if (store.entryBranch === "sample") order.push("sushi", "purpose", "color");
-      else if (store.entryBranch === "detail" || store.entryBranch === "sample") order.push("purpose");
-      const idx = order.indexOf(cur);
-      (idx >= 0 ? order.slice(0, idx + 1) : [cur]).forEach(function (stepName) {
-        keys.push("gate:" + stepName);
-      });
-      return keys;
-    }
-    if (store.easyFlowActive && store.entryBranch === "sample") keys.push("gate:sushi", "gate:purpose");
-    else if (store.easyFlowActive && store.entryBranch === "detail") keys.push("gate:purpose");
-    const flow = getFlowSteps();
-    const last = Math.max(0, Math.min(store.wizardStepIndex || 0, Math.max(0, flow.length - 1)));
-    for (let i = 0; i <= last && flow[i]; i++) {
-      const step = flow[i];
-      if (step.id === "easy-copy-dirs" && i < last) {
-        keys.push(atelierNavKeyFor(step.id, i, copyDirWords().length));
-      } else {
-        keys.push(atelierNavKeyFor(step.id, i));
-      }
-    }
-    const now = atelierNavKey();
-    if (!keys.length || keys[keys.length - 1] !== now) keys.push(now);
-    return keys;
-  }
-
-  function atelierNavRestore(key) {
-    if (!key) return;
-    if (key.indexOf("gate:") === 0) {
-      showEntryGate(key.slice(5));
-      return;
-    }
-    const inline = /:inline$/.test(key);
-    const bare = inline ? key.replace(/:inline$/, "") : key;
-    const colorAt = bare.search(/:c[gd]:/);
-    const stepKey = colorAt >= 0 ? bare.slice(0, colorAt) : bare;
-    const matched = /^step:([^:]+):(\d+)(?::([cpf])(.*))?$/.exec(stepKey);
-    if (!matched) return;
-    hideEntryGate();
-    if (matched[3] === "c") store.copyDirCursor = Number(matched[4]) || 0;
-    if (matched[3] === "p") store.catchPage = matched[4] || "imageAsk";
-    if (matched[3] === "f") store.copyFrameIndex = Number(matched[4]) || 0;
-    if (inline) {
-      openCatchFromLayout(store.catchPage || "imageAsk");
-      return;
-    }
-    if (matched[1] === "easy-catch") {
-      openCatchFromLayout(store.catchPage || "image");
-      return;
-    }
-    const flow = getFlowSteps();
-    let idx = Number(matched[2]);
-    if (!flow[idx] || flow[idx].id !== matched[1]) {
-      const found = flow.findIndex(function (s) { return s.id === matched[1]; });
-      if (found >= 0) idx = found;
-    }
-    showWizardStep(idx);
-    atelierNavApplyColor(key);
-  }
-
-  function atelierNavApplyColor(fullKey) {
-    const at = fullKey ? fullKey.search(/:c[gd]:/) : -1;
-    const mark = at >= 0 ? fullKey.slice(at) : "";
-    if (typeof closeOpenColorScreens === "function") closeOpenColorScreens();
-    if (!mark) return;
-    const rows = document.getElementById("layout-color-rows");
-    if (!rows) return;
-    if (mark.indexOf(":cd:") === 0) {
-      const parts = mark.slice(4).split("/");
-      const unit = Array.from(rows.querySelectorAll(":scope > .layout-color-row")).find(function (row) {
-        return !row.classList.contains("layout-color-group") && row.getAttribute("data-color-step") === parts[0];
-      });
-      if (unit) openLayoutColorHoney(unit);
-      return;
-    }
-    if (mark.indexOf(":cg:") !== 0) return;
-    const bits = mark.slice(4).split("/");
-    const group = rows.querySelector('[data-color-group="' + bits[0] + '"]');
-    if (!group) return;
-    openColorGroup(group);
-    if (!bits[1]) return;
-    const sub = Array.from(group.querySelectorAll(".layout-color-sub")).find(function (row) {
-      return row.getAttribute("data-color-step") === bits[1] && (row.getAttribute("data-color-key") || "") === (bits[2] || "");
-    });
-    if (sub) openLayoutColorHoney(sub);
-  }
-
-  function atelierNavSync() {
-    if (!atelierNavReady || atelierNavLock) return;
-    if ((typeof easyImgHistoryDepth === "number" && easyImgHistoryDepth > 0) || easyCopySoloHistory) return;
-    const key = atelierNavKey();
-    if (!key) return;
-    if (atelierNavAt >= 0 && atelierNavTrail[atelierNavAt] === key) return;
-    if (atelierNavAt > 0 && atelierNavTrail[atelierNavAt - 1] === key) {
-      history.back();
-      return;
-    }
-    const currentKey = atelierNavAt >= 0 ? atelierNavTrail[atelierNavAt] : "";
-    if (atelierNavColorChild(key, currentKey)) {
-      for (let i = atelierNavAt - 1; i >= 0; i--) {
-        if (atelierNavTrail[i] === key) {
-          history.go(i - atelierNavAt);
-          return;
-        }
-      }
-    }
-    if (atelierNavAt + 1 < atelierNavTrail.length && atelierNavTrail[atelierNavAt + 1] === key) {
-      history.forward();
-      return;
-    }
-    atelierNavTrail = atelierNavTrail.slice(0, Math.max(0, atelierNavAt + 1));
-    atelierNavTrail.push(key);
-    atelierNavAt = atelierNavTrail.length - 1;
-    history.pushState(atelierNavPack(key, atelierNavAt), "", location.href);
-  }
-
-  function atelierNavSchedule() {
-    if (!atelierNavReady || atelierNavLock) return;
-    if (atelierNavTimer) return;
-    atelierNavTimer = window.setTimeout(function () {
-      atelierNavTimer = 0;
-      atelierNavSync();
-    }, 0);
-  }
-
-  function atelierNavConsumeBack() {
-    if ((typeof easyImgHistoryDepth === "number" && easyImgHistoryDepth > 0) || easyCopySoloHistory) {
-      history.back();
-      return true;
-    }
-    if (atelierNavReady && atelierNavAt > 0) {
-      history.back();
-      return true;
-    }
-    return false;
-  }
-
-  function atelierNavArm() {
-    if (atelierNavReady) return;
-    try {
-    window.addEventListener("popstate", function (ev) {
-      const nav = ev.state && ev.state.atelierNav;
-      if (!nav || !nav.key) return;
-      if (Array.isArray(nav.trail) && nav.trail.length > atelierNavTrail.length) {
-        atelierNavTrail = nav.trail.slice();
-      }
-      atelierNavAt = nav.at;
-      if (nav.key === atelierNavKey()) return;
-      atelierNavLock++;
-      try {
-        atelierNavRestore(nav.key);
-        const actual = atelierNavKey();
-        if (actual && actual !== nav.key) {
-          atelierNavTrail[atelierNavAt] = actual;
-          history.replaceState(atelierNavPack(actual, atelierNavAt), "", location.href);
-        }
-      } finally {
-        atelierNavLock--;
-      }
-    });
-    const saved = history.state && history.state.atelierNav;
-    if (saved && saved.key && Array.isArray(saved.trail) && saved.trail.length) {
-      atelierNavTrail = saved.trail.slice();
-      atelierNavAt = Math.max(0, Math.min(saved.at || 0, atelierNavTrail.length - 1));
-      atelierNavReady = true;
-      return;
-    }
-    const keys = atelierNavSeedKeys();
-    atelierNavLock++;
-    try {
-      atelierNavTrail = keys.slice();
-      atelierNavAt = 0;
-      history.replaceState(atelierNavPack(keys[0], 0), "", location.href);
-      for (let i = 1; i < keys.length; i++) {
-        atelierNavAt = i;
-        history.pushState(atelierNavPack(keys[i], i), "", location.href);
-      }
-    } finally {
-      atelierNavLock--;
-    }
-    atelierNavReady = true;
-    } catch (err) {
-      atelierNavLock = 0;
-      atelierNavReady = false;
-    }
-  }
-
   function showWizardStep(index) {
-    const stuck = document.getElementById("wizard-foot-panel");
-    const stuckMsg = "見えている枠に写真があると、次へ進めます。";
-    if (stuck && stuck.textContent.trim() === stuckMsg) {
-      stuck.textContent = "";
-      stuck.hidden = true;
-      const stuckStatus = document.getElementById("wizard-status");
-      if (stuckStatus && stuckStatus.textContent.trim() === stuckMsg) stuckStatus.textContent = "";
-    }
     if (store.catchInline) {
       store.catchInline = false;
       store.layoutCatchReturn = "";
@@ -9602,7 +9281,6 @@
     }
     scheduleSave();
     syncGuidedColorTrial();
-    atelierNavSchedule();
   }
 
   function normalizeWizardStepIndex() {
@@ -9940,7 +9618,6 @@
         onLayout ||
         onCopyPath ||
         onImgPath ||
-        (step && step.id === "easy-copy-dirs" && !copyDirOnList()) ||
         isGuidedColorTrialFootHidden() ||
         store.guidedColorPhase === "pick";
       if (step && EASY_FLOW_STEP_SET.has(step.id)) {
@@ -10080,10 +9757,16 @@
     return true;
   }
 
-  function syncEasyCopyLaterHint() {
+  function syncEasyCopyLaterHint(stepId) {
+    const on =
+      stepId === "easy-copy-path" ||
+      stepId === "easy-copy-dirs" ||
+      stepId === "easy-basics" ||
+      stepId === "easy-copy-omakase" ||
+      stepId === "easy-copy-frame";
     const hint = document.getElementById("easy-copy-later-hint");
-    if (hint) hint.hidden = true;
-    document.body.classList.remove("copy-later-fixed");
+    if (hint) hint.hidden = !on;
+    document.body.classList.toggle("copy-later-fixed", on);
   }
 
   function photoResumeNoticeStep(stepId) {
@@ -10205,7 +9888,6 @@
     }
     syncEasyFlowMeter();
     if (next === "save") syncEntryFolderNamePanel();
-    atelierNavSchedule();
   }
 
   function showEntryGate(startStep) {
@@ -10427,52 +10109,14 @@
     renderEasyListingUi();
     syncLayoutColorRows();
     syncEasyFlowMeter();
-  }
-
-  function placePreviewAfterListing(meta, turningOn) {
-    const vp = document.getElementById("preview-viewport");
-    if (vp) vp.style.paddingBottom = "";
-    if (typeof window.applyPreviewFrameScale === "function") window.applyPreviewFrameScale();
+    const shown = previewSectionEl(meta.id);
+    if (!turningOn || !shown) return Promise.resolve();
     const scroll = document.querySelector(".preview-scroll");
-    if (!scroll) return;
-    let el = null;
-    let place = "top";
-    if (turningOn) {
-      el = previewSectionEl(meta.id);
-    } else {
-      const near = listingInsertNeighbors(meta.id);
-      if (near.prev) {
-        el = previewSectionEl(near.prev.id);
-        place = "bottom";
-      } else if (near.next) {
-        el = previewSectionEl(near.next.id);
-      }
-    }
-    if (!el) return;
-    let ratio = (typeof previewZoomFactor === "function" ? previewZoomFactor() : 1) || 1;
-    for (let i = 0; i < 8; i += 1) {
-      const scrollRect = scroll.getBoundingClientRect();
-      const rect = el.getBoundingClientRect();
-      const edge = place === "bottom" ? rect.bottom : rect.top;
-      const aim = scrollRect.top + (place === "bottom" ? Math.min(168, scrollRect.height * 0.32) : 16);
-      const delta = edge - aim;
-      if (Math.abs(delta) <= 10) break;
-      const before = scroll.scrollTop;
-      const max = Math.max(0, scroll.scrollHeight - scroll.clientHeight);
-      const next = Math.max(0, Math.min(max, before + delta * ratio));
-      if (Math.abs(next - before) < 0.5) break;
-      scroll.scrollTop = next;
-      const scrollRect2 = scroll.getBoundingClientRect();
-      const rect2 = el.getBoundingClientRect();
-      const edge2 = place === "bottom" ? rect2.bottom : rect2.top;
-      const aim2 = scrollRect2.top + (place === "bottom" ? Math.min(168, scrollRect2.height * 0.32) : 16);
-      const movedLayout = delta - (edge2 - aim2);
-      const movedScroll = scroll.scrollTop - before;
-      if (Math.abs(movedLayout) > 0.5 && Math.abs(movedScroll) > 0.5) {
-        const nextRatio = movedScroll / movedLayout;
-        if (nextRatio > 0.05 && nextRatio < 12) ratio = nextRatio;
-      }
-    }
+    if (!scroll) return Promise.resolve();
+    const rect = shown.getBoundingClientRect();
+    const box = scroll.getBoundingClientRect();
+    if (rect.top >= box.top + 8 && rect.top <= box.bottom - 48) return Promise.resolve();
+    return animatePreviewAlign(shown, "top");
   }
 
   function renderEasyListingUi() {
@@ -10503,19 +10147,24 @@
           return;
         }
         host.dataset.busy = "1";
-        const pane = document.querySelector(".preview-pane");
-        if (pane) {
-          pane.classList.add("is-listing-hold");
-          pane.setAttribute("aria-busy", "true");
+        const section = previewSectionEl(meta.id);
+        let move = Promise.resolve();
+        if (!turningOn && section) move = animatePreviewAlign(section, "top");
+        else if (turningOn) {
+          const near = listingInsertNeighbors(meta.id);
+          if (near.prev) move = animatePreviewAlign(previewSectionEl(near.prev.id), "bottom");
+          else if (near.next) move = animatePreviewAlign(previewSectionEl(near.next.id), "top");
         }
-        finishListingToggle(meta, turningOn);
-        placePreviewAfterListing(meta, turningOn);
-        if (pane) {
-          pane.classList.remove("is-listing-hold");
-          pane.removeAttribute("aria-busy");
-        }
-        const again = document.getElementById("easy-listing-host");
-        if (again) delete again.dataset.busy;
+        move.then(function () {
+          return new Promise(function (resolve) {
+            window.setTimeout(resolve, 520);
+          });
+        }).then(function () {
+          return finishListingToggle(meta, turningOn);
+        }).then(function () {
+          const again = document.getElementById("easy-listing-host");
+          if (again) delete again.dataset.busy;
+        });
       });
       host.appendChild(btn);
     }
@@ -11429,7 +11078,6 @@
       if (unit && !unit.classList.contains("is-open")) openLayoutColorHoney(unit);
     }
     syncCatchColorAvailability();
-    atelierNavSchedule();
   }
 
   function advanceCatchPage() {
@@ -12496,8 +12144,7 @@
   }
 
   function syncSampleFlowPreviewVisibility(stepId) {
-    /* 言葉の画面は選んでも見本が変わらないので、右の見本は出さない */
-    setSampleFlowPreviewHidden(stepId === "easy-copy-dirs");
+    setSampleFlowPreviewHidden(false);
   }
 
   function revealSamplePreview() {
@@ -13198,223 +12845,65 @@
     return "";
   }
 
-  function copyDirWords() {
-    const list = [];
-    COPY_DIR_GROUPS.forEach(function (g) {
-      (g.options || []).forEach(function (o) {
-        list.push(o);
-      });
-    });
-    return list;
-  }
-
-  function copyDirOnList() {
-    return (Number(store.copyDirCursor) || 0) >= copyDirWords().length;
-  }
-
-  function copyDirAnswerOf(id) {
-    if ((store.copyDirIds || []).indexOf(id) >= 0) return "want";
-    if ((store.copyDirForbid || []).indexOf(id) >= 0) return "forbid";
-    return "either";
-  }
-
-  function setCopyDirAnswer(id, state, advance) {
-    const want = new Set(store.copyDirIds || []);
-    const ban = new Set(store.copyDirForbid || []);
-    want.delete(id);
-    ban.delete(id);
-    if (state === "want") want.add(id);
-    else if (state === "forbid") ban.add(id);
-    store.copyDirIds = Array.from(want);
-    store.copyDirForbid = Array.from(ban);
-    const answered = new Set(store.copyDirAnswered || []);
-    answered.add(id);
-    store.copyDirAnswered = Array.from(answered);
-    /* 候補だけ作り直す。文章欄と写真は残す */
-    store.copyOmakaseAxes = null;
-    store.copyFrameCandidates = {};
-    store.copyFrameSelected = {};
-    if (advance) {
-      const words = copyDirWords();
-      const at = words.findIndex(function (o) { return o.id === id; });
-      store.copyDirCursor = at >= 0 ? at + 1 : (Number(store.copyDirCursor) || 0) + 1;
-    }
-    renderCopyDirsUi();
-    scheduleSave();
-  }
-
-  function retreatCopyDirAsk() {
-    const words = copyDirWords();
-    const cursor = Number(store.copyDirCursor) || 0;
-    if (cursor >= words.length || cursor <= 0) return false;
-    store.copyDirCursor = cursor - 1;
-    renderCopyDirsUi();
-    scheduleSave();
-    return true;
-  }
-
-  function copyDirAnswerButton(id, picked, state, label, extraClass) {
-    const on = picked === state;
-    return (
-      '<button type="button" class="easy-copy-ask-btn' +
-      (extraClass ? " " + extraClass : "") +
-      (on ? " is-picked" : "") +
-      '" data-copy-dir="' +
-      escapeHtml(id) +
-      '" data-copy-answer="' +
-      state +
-      '" aria-pressed="' +
-      (on ? "true" : "false") +
-      '">' +
-      escapeHtml(label) +
-      "</button>"
-    );
-  }
-
-  function copyDirAskButtons(id, picked) {
-    return (
-      copyDirAnswerButton(id, picked, "want", "使いたい", "") +
-      copyDirAnswerButton(id, picked, "either", "どちらでもいい", "") +
-      copyDirAnswerButton(id, picked, "forbid", "使いたくない", "")
-    );
-  }
-
-  function paintCopyDirAskCount(cursor, total, onAsk) {
-    const count = document.getElementById("easy-copy-ask-count");
-    if (!count) return;
-    if (!onAsk) {
-      count.hidden = true;
-      count.textContent = "";
-      return;
-    }
-    count.hidden = false;
-    count.textContent = "質問 " + (cursor + 1) + " / " + total;
-  }
-
   function renderCopyDirsUi() {
     const root = document.getElementById("easy-copy-dirs-root");
     if (!root) return;
-    const words = copyDirWords();
-    let cursor = Number(store.copyDirCursor) || 0;
-    if (cursor < 0) cursor = 0;
-    if (cursor > words.length) cursor = words.length;
-    store.copyDirCursor = cursor;
-    paintCopyDirAskCount(cursor, words.length, cursor < words.length);
-    if (cursor >= words.length) {
-      const groups = [
-        ["want", "使いたい", "✓", "is-want"],
-        ["forbid", "使いたくない", "×", "is-forbid"],
-        ["either", "どちらでもいい", "－", "is-either"]
-      ];
-      root.innerHTML =
-        '<div class="easy-copy-result">' +
-        '<h3 class="easy-copy-result-head">言葉の選択結果</h3>' +
-        '<p class="easy-copy-result-note">選択した言葉を押すと、その場で変更できます。</p>' +
-        groups
-          .map(function (group) {
-            const rows = words.filter(function (o) {
-              return copyDirAnswerOf(o.id) === group[0];
-            });
-            const cards = rows.length
-              ? '<div class="easy-copy-result-cards">' +
-                rows
-                  .map(function (o) {
-                    return (
-                      '<div class="easy-copy-result-card-wrap">' +
-                      '<button type="button" class="easy-copy-result-card" data-copy-card="' +
-                      escapeHtml(o.id) +
-                      '" aria-expanded="false" aria-controls="easy-copy-result-menu-' +
-                      escapeHtml(o.id) +
-                      '">' +
-                      escapeHtml(o.label) +
-                      ' <span aria-hidden="true">▾</span></button>' +
-                      '<div class="easy-copy-result-menu" id="easy-copy-result-menu-' +
-                      escapeHtml(o.id) +
-                      '" hidden>' +
-                      copyDirAnswerButton(o.id, group[0], "want", "使いたい", "is-menu") +
-                      copyDirAnswerButton(o.id, group[0], "forbid", "使いたくない", "is-menu") +
-                      copyDirAnswerButton(o.id, group[0], "either", "どちらでもいい", "is-menu") +
-                      "</div></div>"
-                    );
-                  })
-                  .join("") +
-                "</div>"
-              : '<p class="easy-copy-result-empty">なし</p>';
-            return (
-              '<section class="easy-copy-result-group ' +
-              group[3] +
-              '">' +
-              '<h4 class="easy-copy-result-title"><span class="easy-copy-result-mark ' +
-              group[3] +
-              '">' +
-              group[2] +
-              "</span> " +
-              escapeHtml(group[1]) +
-              "（" +
-              rows.length +
-              "件）</h4>" +
-              cards +
-              "</section>"
-            );
-          })
-          .join("") +
-        "</div>";
-    } else {
-      const word = words[cursor];
-      const picked = (store.copyDirAnswered || []).indexOf(word.id) >= 0 ? copyDirAnswerOf(word.id) : "";
-      root.innerHTML =
-        '<div class="easy-copy-ask">' +
-        '<p class="easy-copy-ask-word">【' +
-        escapeHtml(word.label) +
-        '】</p><div class="easy-copy-ask-actions" role="group" aria-label="この言葉の答え">' +
-        copyDirAskButtons(word.id, picked) +
-        "</div></div>";
-    }
-    root.querySelectorAll("[data-copy-card]").forEach(function (btn) {
-      btn.addEventListener("click", function (ev) {
-        ev.stopPropagation();
-        const id = btn.getAttribute("data-copy-card");
-        const menu = document.getElementById("easy-copy-result-menu-" + id);
-        const willOpen = !!(menu && menu.hidden);
-        root.querySelectorAll(".easy-copy-result-menu").forEach(function (el) {
-          el.hidden = true;
-        });
-        root.querySelectorAll("[data-copy-card]").forEach(function (el) {
-          el.setAttribute("aria-expanded", "false");
-        });
-        if (willOpen && menu) {
-          menu.hidden = false;
-          menu.style.left = "0";
-          menu.style.right = "auto";
-          const box = menu.getBoundingClientRect();
-          if (box.right > window.innerWidth - 8) {
-            menu.style.left = "auto";
-            menu.style.right = "0";
-          }
-          btn.setAttribute("aria-expanded", "true");
-        }
-      });
-    });
-    root.querySelectorAll("[data-copy-answer]").forEach(function (btn) {
+    const selected = new Set(store.copyDirIds || []);
+    const forbidden = new Set(store.copyDirForbid || []);
+    root.innerHTML = COPY_DIR_GROUPS.map(function (g) {
+      const chips = g.options
+        .map(function (o) {
+          const want = selected.has(o.id);
+          const ban = forbidden.has(o.id);
+          const cls = want ? " is-on" : ban ? " is-forbid" : "";
+          const mark = ban ? '<span class="easy-copy-dir-x" aria-hidden="true">×</span>' : "";
+          return (
+            '<button type="button" class="easy-copy-dir-chip' +
+            cls +
+            '" data-copy-dir="' +
+            o.id +
+            '" aria-pressed="' +
+            (want ? "true" : "false") +
+            (ban ? ' aria-label="' + escapeHtml(o.label) + '、入れない"' : "") +
+            '"><span class="easy-copy-dir-chip-label">' +
+            escapeHtml(o.label) +
+            "</span>" +
+            mark +
+            "</button>"
+          );
+        })
+        .join("");
+      return (
+        '<div class="easy-copy-dir-group"><p class="easy-copy-dir-heading">' +
+        escapeHtml(g.label) +
+        '</p><div class="easy-copy-dir-chips">' +
+        chips +
+        "</div></div>"
+      );
+    }).join("");
+    root.querySelectorAll("[data-copy-dir]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         const id = btn.getAttribute("data-copy-dir");
-        const state = btn.getAttribute("data-copy-answer");
-        setCopyDirAnswer(id, state, !copyDirOnList());
+        const want = new Set(store.copyDirIds || []);
+        const ban = new Set(store.copyDirForbid || []);
+        if (ban.has(id)) {
+          ban.delete(id);
+        } else if (want.has(id)) {
+          want.delete(id);
+          ban.add(id);
+        } else {
+          want.add(id);
+          ban.delete(id);
+        }
+        store.copyDirIds = Array.from(want);
+        store.copyDirForbid = Array.from(ban);
+        store.copyOmakaseAxes = null;
+        store.copyFrameCandidates = {};
+        store.copyFrameSelected = {};
+        renderCopyDirsUi();
+        scheduleSave();
       });
     });
-    if (!document.documentElement.dataset.copyDirMenuBound) {
-      document.documentElement.dataset.copyDirMenuBound = "1";
-      document.addEventListener("click", function () {
-        document.querySelectorAll(".easy-copy-result-menu").forEach(function (el) {
-          el.hidden = true;
-        });
-        document.querySelectorAll("[data-copy-card]").forEach(function (el) {
-          el.setAttribute("aria-expanded", "false");
-        });
-      });
-    }
-    if (typeof updateWizardUi === "function") updateWizardUi();
-    atelierNavSchedule();
   }
 
   const OMAKASE_AXIS_IDS = ["ease", "bright", "craft", "warm", "clear", "invite"];
@@ -15208,6 +14697,10 @@
       secOpenBtn.addEventListener("click", function (ev) {
         ev.preventDefault();
         ev.stopPropagation();
+        if (sec.id === "hero") {
+          openCatchFromLayout(catchWordsAreOn() ? "write" : "ask");
+          return;
+        }
         if (sectionOpen || itemOpenHere) {
           if (itemOpenHere && sec.kind === "pair") {
             setCopyListOpen({ kind: "section", sectionId: sec.id });
@@ -16058,8 +15551,6 @@
     store.imgOmakaseSalt = 0;
     store.copyDirIds = [];
     store.copyDirForbid = [];
-    store.copyDirAnswered = [];
-    store.copyDirCursor = 0;
     store.copyFieldSource = {};
     store.copyFieldNow = {};
     store.copyHeroOnPhoto = null;
@@ -16092,7 +15583,7 @@
     if (store.sampleFlowImagePaths) applyDraftImagePaths(store.sampleFlowImagePaths);
     applyHeroTextOverlay();
     const status = document.getElementById("wizard-status");
-    if (status) status.textContent = "使いたい言葉を選べます。";
+    if (status) status.textContent = "文章の決め方を選んでください。";
     scheduleSave();
   }
 
@@ -16457,8 +15948,6 @@
     store.imgOmakaseSalt = 0;
     store.copyDirIds = [];
     store.copyDirForbid = [];
-    store.copyDirAnswered = [];
-    store.copyDirCursor = 0;
     store.copyFieldSource = {};
     store.copyFieldNow = {};
     store.copyHeroOnPhoto = null;
@@ -16686,10 +16175,6 @@
     });
     gate.querySelectorAll("[data-entry-step-back]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        if (atelierNavConsumeBack()) {
-          scrollBackDestinationToTop();
-          return;
-        }
         const cur = gate.dataset.entryStep || "branch";
         if (cur === "color") setEntryGateStep("purpose");
         else if (cur === "purpose") {
@@ -16838,7 +16323,6 @@
         renderCopyFrameUi();
         updateWizardUi();
         scheduleSave();
-        atelierNavSchedule();
         return "stay";
       }
       if (store.copyScreenReturn === "hub") {
@@ -17047,25 +16531,6 @@
     const flow = getFlowSteps();
     const cur = getCurrentFlowStep();
     const idx = flow.findIndex(function (s) { return s.id === "easy-catch"; });
-    if (idx < 0) {
-      if (page === "color") {
-        const colorAt = flow.findIndex(function (s) { return s.id === "easy-color-stage"; });
-        if (colorAt >= 0) showWizardStep(colorAt);
-        return;
-      }
-      if (page === "write" || page === "settings" || page === "ask") {
-        setCopyListOpen({ kind: "item", sectionId: "hero", itemIndex: null });
-        const textAt = flow.findIndex(function (s) { return s.id === "easy-copy-omakase"; });
-        if (textAt >= 0) showWizardStep(textAt);
-        return;
-      }
-      store.layoutAccordionId = "hero";
-      if (!store.layoutInnerByBlock) store.layoutInnerByBlock = {};
-      store.layoutInnerByBlock.hero = "hero";
-      const imgAt = flow.findIndex(function (s) { return s.id === "easy-img-wire"; });
-      if (imgAt >= 0) showWizardStep(imgAt);
-      return;
-    }
     if (!cur || idx < 0) return;
     if (page === "ask" && catchWordsAreOn()) page = "write";
     if (page) store.catchPage = page;
@@ -17096,7 +16561,6 @@
     renderEasyCatchRest();
     updateWizardUi();
     scheduleSave();
-    atelierNavSchedule();
   }
 
   function closeCatchInline() {
@@ -17125,6 +16589,12 @@
         body: "上の進捗名を押すと、その項目の画像・文章・色を編集できます。"
       }
     ];
+    if (easyCatchOn()) {
+      items.push({
+        title: "まずはキャッチで試してみる",
+        body: "キャッチでは、画像・文章・色の操作を続けて体験できます。"
+      });
+    }
     return items;
   }
 
@@ -17189,7 +16659,6 @@
     const flow = getFlowSteps();
     const step = getCurrentFlowStep();
     if (!step) return;
-    if (step.id === "easy-copy-dirs" && !copyDirOnList()) return;
     if (step.id === "easy-loading") {
       if (!store.easyLoadingPaused) return;
       store.easyLoadingPaused = false;
@@ -17236,10 +16705,15 @@
       store.siteNameConfirmed = true;
     }
     if (step.id === "easy-img-wire") {
-      const miss = visibleUnfilledImageSlots().filter(function (slot) {
-        return !!sampleDefaultSrc(slot.input);
-      });
+      const miss = visibleUnfilledImageSlots();
       if (miss.length) {
+        const bare = miss.filter(function (slot) {
+          return !sampleDefaultSrc(slot.input);
+        });
+        if (bare.length) {
+          showValidationNotice("見えている枠に写真があると、次へ進めます。");
+          return;
+        }
         openLayoutOmakaseNotice({
           title: "変更していない画像があります。",
           body: "このまま次へ進んでよろしいですか。",
@@ -17280,9 +16754,12 @@
   }
 
   function wizardNextAfterConfirm(step, revisingAfterLock) {
-    if (step && step.id === "easy-copy-dirs") store.copyPathMode = "keyword";
     const flow = getFlowSteps();
     if (!step) return;
+    if (step.id === "easy-site-name" && store.easyFlowActive && !afterColorGuidePassing) {
+      openAfterColorGuide();
+      return;
+    }
     closeDraftNotice();
     if (store.uiMode === "self") {
       if (step.id === "guide") {
@@ -17416,7 +16893,6 @@
     }
     clearPlainFootNotice();
     const step = getCurrentFlowStep();
-    if (step && step.id === "easy-copy-dirs" && retreatCopyDirAsk()) return;
     if (store.easyGapReturn === "easy-done" && step && step.id !== "easy-done" && step.id !== "finish") {
       store.easyGapReturn = "";
       setCopyListOpen(null);
@@ -17641,10 +17117,6 @@
     const nextBtn = document.getElementById("wizard-next");
     if (backBtn) {
       backBtn.addEventListener("click", function () {
-        if (atelierNavConsumeBack()) {
-          scrollBackDestinationToTop();
-          return;
-        }
         wizardBack();
         scrollBackDestinationToTop();
       });
@@ -17655,10 +17127,6 @@
     if (guideNext) guideNext.addEventListener("click", wizardNext);
     if (guideBack) {
       guideBack.addEventListener("click", function () {
-        if (atelierNavConsumeBack()) {
-          scrollBackDestinationToTop();
-          return;
-        }
         wizardBack();
         scrollBackDestinationToTop();
       });
@@ -18124,15 +17592,6 @@
     if (store.guidedColorEditStepId) syncPickPartnerUnused(store.guidedColorEditStepId);
   }
 
-  function syncWholeColorMark(stepId) {
-    const now = document.querySelector(".layout-color-whole > .layout-color-line > .layout-color-whole-now");
-    if (!now) return;
-    const unit = document.querySelector(".layout-color-whole .layout-color-sub.is-open");
-    const inWhole = !!(unit && stepId && unit.getAttribute("data-color-step") === stepId);
-    const name = inWhole ? unit.querySelector(":scope > .layout-color-line > .layout-color-name") : null;
-    now.textContent = name ? name.textContent : "";
-  }
-
   function showLayoutColorHoney(stepId, colorKey) {
     if (!GUIDED_COLOR_TUNE_IDS.includes(stepId) && stepId !== "announce-color") return;
     if (!store.presetChosen) markPresetChosen(store.chosenPresetKey || "clinic");
@@ -18170,9 +17629,11 @@
   const COLOR_LIST_BAND = {
     id: "band",
     name: "上と下の帯",
+    chipKey: "chromeBg",
+    chipStep: "global-chrome-bg",
     children: [
-      { stepId: "global-chrome-bg", name: "背景", colorKey: "chromeBg" },
-      { stepId: "global-chrome-ink", name: "文字", colorKey: "chromeInk" }
+      { stepId: "global-chrome-bg", name: "背景" },
+      { stepId: "global-chrome-ink", name: "文字" }
     ]
   };
   const COLOR_LIST_MOVES = [
@@ -18195,13 +17656,6 @@
     contact: "contact"
   };
 
-  function syncAccentBarFieldVisibility() {
-    const field = document.querySelector(".accent-bar-field");
-    if (!field) return;
-    const inRow = !!field.closest(".layout-color-body");
-    field.hidden = inRow && !colorPickModeNow();
-  }
-
   function placeAccentBarField(host) {
     const field = document.querySelector(".accent-bar-field");
     if (!field) return;
@@ -18212,7 +17666,6 @@
     else if (field._accentHome && field._accentHome.parent) {
       field._accentHome.parent.insertBefore(field, field._accentHome.next);
     }
-    syncAccentBarFieldVisibility();
   }
 
   function closeLayoutColorRow(row) {
@@ -18237,16 +17690,8 @@
       store.partnerPickMode = false;
     }
     const group = row.closest(".layout-color-group");
-    if (group && group !== row) {
-      group.classList.remove("is-honey");
-      if (!group.querySelector(".layout-color-sub.is-open")) {
-        group.classList.remove("is-open");
-        const groupBody = group.querySelector(":scope > .layout-color-group-body");
-        if (groupBody) groupBody.hidden = true;
-      }
-    }
+    if (group && group !== row) group.classList.remove("is-honey");
     syncOpenColorPreview();
-    atelierNavSchedule();
   }
 
   function closeColorGroup(group) {
@@ -18261,7 +17706,6 @@
       btn.setAttribute("aria-expanded", "false");
     }
     syncOpenColorPreview();
-    atelierNavSchedule();
   }
 
   function closeOpenColorScreens() {
@@ -18281,8 +17725,6 @@
       group.querySelectorAll(".layout-color-sub.is-open").forEach((openSub) => {
         if (openSub !== unit) closeLayoutColorRow(openSub);
       });
-      const groupBody = group.querySelector(":scope > .layout-color-group-body");
-      if (groupBody) groupBody.hidden = false;
       group.classList.add("is-open", "is-honey");
     } else {
       closeOpenColorScreens();
@@ -18298,7 +17740,6 @@
     showLayoutColorHoney(stepId, colorKey || null);
     if (stepId === "global-accent") placeAccentBarField(body);
     syncOpenColorPreview();
-    atelierNavSchedule();
   }
 
   function openColorGroup(group) {
@@ -18313,7 +17754,6 @@
       btn.setAttribute("aria-expanded", "true");
     }
     syncOpenColorPreview();
-    atelierNavSchedule();
   }
 
   function colorMoveOrder() {
@@ -18330,7 +17770,8 @@
   }
 
   function colorMoveBlockId(moveId) {
-    if (moveId === "catch-jump" || moveId === "hero-color") return "hero";
+    if (moveId === "catch-jump") return "hero";
+    if (moveId === "hero-color") return "";
     return COLOR_MOVE_BLOCK[moveId] || "";
   }
 
@@ -18354,12 +17795,12 @@
 
   function writeColorMoveOrder(list) {
     if (!list) return false;
-    const moveIds = Array.from(list.querySelectorAll(":scope > .layout-color-move"))
-      .filter((el) => el.getAttribute("data-color-move") !== "catch-jump")
-      .map((el) => el.getAttribute("data-color-move"));
+    const moveIds = Array.from(list.querySelectorAll(":scope > .layout-color-move")).map((el) => el.getAttribute("data-color-move"));
     store.colorListOrder = moveIds;
+    const hasCatch = moveIds.indexOf("catch-jump") >= 0;
     const wanted = [];
     moveIds.forEach((id) => {
+      if (hasCatch && id === "hero-color") return;
       const block = colorMoveBlockId(id);
       if (!block || wanted.indexOf(block) >= 0) return;
       wanted.push(block);
@@ -18389,21 +17830,15 @@
   }
 
   function colorChipSpec(item) {
-    if (item.colorKey) {
-      return [{ key: item.colorKey, stepId: item.stepId, label: "表示色" }];
-    }
     if (item.chipKey) {
       return [{ key: item.chipKey, stepId: item.chipStep || item.stepId, label: "表示色" }];
     }
-    if (item.children) {
-      const specs = item.children
-        .map((child) => ({
-          key: child.colorKey || child.chipKey,
-          stepId: child.stepId,
-          label: child.name
-        }))
-        .filter((spec) => spec.key);
-      if (specs.length) return specs;
+    if (item.id === "contact" && item.children) {
+      return item.children.map((child) => ({
+        key: child.colorKey,
+        stepId: child.stepId,
+        label: child.name
+      }));
     }
     return [];
   }
@@ -18415,8 +17850,7 @@
     wrap.className = "layout-color-chips";
     specs.forEach((spec) => {
       if (!spec.key) return;
-      const chip = document.createElement("button");
-      chip.type = "button";
+      const chip = document.createElement("span");
       chip.className = "layout-color-chip";
       const label = document.createElement("span");
       label.className = "layout-color-chip-label";
@@ -18427,11 +17861,6 @@
       swatch.setAttribute("data-chip-step", spec.stepId || "");
       chip.appendChild(label);
       chip.appendChild(swatch);
-      chip.addEventListener("click", (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        openColorFromChip(chip);
-      });
       wrap.appendChild(chip);
     });
     return wrap;
@@ -18455,31 +17884,22 @@
     });
   }
 
-  function openColorFromChip(chip) {
-    const row = chip.closest(".layout-color-row");
-    if (!row || row.classList.contains("is-open")) return;
-    if (row.getAttribute("data-color-move") === "catch-jump") {
-      const hero = document.querySelector('#layout-color-rows > [data-color-step="hero-color"]');
-      if (hero) openLayoutColorHoney(hero);
-      return;
-    }
-    if (row.classList.contains("layout-color-group")) {
-      const stepId = chip.querySelector(".layout-color-chip-swatch").getAttribute("data-chip-step") || "";
-      const key = chip.querySelector(".layout-color-chip-swatch").getAttribute("data-chip-key") || "";
-      const sub = Array.from(row.querySelectorAll(".layout-color-sub")).find((el) => {
-        if ((el.getAttribute("data-color-step") || "") !== stepId) return false;
-        const colorKey = el.getAttribute("data-color-key") || "";
-        return colorKey ? colorKey === key : true;
-      });
-      if (sub) openLayoutColorHoney(sub);
-      return;
-    }
-    openLayoutColorHoney(row);
-  }
-
-  function makeColorLine(name) {
+  function makeColorLine(name, opts) {
     const line = document.createElement("div");
     line.className = "layout-color-line";
+    if (opts && opts.handle) {
+      const handle = document.createElement("span");
+      handle.className = "layout-inner-handle";
+      handle.textContent = "⋮⋮";
+      handle.setAttribute("aria-label", "この枠の順番を変えられます");
+      setHoverTip(handle, "押したまま上下に動かすと、順番を変えられます");
+      line.appendChild(handle);
+    } else if (opts && opts.spacer) {
+      const spacer = document.createElement("span");
+      spacer.className = "layout-color-grip-spacer";
+      spacer.setAttribute("aria-hidden", "true");
+      line.appendChild(spacer);
+    }
     const label = document.createElement("p");
     label.className = "layout-color-name";
     label.textContent = name;
@@ -18510,6 +17930,10 @@
     const line = makeColorLine(item.name);
     const chips = makeColorChips(item);
     if (chips) line.appendChild(chips);
+    makeColorOpen(line, () => {
+      if (sub.classList.contains("is-open")) closeLayoutColorRow(sub);
+      else openLayoutColorHoney(sub);
+    });
     const body = document.createElement("div");
     body.className = "layout-color-body";
     body.hidden = true;
@@ -18523,16 +17947,8 @@
     const group = document.createElement("div");
     group.className = "layout-color-row layout-color-group " + (movable ? "layout-color-move" : "layout-color-pin");
     if (!item.id) group.classList.add("layout-color-whole");
-    group.setAttribute("data-color-group", item.id || item.name || "");
     if (movable) group.setAttribute("data-color-move", item.id);
-    const line = makeColorLine(item.name);
-    if (!item.id) {
-      const now = document.createElement("span");
-      now.className = "layout-color-whole-now";
-      const name = line.querySelector(".layout-color-name");
-      if (name) name.insertAdjacentElement("afterend", now);
-      else line.appendChild(now);
-    }
+    const line = makeColorLine(item.name, movable ? { handle: true } : { spacer: true });
     const chips = makeColorChips(item);
     if (chips) line.appendChild(chips);
     else if (!item.id && item.children) {
@@ -18545,6 +17961,10 @@
       gap.className = "layout-color-chips";
       line.appendChild(gap);
     }
+    makeColorOpen(line, () => {
+      if (group.classList.contains("is-open")) closeColorGroup(group);
+      else openColorGroup(group);
+    });
     const body = document.createElement("div");
     body.className = "layout-color-group-body";
     body.hidden = true;
@@ -18560,6 +17980,7 @@
     body.appendChild(done);
     group.appendChild(line);
     group.appendChild(body);
+    if (movable) bindLayoutColorMoveDrag(group);
     return group;
   }
 
@@ -18568,13 +17989,18 @@
     row.className = "layout-color-row layout-color-move";
     row.setAttribute("data-color-move", item.id);
     row.setAttribute("data-color-step", item.stepId);
-    const line = makeColorLine(item.name);
+    const line = makeColorLine(item.name, { handle: true });
     line.appendChild(makeColorChips(item));
+    makeColorOpen(line, () => {
+      if (row.classList.contains("is-open")) closeLayoutColorRow(row);
+      else openLayoutColorHoney(row);
+    });
     const body = document.createElement("div");
     body.className = "layout-color-body";
     body.hidden = true;
     row.appendChild(line);
     row.appendChild(body);
+    bindLayoutColorMoveDrag(row);
     return row;
   }
 
@@ -18654,11 +18080,10 @@
     const catchRow = document.createElement("div");
     catchRow.className = "layout-color-row layout-color-move";
     catchRow.setAttribute("data-color-move", "catch-jump");
-    const catchLine = makeColorLine("キャッチ");
+    const catchLine = makeColorLine("キャッチ", { handle: true });
     const catchSlot = document.createElement("span");
     catchSlot.className = "layout-color-chips";
-    const catchChip = document.createElement("button");
-    catchChip.type = "button";
+    const catchChip = document.createElement("span");
     catchChip.className = "layout-color-chip";
     const catchChipLabel = document.createElement("span");
     catchChipLabel.className = "layout-color-chip-label";
@@ -18671,13 +18096,11 @@
     catchChip.appendChild(catchSwatch);
     catchSlot.appendChild(catchChip);
     catchLine.appendChild(catchSlot);
-    catchChip.addEventListener("click", (ev) => {
-      ev.preventDefault();
-      ev.stopPropagation();
-      const hero = document.querySelector('#layout-color-rows > [data-color-step="hero-color"]');
-      if (hero) openLayoutColorHoney(hero);
+    makeColorOpen(catchLine, function () {
+      openCatchFromLayout(catchWordsAreOn() ? "color" : "ask");
     });
     catchRow.appendChild(catchLine);
+    bindLayoutColorMoveDrag(catchRow);
     byId["catch-jump"] = catchRow;
     colorMoveOrder().forEach((id) => {
       if (id === "hero-color") rows.appendChild(catchRow);
@@ -18697,50 +18120,15 @@
     if (!rows) return;
     rows.querySelectorAll(":scope > .layout-color-move").forEach(function (row) {
       const moveId = row.getAttribute("data-color-move");
-      if (moveId === "catch-jump") {
+      if (moveId === "catch-jump" && heroPlateIsOn()) {
         row.hidden = true;
-        return;
-      }
-      if (moveId === "hero-color") {
-        row.hidden = !easyCatchOn();
         return;
       }
       const blockId = colorMoveBlockId(moveId);
       if (!blockId) return;
       const meta = LAYOUT_BLOCKS.find(function (b) { return b.id === blockId; });
       row.hidden = !isLayoutBlockActive(meta);
-    });
-    syncColorMoveSwapButtons();
-  }
-
-  function syncColorMoveSwapButtons() {
-    const rows = document.getElementById("layout-color-rows");
-    if (!rows) return;
-    rows.querySelectorAll(":scope > .layout-color-swap").forEach((el) => el.remove());
-    const moves = Array.from(rows.querySelectorAll(":scope > .layout-color-move")).filter((el) => !el.hidden);
-    moves.forEach((upper, index) => {
-      const lower = moves[index + 1];
-      if (!lower) return;
-      const btn = document.createElement("button");
-      btn.type = "button";
-      btn.className = "layout-color-swap";
-      btn.setAttribute("aria-label", "上下を入れ替える");
-      const up = document.createElement("span");
-      up.className = "layout-color-swap-up";
-      up.textContent = "↑";
-      up.setAttribute("aria-hidden", "true");
-      const down = document.createElement("span");
-      down.className = "layout-color-swap-down";
-      down.textContent = "↓";
-      down.setAttribute("aria-hidden", "true");
-      btn.appendChild(up);
-      btn.appendChild(down);
-      btn.addEventListener("click", () => {
-        upper.before(lower);
-        saveColorMoveOrder();
-        syncColorMoveSwapButtons();
-      });
-      upper.after(btn);
+      if (moveId === "hero-color" && easyCatchOn() && !row.closest("#easy-catch-host")) row.hidden = true;
     });
   }
 
@@ -21797,42 +21185,6 @@
     return "";
   }
 
-  function nearestPreviewMark(selector, minHeight) {
-    const root = document.getElementById("preview-root");
-    const scroll = document.querySelector(".preview-scroll");
-    if (!root || !scroll) return null;
-    const floor = minHeight || 2;
-    const nodes = [];
-    root.querySelectorAll(selector).forEach((el) => {
-      if (el.closest("[hidden]")) return;
-      const box = el.getBoundingClientRect();
-      if (box.width < 2 || box.height < floor) return;
-      nodes.push(el);
-    });
-    if (!nodes.length) return null;
-    const view = scroll.getBoundingClientRect();
-    const mid = (view.top + view.bottom) / 2;
-    let best = nodes[0];
-    let bestDist = Infinity;
-    nodes.forEach((el) => {
-      const box = el.getBoundingClientRect();
-      const dist = Math.abs((box.top + box.bottom) / 2 - mid);
-      if (dist < bestDist) {
-        bestDist = dist;
-        best = el;
-      }
-    });
-    return best;
-  }
-
-  function nearestAccentMark() {
-    return nearestPreviewMark(".hero-value-title, #about h2, #works h2, .sample-extra:not(#announce) h2");
-  }
-
-  function nearestCardMark() {
-    return nearestPreviewMark(".work-item, .accordion, .sns-list li", 24);
-  }
-
   function syncOpenColorPreview() {
     if (wizardStepId() !== "easy-color-stage") return;
     const rows = document.getElementById("layout-color-rows");
@@ -21845,52 +21197,28 @@
       clearPreviewPlaceMark();
       return;
     }
-    const stepId = unit.getAttribute("data-color-step") || "";
-    const near = stepId === "global-accent"
-      ? nearestAccentMark()
-      : stepId === "global-card"
-        ? nearestCardMark()
-        : null;
-    const target = near || previewEl(colorRowPreviewSelector(unit));
+    const target = previewEl(colorRowPreviewSelector(unit));
     if (!target) return;
-    let anchor = unit.querySelector(":scope > .layout-color-line") || unit;
-    if ((stepId === "global-accent" || stepId === "global-card") && anchor.getBoundingClientRect().height < 2) {
-      const groupLine = unit.closest(".layout-color-group");
-      const line = groupLine && groupLine.querySelector(":scope > .layout-color-line");
-      if (line && line.getBoundingClientRect().height >= 2) anchor = line;
-    }
-    focusPreviewTarget(target);
-    alignColorPreviewBeside(target, anchor);
-  }
-
-  function alignColorPreviewBeside(target, anchor) {
+    const held = unit.getAttribute("data-color-move") || unit.getAttribute("data-color-step") || unit.getAttribute("data-color-key") || "";
     const scroll = document.querySelector(".preview-scroll");
-    if (!scroll || !target || !anchor) return;
-    if (scroll.clientHeight < 40 || anchor.getBoundingClientRect().height < 2) return;
-    const prev = scroll.style.scrollBehavior;
-    scroll.style.scrollBehavior = "auto";
-    let ratio = scroll._previewRatio > 0 ? scroll._previewRatio : 1;
-    for (let i = 0; i < 8; i += 1) {
-      const delta = target.getBoundingClientRect().top - anchor.getBoundingClientRect().top;
-      if (Math.abs(delta) <= 4) break;
-      const before = scroll.scrollTop;
-      const max = Math.max(0, scroll.scrollHeight - scroll.clientHeight);
-      const next = Math.max(0, Math.min(max, before + delta * ratio));
-      if (Math.abs(next - before) < 0.5) break;
-      const topBefore = target.getBoundingClientRect().top;
-      scroll.scrollTop = next;
-      const movedScroll = scroll.scrollTop - before;
-      const movedScreen = topBefore - target.getBoundingClientRect().top;
-      if (Math.abs(movedScreen) > 1 && Math.abs(movedScroll) > 1) {
-        const nextRatio = movedScroll / movedScreen;
-        if (nextRatio > 0.2 && nextRatio < 8) {
-          ratio = nextRatio;
-          scroll._previewRatio = nextRatio;
-        }
+    const frame = document.getElementById("place-mark-frame");
+    const view = scroll ? scroll.getBoundingClientRect() : null;
+    const fb = frame && !frame.hidden ? frame.getBoundingClientRect() : null;
+    const focus = document.querySelector("#preview-root .is-layout-focus");
+    let settled = false;
+    if (fb && view && view.height > 40 && focus === target) {
+      if (fb.height > view.height) settled = Math.abs(fb.top - view.top) < 4 || Math.abs(fb.bottom - view.bottom) < 4;
+      else {
+        const mid = Math.abs((fb.top + fb.height / 2) - (view.top + view.height / 2));
+        settled = mid < 8 || Math.abs(fb.top - view.top) < 4 || Math.abs(fb.bottom - view.bottom) < 4;
       }
     }
-    scroll.style.scrollBehavior = prev;
-    syncPlaceMarkFrame();
+    if (syncOpenColorPreview._held === held && held && settled) {
+      focusPreviewTarget(target);
+      return;
+    }
+    syncOpenColorPreview._held = held;
+    centerPreviewBlock(target, "middle");
   }
 
   function releasePreviewDragFollow() {
@@ -23002,33 +22330,6 @@
 
   function renderLayoutImageInner(body, blockId) {
     body.innerHTML = "";
-    if (isEasyImgSharedMount() && blockId === "hero") {
-      const ask = document.createElement("div");
-      ask.className = "hero-overlay-row easy-copy-hero-ask-row";
-      ask.setAttribute("role", "group");
-      ask.setAttribute("aria-label", "画像を載せるか");
-      const onNow = catchImageIsOn();
-      [["1", "載せる"], ["0", "載せない"]].forEach(function (pair) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "gct-btn";
-        const on = pair[0] === "1";
-        const pressed = on ? onNow : !onNow;
-        btn.classList.toggle("is-active", pressed);
-        btn.setAttribute("aria-pressed", pressed ? "true" : "false");
-        btn.textContent = pair[1];
-        btn.addEventListener("click", function (ev) {
-          ev.preventDefault();
-          ev.stopPropagation();
-          setCatchImageChoice(on);
-          renderLayoutImageInner(body, blockId);
-          scheduleSave();
-        });
-        ask.appendChild(btn);
-      });
-      body.appendChild(ask);
-      if (!onNow) return;
-    }
     if (isEasyImgSharedMount() && blockId !== "hero") {
       const tools = document.createElement("div");
       tools.className = "layout-frames-tools";
@@ -23160,6 +22461,10 @@
             secOpen.addEventListener("click", (ev) => {
               ev.preventDefault();
               ev.stopPropagation();
+              if (imageOnly && !inCatchFace && id === "hero") {
+                openCatchFromLayout(catchImageIsOn() ? "image" : "imageAsk");
+                return;
+              }
               if (imageOnly && cell.open) {
                 const openRow = cell.querySelector(".layout-photo-row.is-open");
                 if (openRow) return;
@@ -24898,11 +24203,11 @@
       { id: "desktop", label: "PC", width: 1280 }
     ];
     let stepIndex = 2;
-    /* 100%は選んだ幅の実寸。開いた直後は枠の高さに合わせ、見本の下を空けない */
+    /* 100%は選んだ幅の実寸。開いた直後の見本は25%で固定する */
     const LOOK_MIN = 0.25;
     const LOOK_MAX = 2;
-    let lookScale = 1;
-    let lookTouched = false;
+    let lookScale = LOOK_MIN;
+    let lookTouched = true;
 
     function clampLook(n) {
       return Math.min(LOOK_MAX, Math.max(LOOK_MIN, n));
@@ -25016,39 +24321,15 @@
         const availH = Math.max(120, scrollEl.clientHeight - pad);
         const fullH = Math.max(1, root.scrollHeight);
         scale = Math.min(scale, availH / fullH, 1);
-      } else if (root) {
-        const availH = Math.max(120, scrollEl.clientHeight);
-        const footer = root.querySelector("#preview-footer, .site-footer");
-        const fullH = Math.max(
-          1,
-          footer && footer.offsetHeight ? footer.offsetTop + footer.offsetHeight : root.scrollHeight
-        );
-        scale = Math.min(1, Math.max(scale, availH / fullH));
       }
       store.previewFrameScale = scale;
-      /* 手で％を変えるまでは、枠の高さに合わせて見本の下を空けない */
-      if (!lookTouched) lookScale = Math.min(LOOK_MAX, Math.max(0.05, scale));
+      /* 100%は幅の実寸。開いた直後だけ、枠に収まる倍率を％にする */
+      if (!lookTouched) lookScale = clampLook(scale);
       viewport.style.removeProperty("--hub-place-fit-scale");
       applyLookZoom(viewport);
-      if (!lookTouched && !placeFit && root) {
-        const availH2 = Math.max(120, scrollEl.clientHeight);
-        const footer2 = root.querySelector("#preview-footer, .site-footer");
-        const fullH2 = Math.max(
-          1,
-          footer2 && footer2.offsetHeight ? footer2.offsetTop + footer2.offsetHeight : root.scrollHeight
-        );
-        const scale2 = Math.min(1, Math.max(Math.min(1, availW / designW), availH2 / fullH2));
-        if (Math.abs(scale2 - scale) > 0.01) {
-          scale = scale2;
-          store.previewFrameScale = scale;
-          lookScale = Math.min(LOOK_MAX, Math.max(0.05, scale));
-          applyLookZoom(viewport);
-        }
-      }
       syncPreviewLookControl();
       scrollEl.scrollLeft = 0;
-      const colorFollow = wizardStepId() === "easy-color-stage" && document.querySelector("#layout-color-rows .layout-color-row.is-open");
-      if (placeFit && !colorFollow) scrollEl.scrollTop = 0;
+      if (placeFit) scrollEl.scrollTop = 0;
       return scale;
     }
 
@@ -25131,9 +24412,6 @@
         if (scrollEl && !placeFit) {
           scrollEl.scrollLeft = 0;
         }
-        if (wizardStepId() === "easy-color-stage" && document.querySelector("#layout-color-rows .layout-color-row.is-open")) {
-          syncOpenColorPreview();
-        }
       });
     }
 
@@ -25202,7 +24480,7 @@
     const shell = document.querySelector(".atelier-shell");
     if (!split || !handle) return;
 
-    const pct = 75;
+    const pct = 45;
 
     function setPct(next) {
       const value = next + "%";
@@ -25422,7 +24700,7 @@
       const rect = split.getBoundingClientRect();
       const pct = parseFloat(getComputedStyle(split).getPropertyValue("--preview-pct")) || 52;
       const handleW = handle.getBoundingClientRect().width || 10;
-      return Math.max(0, rect.width - rect.width * (pct / 100) - handleW);
+      return Math.max(280, rect.width - rect.width * (pct / 100) - handleW);
     }
 
     function waveRowVisible(el) {
@@ -26587,11 +25865,6 @@
         version: 17,
         savedAt: new Date().toISOString(),
         wizardStepIndex: store.wizardStepIndex,
-        easyFlowStepId: (function () {
-          const flow = getFlowSteps();
-          const step = flow[store.wizardStepIndex];
-          return step && step.id ? step.id : null;
-        })(),
         selfEditingStepId: store.selfEditingStepId,
         uiMode: store.uiMode,
         sitePurpose: store.sitePurpose,
@@ -26656,8 +25929,6 @@
         copyFrameIndex: Number(store.copyFrameIndex) || 0,
         copyDirIds: Array.isArray(store.copyDirIds) ? store.copyDirIds.slice() : [],
         copyDirForbid: Array.isArray(store.copyDirForbid) ? store.copyDirForbid.slice() : [],
-        copyDirAnswered: Array.isArray(store.copyDirAnswered) ? store.copyDirAnswered.slice() : [],
-        copyDirCursor: Number(store.copyDirCursor) || 0,
         copyFieldSource: store.copyFieldSource && typeof store.copyFieldSource === "object" ? store.copyFieldSource : {},
         copyHeroOnPhoto: store.copyHeroOnPhoto === true ? true : store.copyHeroOnPhoto === false ? false : null,
         hubImgPathMode: store.hubImgPathMode && typeof store.hubImgPathMode === "object" ? store.hubImgPathMode : {},
@@ -26850,26 +26121,6 @@
       }
       if (Array.isArray(data.copyDirIds)) store.copyDirIds = data.copyDirIds.slice();
       if (Array.isArray(data.copyDirForbid)) store.copyDirForbid = data.copyDirForbid.slice();
-      if (Array.isArray(data.copyDirAnswered)) {
-        store.copyDirAnswered = data.copyDirAnswered.slice();
-        const words = copyDirWords();
-        let cursor = Number(data.copyDirCursor);
-        if (!Number.isFinite(cursor)) {
-          const answered = new Set(store.copyDirAnswered);
-          cursor = words.findIndex(function (o) { return !answered.has(o.id); });
-          if (cursor < 0) cursor = words.length;
-        }
-        if (cursor < 0) cursor = 0;
-        if (cursor > words.length) cursor = words.length;
-        store.copyDirCursor = cursor;
-      } else if ((store.copyDirIds || []).length || (store.copyDirForbid || []).length) {
-        /* 古い保存は、残りをどちらでもいいとして一覧から開く */
-        store.copyDirAnswered = copyDirWords().map(function (o) { return o.id; });
-        store.copyDirCursor = copyDirWords().length;
-      } else {
-        store.copyDirAnswered = [];
-        store.copyDirCursor = 0;
-      }
       if (data.copyFieldSource && typeof data.copyFieldSource === "object") {
         store.copyFieldSource = data.copyFieldSource;
       }
@@ -27116,7 +26367,6 @@
       }
       syncLogoPresentation();
       restoreKeptSampleImages();
-      placeEasyFlowResume(data);
       suppressSave = false;
       return true;
     } catch (e) {
@@ -27555,5 +26805,4 @@
       window.setPreviewWidthStepById("desktop");
     }
   }
-  if (!bootReview && !bootCapture) atelierNavArm();
 })();
