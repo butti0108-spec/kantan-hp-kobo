@@ -8436,7 +8436,7 @@
     }
     if (stepId === "easy-copy-dirs") {
       if (!Array.isArray(store.copyDirIds) || store.copyDirIds.length < 1) {
-        return "方向を1つ以上選んでから、「" + action + "」を押してください。";
+        return "使いたいを一つ以上選んでから、「" + action + "」を押してください。";
       }
       return "";
     }
