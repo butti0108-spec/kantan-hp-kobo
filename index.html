@@ -65,7 +65,7 @@
   <script src="sushi-belt.js?v=sushi-select-20261009" defer></script>
   <script src="free-photo-gallery/gallery.js?v=gallery-act-20261001" defer></script>
   <script src="page-shutter.js?v=sample-only-20260929" defer></script>
-  <script src="script.js?v=empty-frames-20261010" defer></script>
+  <script src="script.js?v=image-word-20261012" defer></script>
   <script>
     (function () {
       var h = location.hostname;
@@ -134,7 +134,7 @@
       <fieldset class="ng-reasons">
         <legend>理由（複数可・1つ以上）</legend>
         <label><input type="checkbox" name="ng-reason" value="contrast"> 文字が溶けて読めない（色）</label>
-        <label><input type="checkbox" name="ng-reason" value="photo"> 写真が業種・世界観と合わない</label>
+        <label><input type="checkbox" name="ng-reason" value="photo"> 画像が業種・世界観と合わない</label>
         <label><input type="checkbox" name="ng-reason" value="layout"> レイアウト／隙間が気持ち悪い</label>
         <label><input type="checkbox" name="ng-reason" value="copy"> 文章が薄い／業種ずれ</label>
         <label><input type="checkbox" name="ng-reason" value="other"> その他</label>
@@ -169,7 +169,7 @@
             <input type="radio" name="entry_save_mode" value="browser">
             <span class="entry-branch-card-inner">
               <strong role="heading" aria-level="3">残さず、そのまま作る</strong>
-              <span>残さない場合、ページを更新すると写真は消えることがあります（文章などはブラウザ内に残ることがあります）。</span>
+              <span>残さない場合、ページを更新すると画像は消えることがあります（文章などはブラウザ内に残ることがあります）。</span>
             </span>
           </label>
           <label class="entry-branch-card">
@@ -334,7 +334,7 @@
 
       <fieldset class="entry-intake-block" id="entry-purpose-field" data-entry-step="purpose" hidden>
         <legend>用途は？</legend>
-        <p class="entry-intake-note">用途を選んでも、写真やページ構成、項目の並びは変わりません。</p>
+        <p class="entry-intake-note">用途を選んでも、画像やページ構成、項目の並びは変わりません。</p>
         <p class="entry-intake-note">変わるのは主に、項目名と、表示される文章例の内容です。</p>
         <div class="entry-choice-list" role="radiogroup" aria-label="用途">
           <label class="entry-choice"><input type="radio" name="entry_purpose" value="shop"><span class="entry-choice-body"><span class="entry-choice-name">お店案内</span><span class="entry-choice-note">来店してもらうお店向けです。<br>項目名は「お店」「メニュー」になります。</span></span></label>
@@ -615,7 +615,7 @@
               <div id="easy-catch-img"></div>
             </div>
             <div id="easy-catch-page-ask" data-catch-page="ask" hidden>
-              <p class="easy-catch-ask">キャッチの写真に、言葉を載せますか？</p>
+              <p class="easy-catch-ask">キャッチの画像に、言葉を載せますか？</p>
               <div class="easy-catch-ask-row">
                 <button type="button" class="gct-btn" id="easy-catch-words-on">載せる</button>
                 <button type="button" class="gct-btn" id="easy-catch-words-off">載せない</button>
@@ -741,9 +741,9 @@
         <details class="dash-block dash-block--easy" data-step-id="easy-img-path" hidden>
           <summary>画像の決め方</summary>
           <div class="dash-subhead-row">
-            <p class="dash-subhead" role="heading" aria-level="3">写真はどう決めますか</p>
+            <p class="dash-subhead" role="heading" aria-level="3">画像はどう決めますか</p>
             <span class="hub-tip-wrap">
-              <button type="button" class="hub-tip-btn" data-hub-tip aria-expanded="false" aria-label="写真の決め方とは">?</button>
+              <button type="button" class="hub-tip-btn" data-hub-tip aria-expanded="false" aria-label="画像の決め方とは">?</button>
               <span class="hub-tip-pop" hidden>ランダムに選ぶか、自分で選ぶか、選べます。あとから選び直せます。</span>
             </span>
           </div>
@@ -752,14 +752,14 @@
               <input type="radio" name="easy_img_path" value="omakase">
               <span class="entry-branch-card-inner">
                 <strong role="heading" aria-level="3">ランダムに選ぶ</strong>
-                <span>ギャラリーの写真に替えて、文章へ進みます</span>
+                <span>ギャラリーの画像に替えて、文章へ進みます</span>
               </span>
             </label>
             <label class="entry-branch-card">
               <input type="radio" name="easy_img_path" value="self">
               <span class="entry-branch-card-inner">
                 <strong role="heading" aria-level="3">自分で選ぶ</strong>
-                <span>ギャラリーや端末から、お好みの写真を選べます</span>
+                <span>ギャラリーや端末から、お好みの画像を選べます</span>
               </span>
             </label>
           </div>
@@ -767,7 +767,7 @@
 
         <details class="dash-block dash-block--easy" data-step-id="easy-img-omakase" data-preview-target="#hero" hidden>
           <summary>ランダム選択</summary>
-          <p class="dash-subhead" role="heading" aria-level="3">ランダムに選んだ写真</p>
+          <p class="dash-subhead" role="heading" aria-level="3">ランダムに選んだ画像</p>
           <p class="step-help">左の見本に載っています。「残す」を押した枠は、もう一度選んでも変わりません。残していない枠だけやり直せます。</p>
           <div class="easy-img-omakase" id="easy-img-omakase-root">
             <div class="easy-img-omakase-list" id="easy-img-omakase-list" aria-live="polite"></div>
@@ -780,9 +780,9 @@
         <details class="dash-block dash-block--easy" data-step-id="easy-img-wire" hidden>
           <summary>画像</summary>
           <div class="dash-subhead-row">
-            <p class="dash-subhead" role="heading" aria-level="3">写真を枠にはめる</p>
+            <p class="dash-subhead" role="heading" aria-level="3">画像を枠にはめる</p>
             <span class="hub-tip-wrap">
-              <button type="button" class="hub-tip-btn" data-hub-tip aria-expanded="false" aria-label="写真を枠にはめるとは">?</button>
+              <button type="button" class="hub-tip-btn" data-hub-tip aria-expanded="false" aria-label="画像を枠にはめるとは">?</button>
               <span class="hub-tip-pop" hidden>枚数、拡大、位置は、この画面で整えられます。</span>
             </span>
           </div>
@@ -790,28 +790,28 @@
           <div class="sample-img-wire-layout">
             <div class="sample-img-wire-stage" aria-hidden="true">
               <button type="button" class="sample-wire-slot is-active" data-wire-slot="hero">キャッチ</button>
-              <button type="button" class="sample-wire-slot" data-wire-slot="about">写真</button>
+              <button type="button" class="sample-wire-slot" data-wire-slot="about">画像</button>
               <button type="button" class="sample-wire-slot" data-wire-slot="works">カード</button>
             </div>
             <div class="sample-img-wire-list">
               <div class="easy-img-panel is-current" data-easy-slot="hero">
                 <p class="easy-img-status" id="easy-img-status-hero">まだ選んでいません</p>
-                <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="hero_image">キャッチ写真を選ぶ</button>
+                <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="hero_image">キャッチ画像を選ぶ</button>
                 <button type="button" class="gct-btn" data-easy-gallery="hero_image">ギャラリーから選ぶ</button>
               </div>
               <div class="easy-img-panel" data-easy-slot="about">
                 <p class="easy-img-status" id="easy-img-status-about">まだ選んでいません</p>
-                <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="about_image_1">写真を選ぶ</button>
+                <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="about_image_1">画像を選ぶ</button>
                 <button type="button" class="gct-btn" data-easy-gallery="about_image_1">ギャラリーから選ぶ</button>
               </div>
               <div class="easy-img-panel" data-easy-slot="works">
                 <p class="easy-img-status" id="easy-img-status-works">まだ選んでいません</p>
-                <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="work_1_image">カード写真を選ぶ</button>
+                <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="work_1_image">カード画像を選ぶ</button>
                 <button type="button" class="gct-btn" data-easy-gallery="work_1_image">ギャラリーから選ぶ</button>
               </div>
             </div>
           </div>
-          <p class="dash-note">写真を増やしたり枠を変えたい場合は、最後の「編集する」からできます。</p>
+          <p class="dash-note">画像を増やしたり枠を変えたい場合は、最後の「編集する」からできます。</p>
         </details>
 
         <details class="dash-block dash-block--easy" data-step-id="easy-done" hidden>
@@ -915,7 +915,7 @@
             <p class="layout-arrange-hint" id="layout-arrange-hint" hidden></p>
             <div class="layout-arrange layout-arrange--expanded layout-arrange--structure" id="layout-arrange">
               <div class="layout-omakase-bar" id="layout-omakase-bar">
-                <p class="layout-omakase-note">固定中の写真は、ランダムに選んでも変わりません。</p>
+                <p class="layout-omakase-note">固定中の画像は、ランダムに選んでも変わりません。</p>
                 <button type="button" class="layout-omakase-btn" id="layout-omakase-btn">ランダムに選ぶ</button>
                 <button type="button" class="layout-omakase-again" id="layout-omakase-confirm-again" hidden>確認をまた出す</button>
               </div>
@@ -1079,21 +1079,21 @@
           <summary>キャッチ画像</summary>
           <p class="step-help"><a href="help.html?return=order#images">ヘルプはこちら</a></p>
           <div class="hub-img-path" data-hub-img-path="hero-image">
-            <p class="dash-subhead" role="heading" aria-level="3">写真はどう決めますか</p>
+            <p class="dash-subhead" role="heading" aria-level="3">画像はどう決めますか</p>
             <p class="step-help">進め方をひとつ選んでみられます。</p>
             <div class="entry-branch-grid easy-img-path-grid" role="radiogroup" aria-label="キャッチ画像の決め方">
               <label class="entry-branch-card">
                 <input type="radio" name="hub_img_path_hero-image" value="omakase">
                 <span class="entry-branch-card-inner">
                   <strong role="heading" aria-level="4">ランダムに選ぶ</strong>
-                  <span>こちらで写真の候補を整えます。気に入った枠は「残す」で固定できます</span>
+                  <span>こちらで画像の候補を整えます。気に入った枠は「残す」で固定できます</span>
                 </span>
               </label>
               <label class="entry-branch-card">
                 <input type="radio" name="hub_img_path_hero-image" value="self">
                 <span class="entry-branch-card-inner">
                   <strong role="heading" aria-level="4">自分で選ぶ</strong>
-                  <span>ギャラリーや端末から、お好みの写真を選べます</span>
+                  <span>ギャラリーや端末から、お好みの画像を選べます</span>
                 </span>
               </label>
             </div>
@@ -1107,7 +1107,7 @@
           </div>
           <div class="hub-img-self" data-hub-img-self="hero-image" hidden>
             <p class="dash-note">推奨の比率は <strong>横16：縦9</strong>（例：1920×1080）。枠に合わせて同比率で入り、はみ出した分は切れます（顔などが変に伸びる引き伸ばしではありません）。大事な被写体は中央寄りに／必要なら事前にトリミングしてください。</p>
-            <p class="dash-note">別の写真に変えたいときは、もう一度選び直してください（上書きされます）。</p>
+            <p class="dash-note">別の画像に変えたいときは、もう一度選び直してください（上書きされます）。</p>
             <div class="hub-img-self-actions">
               <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="hero_image">端末から選ぶ</button>
               <button type="button" class="gct-btn" data-easy-gallery="hero_image">ギャラリーから選ぶ</button>
@@ -1117,18 +1117,18 @@
         </details>
 
         <details class="dash-block" data-step-id="about-images" data-preview-target="#about-photos-block">
-          <summary>写真</summary>
+          <summary>画像</summary>
           <div class="count-row" data-count-for="about-photos">
-            <span>写真枚数</span>
+            <span>画像枚数</span>
             <button type="button" data-step="-1">−</button>
             <span data-count-label>1 / 4</span>
             <button type="button" data-step="1">＋</button>
           </div>
-          <p class="dash-note count-row-hint">＋で枚数を増やしたあと、横幅いっぱい／半分を選べます。選んだ枚数ぶん、写真を入れてください。</p>
+          <p class="dash-note count-row-hint">＋で枚数を増やしたあと、横幅いっぱい／半分を選べます。選んだ枚数ぶん、画像を入れてください。</p>
           <div class="hub-img-path" data-hub-img-path="about-images">
-            <p class="dash-subhead" role="heading" aria-level="3">写真はどう決めますか</p>
+            <p class="dash-subhead" role="heading" aria-level="3">画像はどう決めますか</p>
             <p class="step-help">進め方をひとつ選んでみられます。</p>
-            <div class="entry-branch-grid easy-img-path-grid" role="radiogroup" aria-label="写真の決め方">
+            <div class="entry-branch-grid easy-img-path-grid" role="radiogroup" aria-label="画像の決め方">
               <label class="entry-branch-card">
                 <input type="radio" name="hub_img_path_about-images" value="omakase">
                 <span class="entry-branch-card-inner">
@@ -1140,7 +1140,7 @@
                 <input type="radio" name="hub_img_path_about-images" value="self">
                 <span class="entry-branch-card-inner">
                   <strong role="heading" aria-level="4">自分で選ぶ</strong>
-                  <span>ギャラリーや端末から、お好みの写真を選べます</span>
+                  <span>ギャラリーや端末から、お好みの画像を選べます</span>
                 </span>
               </label>
             </div>
@@ -1154,30 +1154,30 @@
           </div>
           <div class="hub-img-self" data-hub-img-self="about-images" hidden>
             <fieldset class="fill-block">
-              <legend>写真</legend>
+              <legend>画像</legend>
               <div class="hub-img-slot-row">
-                <span>写真1</span>
+                <span>画像1</span>
                 <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="about_image_1">端末から選ぶ</button>
                 <button type="button" class="gct-btn" data-easy-gallery="about_image_1">ギャラリーから選ぶ</button>
-                <label class="visually-hidden">写真1 <input name="about_image_1" type="file" accept="image/*"></label>
+                <label class="visually-hidden">画像1 <input name="about_image_1" type="file" accept="image/*"></label>
               </div>
               <div class="hub-img-slot-row" data-fill-for="about-photos" data-fill-at="2">
-                <span>写真2</span>
+                <span>画像2</span>
                 <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="about_image_2">端末から選ぶ</button>
                 <button type="button" class="gct-btn" data-easy-gallery="about_image_2">ギャラリーから選ぶ</button>
-                <label class="visually-hidden">写真2 <input name="about_image_2" type="file" accept="image/*"></label>
+                <label class="visually-hidden">画像2 <input name="about_image_2" type="file" accept="image/*"></label>
               </div>
               <div class="hub-img-slot-row" data-fill-for="about-photos" data-fill-at="3">
-                <span>写真3</span>
+                <span>画像3</span>
                 <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="about_image_3">端末から選ぶ</button>
                 <button type="button" class="gct-btn" data-easy-gallery="about_image_3">ギャラリーから選ぶ</button>
-                <label class="visually-hidden">写真3 <input name="about_image_3" type="file" accept="image/*"></label>
+                <label class="visually-hidden">画像3 <input name="about_image_3" type="file" accept="image/*"></label>
               </div>
               <div class="hub-img-slot-row" data-fill-for="about-photos" data-fill-at="4">
-                <span>写真4</span>
+                <span>画像4</span>
                 <button type="button" class="gct-btn gct-btn-primary" data-easy-pick="about_image_4">端末から選ぶ</button>
                 <button type="button" class="gct-btn" data-easy-gallery="about_image_4">ギャラリーから選ぶ</button>
-                <label class="visually-hidden">写真4 <input name="about_image_4" type="file" accept="image/*"></label>
+                <label class="visually-hidden">画像4 <input name="about_image_4" type="file" accept="image/*"></label>
               </div>
             </fieldset>
           </div>
@@ -1193,7 +1193,7 @@
           </div>
           <p class="dash-note count-row-hint">＋で件数を増やしたあと、横幅いっぱい／半分を選べます。画像欄と「カード」の記入欄も同じ数になります。</p>
           <div class="hub-img-path" data-hub-img-path="works-images">
-            <p class="dash-subhead" role="heading" aria-level="3">写真はどう決めますか</p>
+            <p class="dash-subhead" role="heading" aria-level="3">画像はどう決めますか</p>
             <p class="step-help">進め方をひとつ選んでみられます。</p>
             <div class="entry-branch-grid easy-img-path-grid" role="radiogroup" aria-label="カード画像の決め方">
               <label class="entry-branch-card">
@@ -1207,7 +1207,7 @@
                 <input type="radio" name="hub_img_path_works-images" value="self">
                 <span class="entry-branch-card-inner">
                   <strong role="heading" aria-level="4">自分で選ぶ</strong>
-                  <span>ギャラリーや端末から、お好みの写真を選べます</span>
+                  <span>ギャラリーや端末から、お好みの画像を選べます</span>
                 </span>
               </label>
             </div>
@@ -1320,12 +1320,12 @@
         <details class="dash-block" data-step-id="hero-text" data-preview-target="#hero">
           <summary>キャッチ・文字</summary>
           <div class="hero-text-overlay-panel detail-only-block" id="hero-text-overlay-panel">
-            <p class="dash-subhead" role="heading" aria-level="3">キャッチ写真に文字を載せますか？</p>
-            <div class="hero-overlay-row" role="group" aria-label="写真に文字を載せるか">
+            <p class="dash-subhead" role="heading" aria-level="3">キャッチ画像に文字を載せますか？</p>
+            <div class="hero-overlay-row" role="group" aria-label="画像に文字を載せるか">
               <button type="button" class="gct-btn" data-hero-text-on="1" aria-pressed="false">載せる</button>
               <button type="button" class="gct-btn" data-hero-text-on="0" aria-pressed="true">載せない</button>
             </div>
-            <p class="dash-note" id="hero-text-gate-note">載せない場合は、写真だけの表示になります。</p>
+            <p class="dash-note" id="hero-text-gate-note">載せない場合は、画像だけの表示になります。</p>
           </div>
           <div class="hero-text-fields" id="hero-text-fields">
             <fieldset class="fill-block">
@@ -1374,13 +1374,13 @@
             <div class="step-font-embed">
               <div data-font-host="catch"></div>
             </div>
-            <p class="dash-note easy-only-note" id="hero-text-easy-note">見本本線では写真の上に文字を載せません（見本draftのオンも本線ではオフ）。編集ハブでは「載せる」にできます。</p>
+            <p class="dash-note easy-only-note" id="hero-text-easy-note">見本本線では画像の上に文字を載せません（見本draftのオンも本線ではオフ）。編集ハブでは「載せる」にできます。</p>
           </div>
         </details>
 
         <details class="dash-block" data-step-id="values-text" data-preview-target="#hero-values-block">
           <summary>メッセージ枠・文字</summary>
-          <p class="dash-note">「メッセージ枠」＝キャッチ写真の下に並ぶ小さな枠です。</p>
+          <p class="dash-note">「メッセージ枠」＝キャッチ画像の下に並ぶ小さな枠です。</p>
           <div class="count-row" data-count-for="hero-values">
             <span>枠の数</span>
             <button type="button" data-step="-1">−</button>
@@ -1702,7 +1702,7 @@
       <div class="wizard-foot-dock" id="wizard-foot-dock">
         <div class="wizard-foot-panel" id="wizard-foot-panel" hidden role="alert"></div>
         <p class="wizard-foot-guide" id="wizard-foot-guide" hidden></p>
-        <p class="dash-resume-notice" role="note">ページを<strong>更新・開き直した</strong>ときは、<strong>写真を選び直し</strong>してください</p>
+        <p class="dash-resume-notice" role="note">ページを<strong>更新・開き直した</strong>ときは、<strong>画像を選び直し</strong>してください</p>
         <p class="easy-copy-later-hint" id="easy-copy-later-hint" hidden>あとから、サイト内の画像も文章も修正できます。まずは完成まで進みましょう。</p>
         <nav class="wizard-foot" id="wizard-nav" aria-label="作成ステップ">
           <button type="button" class="wizard-btn" id="wizard-back">ひとつ戻る</button>
@@ -1874,10 +1874,10 @@
                 </div>
               </section>
 
-              <section id="about-photos-block" class="section about-photos-block preview-hit" data-layout-block="photos" data-open-step="about-images" aria-label="写真。タップで写真入力を開く">
-                <button type="button" class="zone-badge zone-badge--image" data-open-step="about-images" aria-label="写真を開く">2</button>
+              <section id="about-photos-block" class="section about-photos-block preview-hit" data-layout-block="photos" data-open-step="about-images" aria-label="画像。タップで画像入力を開く">
+                <button type="button" class="zone-badge zone-badge--image" data-open-step="about-images" aria-label="画像を開く">2</button>
                 <div class="shell">
-                  <p class="section-label" id="about-photos-label">写真</p>
+                  <p class="section-label" id="about-photos-label">画像</p>
                   <ul id="about-photos" class="skill-cards" data-sample-repeat data-min="1" data-max="4" data-count="1">
                     <li class="skill-card" data-sample-item data-item-id="about_image_1"><img class="skill-card-img" src="images/offer-1.png" data-default-src="images/offer-1.png" alt="" width="1200" height="750" loading="lazy"></li>
                     <li class="skill-card" data-sample-item data-item-id="about_image_2"><img class="skill-card-img" src="images/offer-2.png" data-default-src="images/offer-2.png" alt="" width="1200" height="750" loading="lazy"></li>

@@ -80,9 +80,9 @@
       '<div class="fpg-shell">',
       '  <header class="fpg-head">',
       mode === "standalone"
-        ? '    <h1 class="fpg-title">写真ギャラリー</h1>'
-        : '    <p class="fpg-title" role="heading" aria-level="2">写真ギャラリー</p>',
-      '    <p class="fpg-lead">お好みの写真はありますか。</p>',
+        ? '    <h1 class="fpg-title">画像ギャラリー</h1>'
+        : '    <p class="fpg-title" role="heading" aria-level="2">画像ギャラリー</p>',
+      '    <p class="fpg-lead">お好みの画像はありますか。</p>',
       "  </header>",
       '  <div class="fpg-filters" hidden>',
       '    <section class="fpg-filter-block">',
@@ -91,7 +91,7 @@
       "    </section>",
       '    <section class="fpg-filter-block" data-fpg-trim-block hidden>',
       '      <h2 class="fpg-filter-label">カード</h2>',
-      '      <p class="fpg-filter-note">縦の高さが半分です。上半分だけの写真で、カードにはめやすいです。</p>',
+      '      <p class="fpg-filter-note">縦の高さが半分です。上半分だけの画像で、カードにはめやすいです。</p>',
       '      <div class="fpg-filter-grid" data-fpg-trim></div>',
       "    </section>",
       "  </div>",
@@ -100,7 +100,7 @@
       '    <button type="button" class="fpg-clear" data-fpg-clear hidden>絞り込みをはずす</button>',
       "  </div>",
       '  <p class="fpg-error" data-fpg-error hidden></p>',
-      '  <p class="fpg-empty" data-fpg-empty hidden>この条件に合う写真は見つかりませんでした。条件をはずしてみられます。</p>',
+      '  <p class="fpg-empty" data-fpg-empty hidden>この条件に合う画像は見つかりませんでした。条件をはずしてみられます。</p>',
       '  <ul class="fpg-grid" data-fpg-grid></ul>',
       '  <p class="fpg-status" data-fpg-status hidden></p>',
       "</div>"
@@ -151,7 +151,7 @@
       }
       elStatus.hidden = false;
       elStatus.classList.add("is-ready");
-      elStatus.textContent = "この写真を選んでいます。枠にはめ込めます。";
+      elStatus.textContent = "この画像を選んでいます。枠にはめ込めます。";
     }
 
     function renderFilters() {
@@ -353,7 +353,7 @@
       })
       .catch((err) => {
         elError.hidden = false;
-        elError.textContent = "写真一覧を読み込めませんでした。しばらくしてから、もう一度開けますか。";
+        elError.textContent = "画像一覧を読み込めませんでした。しばらくしてから、もう一度開けますか。";
         console.error(err);
         return api;
       });

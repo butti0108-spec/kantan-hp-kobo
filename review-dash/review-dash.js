@@ -37,7 +37,7 @@
 
   const REASON_LABELS = {
     contrast: "文字が溶けて読めない（色）",
-    photo: "写真が業種・世界観と合わない",
+    photo: "画像が業種・世界観と合わない",
     layout: "レイアウト／隙間が気持ち悪い",
     copy: "文章が薄い／業種ずれ",
     other: "その他"
@@ -333,7 +333,7 @@
         "表示中: " +
           packed.folder +
           (packed.meta && packed.meta.band ? " / 帯" + packed.meta.band : "") +
-          " — 確認モードで文字・写真を確認"
+          " — 確認モードで文字・画像を確認"
       );
     } catch (err) {
       setStatus("エラー: " + (err && err.message ? err.message : err));

@@ -49,7 +49,7 @@
     },
     {
       id: "photos",
-      label: "写真",
+      label: "画像",
       selector: "#about-photos-block",
       links: [
         { step: "about-images", kind: "image", label: "画像" }
@@ -126,7 +126,7 @@
       id: "image",
       kind: "image",
       label: "画像を入れる・変える",
-      note: "写真やカードの画像"
+      note: "キャッチやカードの画像"
     },
     {
       id: "text",
@@ -194,7 +194,7 @@
     const src = Array.isArray(order) ? order.map(String) : [];
     const out = [];
     src.forEach((id) => {
-      /* 旧「見本枠1」一体 → 開く項目＋写真 */
+      /* 旧「見本枠1」一体 → 開く項目＋画像 */
       if (id === "about") {
         ["accordions", "photos"].forEach((nid) => {
           if (LAYOUT_BLOCK_IDS.indexOf(nid) >= 0 && out.indexOf(nid) < 0) out.push(nid);
@@ -379,7 +379,7 @@
     { id: "global-card", label: "カード・角", needsConfirm: true, num: 9 },
     { id: "contact-color", label: "ご連絡色", needsConfirm: true, num: 10 },
     { id: "hero-image", label: "キャッチ画像", needsConfirm: true, num: 11 },
-    { id: "about-images", label: "写真", needsConfirm: true, num: 12 },
+    { id: "about-images", label: "画像", needsConfirm: true, num: 12 },
     { id: "works-images", label: "カード画像", needsConfirm: true, num: 13 },
     { id: "logo-text", label: "ロゴ", needsConfirm: true, num: 14 },
     { id: "site-fonts", label: "書体", needsConfirm: true, num: 15 },
@@ -437,7 +437,7 @@
     "global-card": { kind: "color", displayNum: 9, label: "カード" },
     "contact-color": { kind: "color", displayNum: 10, label: "ご連絡色" },
     "hero-image": { kind: "image", displayNum: 1, label: "キャッチ画像" },
-    "about-images": { kind: "image", displayNum: 2, label: "写真" },
+    "about-images": { kind: "image", displayNum: 2, label: "画像" },
     "works-images": { kind: "image", displayNum: 3, label: "カード画像" },
     "logo-text": { kind: "text", displayNum: 1, label: "ロゴ" },
     "site-fonts": { kind: "text", displayNum: 2, label: "書体" },
@@ -827,7 +827,7 @@
   };
   const IMG_OMAKASE_SLOTS = [
     { key: "hero", input: "hero_image", label: "キャッチ", prefer: "wide" },
-    { key: "about", input: "about_image_1", label: "写真", prefer: "square" },
+    { key: "about", input: "about_image_1", label: "画像", prefer: "square" },
     { key: "works", input: "work_1_image", label: "カード", prefer: "square" }
   ];
   const HUB_IMG_STEP_IDS = ["hero-image", "about-images", "works-images"];
@@ -949,7 +949,7 @@
   const IMAGE_SCALE_MAX = 200;
   const IMAGE_SCALE_STEP = 1;
   const IMAGE_SCALE_DEFAULT = 100;
-  /** キャッチ写真の既定＝従来 CSS の center top に合わせる */
+  /** キャッチ画像の既定＝従来 CSS の center top に合わせる */
   const HERO_FOCAL_X_DEFAULT = 50;
   const HERO_FOCAL_Y_DEFAULT = 0;
   const LAYOUT_UNDO_MAX = 40;
@@ -1582,7 +1582,7 @@
       return;
     }
     const label =
-      countId === "works-list" ? "カード" : countId === "about-photos" ? "写真" : "枠";
+      countId === "works-list" ? "カード" : countId === "about-photos" ? "画像" : "枠";
     const title = document.getElementById("item-grow-title");
     const text = document.getElementById("item-grow-text");
     if (title) title.textContent = label + "の大きさ";
@@ -1650,7 +1650,7 @@
     if (store.confirmed.finish) unconfirmFinishSoft();
     scheduleSave();
     showLayoutArrangeHint(
-      "追加しました。写真やカードは、あとからワイヤーで場所を変えられます。"
+      "追加しました。画像やカードは、あとからワイヤーで場所を変えられます。"
     );
   }
 
@@ -6778,7 +6778,7 @@
       if (easyDoneImageStillSample(name)) {
         samples.push({
           name: name,
-          label: (item.label || name) + "は、サンプルの写真のままです。よろしいですか"
+          label: (item.label || name) + "は、サンプルの画像のままです。よろしいですか"
         });
         return;
       }
@@ -7431,7 +7431,7 @@
         const wantOn = btn.getAttribute("data-hero-text-on") === "1";
         store.heroTextOnPhoto = wantOn;
         applyHeroTextOverlay();
-        /* 載せる：見本写真でもタイトル／リードをすぐ反映 */
+        /* 載せる：見本画像でもタイトル／リードをすぐ反映 */
         if (wantOn) applyAllConfirmed();
         scheduleSave();
         /* 載せない＝この設定は終わり。できること／ハブへ戻る */
@@ -8345,7 +8345,7 @@
     }
     if (stepId === "easy-img-path") {
       if (store.imgPathMode !== "self" && store.imgPathMode !== "omakase") {
-        return "写真の決め方を選んでください。";
+        return "画像の決め方を選んでください。";
       }
       return "";
     }
@@ -8354,14 +8354,14 @@
         return !inputHasFile(slot.input);
       });
       if (miss.length) {
-        return "写真の候補がそろってから、「これで進む」を押せます。";
+        return "画像の候補がそろってから、「これで進む」を押せます。";
       }
       return "";
     }
     if (HUB_IMG_STEP_IDS.indexOf(stepId) >= 0) {
       const mode = store.hubImgPathMode && store.hubImgPathMode[stepId];
       if (!mode) {
-        return "写真の決め方を選んでください。";
+        return "画像の決め方を選んでください。";
       }
       if (mode === "omakase") {
         const slots = getImgSlotsForStep(stepId);
@@ -8369,7 +8369,7 @@
           return !inputHasFile(slot.input);
         });
         if (miss.length) {
-          return "写真の候補がそろってから、「これで進む」を押せます。";
+          return "画像の候補がそろってから、「これで進む」を押せます。";
         }
       }
       return "";
@@ -8394,7 +8394,7 @@
     }
     if (stepId === "easy-copy-frame") {
       if (currentCopyFrameId() === "hero" && store.copyHeroOnPhoto == null) {
-        return "写真の上に言葉を出すか、出さないか、選んでから進んでください。";
+        return "画像の上に言葉を出すか、出さないか、選んでから進んでください。";
       }
       return "";
     }
@@ -8409,7 +8409,7 @@
       const miss = collectVisibleImageSlots().filter(function (slot) {
         return !inputHasFile(slot.input);
       });
-      if (miss.length) return "見えている枠に写真があると、次へ進めます。";
+      if (miss.length) return "見えている枠に画像があると、次へ進めます。";
       return "";
     }
     if (stepId === "easy-loading" || stepId === "easy-done") return "";
@@ -8436,9 +8436,9 @@
         return "キャッチ画像が選ばれていないと、「" + action + "」は押せません。";
       }
       if (stepId === "about-images" || stepId === "works-images") {
-        return "選んだ枚数ぶんの写真がないと、「" + action + "」は押せません。";
+        return "選んだ枚数ぶんの画像がないと、「" + action + "」は押せません。";
       }
-      return "必要な写真が選ばれていないと、「" + action + "」は押せません。";
+      return "必要な画像が選ばれていないと、「" + action + "」は押せません。";
     }
     if (stepId === "logo-text") {
       const mode = getLogoMode();
@@ -8566,7 +8566,7 @@
     seedItemOrder("about-photos");
     (store.itemOrders["about-photos"] || []).forEach((slot) => {
       const n = String(slot).replace("about_image_", "");
-      list.push({ name: slot, label: "写真" + n });
+      list.push({ name: slot, label: "画像" + n });
     });
     seedItemOrder("works-list");
     (store.itemOrders["works-list"] || []).forEach((slot) => {
@@ -10594,7 +10594,7 @@
       strip.innerHTML =
         '<div class="fpg-sample-omakase-lead">' +
         '<p class="fpg-sample-omakase-title">ランダムに選ぶ</p>' +
-        '<p class="fpg-sample-omakase-note">ジャンルを選ぶと、参考の写真が1枚入ります。</p>' +
+        '<p class="fpg-sample-omakase-note">ジャンルを選ぶと、参考の画像が1枚入ります。</p>' +
         "</div>" +
         '<div class="fpg-sample-genres" data-fpg-sample-genres role="group" aria-label="ランダムに選ぶ"></div>' +
         '<button type="button" class="fpg-sample-omakase-ok" data-fpg-sample-ok disabled>この画像にする</button>' +
@@ -10681,7 +10681,7 @@
           if (withTrim.length) pool = withTrim;
         }
         if (!pool.length) {
-          window.alert("このジャンルの写真は、いま見つかりませんでした。");
+          window.alert("このジャンルの画像は、いま見つかりませんでした。");
           return;
         }
         const item = pool[Math.floor(Math.random() * pool.length)];
@@ -12723,7 +12723,7 @@
     if (showAsk && ask) {
       ask.hidden = false;
       ask.innerHTML =
-        '<p class="step-help">写真の上に言葉を出しますか</p>' +
+        '<p class="step-help">画像の上に言葉を出しますか</p>' +
         '<div class="easy-copy-hero-ask">' +
         '<button type="button" class="gct-btn" data-hero-copy="1">出す</button>' +
         '<button type="button" class="gct-btn" data-hero-copy="0">出さない</button>' +
@@ -14097,7 +14097,7 @@
       const overlay = document.createElement("div");
       overlay.className = "hero-overlay-row easy-copy-hero-ask-row";
       overlay.setAttribute("role", "group");
-      overlay.setAttribute("aria-label", "写真に文字を載せるか");
+      overlay.setAttribute("aria-label", "画像に文字を載せるか");
       [["1", "載せる"], ["0", "載せない"]].forEach(function (pair) {
         const btn = document.createElement("button");
         btn.type = "button";
@@ -15081,7 +15081,7 @@
       return (store.itemOrders["about-photos"] || []).map((slot) => ({
         key: slot,
         input: slot,
-        label: "写真" + String(slot).replace("about_image_", ""),
+        label: "画像" + String(slot).replace("about_image_", ""),
         prefer: "square"
       }));
     }
@@ -15158,7 +15158,7 @@
         const pick = store.imgOmakasePicks[slot.key];
         const thumb = pick && pick.path ? "free-photo-gallery/" + String(pick.path).replace(/^\/+/, "") : "";
         const meta = pick
-          ? (pick.sceneLabel || pick.scene || "写真") + (pick.shape === "wide" ? "・全幅寄り" : "")
+          ? (pick.sceneLabel || pick.scene || "画像") + (pick.shape === "wide" ? "・全幅寄り" : "")
           : "候補を用意しています";
         return (
           '<div class="easy-img-omakase-row' +
@@ -15188,7 +15188,7 @@
           '" aria-pressed="' +
           (locked ? "true" : "false") +
           '" data-tip="' +
-          (locked ? "固定をはずす" : "この写真を残す（もう一度では変わらない）") +
+          (locked ? "固定をはずす" : "この画像を残す（もう一度では変わらない）") +
           '">' +
           (locked ? "はずす" : "残す") +
           "</button>" +
@@ -16711,7 +16711,7 @@
           return !sampleDefaultSrc(slot.input);
         });
         if (bare.length) {
-          showValidationNotice("見えている枠に写真があると、次へ進めます。");
+          showValidationNotice("見えている枠に画像があると、次へ進めます。");
           return;
         }
         openLayoutOmakaseNotice({
@@ -18569,7 +18569,7 @@
   };
 
   /**
-   * キャッチ写真の枠は固定。文がはみ出すときだけ、文字を少しずつ小さくする。
+   * キャッチ画像の枠は固定。文がはみ出すときだけ、文字を少しずつ小さくする。
    */
   function fitHeroCopyToFrame() {
     const stage = document.querySelector("#preview-root .hero-stage");
@@ -19556,7 +19556,7 @@
   }
 
   function layoutFrameLabel(blockId, slot) {
-    if (blockId === "photos") return "写真" + String(slot).replace("about_image_", "");
+    if (blockId === "photos") return "画像" + String(slot).replace("about_image_", "");
     if (blockId === "works") return "カード" + String(slot).replace("work_", "");
     return "キャッチ";
   }
@@ -19609,8 +19609,8 @@
     const openCount = slots.length - locked;
     if (!slots.length || openCount <= 0) {
       openLayoutOmakaseNotice({
-        title: "この列の写真は固定中です",
-        body: "固定を外すと、ランダムに選んで写真を替えられます。",
+        title: "この列の画像は固定中です",
+        body: "固定を外すと、ランダムに選んで画像を替えられます。",
         confirmLabel: "",
         allowSkip: false
       });
@@ -19636,7 +19636,7 @@
     openLayoutOmakaseNotice({
       title: "この列をランダムに選びますか",
       body:
-        "固定していない写真が、ギャラリーの写真に替わります。固定中の写真は変わりません。\n替わる写真：" +
+        "固定していない画像が、ギャラリーの画像に替わります。固定中の画像は変わりません。\n替わる画像：" +
         openCount +
         "枚\n固定中：" +
         locked +
@@ -22028,12 +22028,12 @@
   }
 
   function layoutClosedMetaLine(blockId) {
-    if (blockId === "hero") return "写真1枚　並び：いっぱい";
+    if (blockId === "hero") return "画像1枚　並び：いっぱい";
     const countId = layoutImageCountId(blockId);
     const order = layoutBlockSlots(blockId);
     const layout = normalizeItemLayout(countId);
     const sizes = order.map((slot) => layoutSizeWord(layout && layout.sizeById ? layout.sizeById[slot] : "L"));
-    return "写真" + order.length + "枚　並び：" + (sizes.join("・") || "—");
+    return "画像" + order.length + "枚　並び：" + (sizes.join("・") || "—");
   }
 
   function buildLayoutClosedThumbs(blockId) {
@@ -22152,7 +22152,7 @@
       IMAGE_SCALE_STEP +
       '" value="' +
       rangeValue +
-      '" aria-label="写真の大きさ">';
+      '" aria-label="画像の大きさ">';
     const zoomBlock = document.createElement("div");
     zoomBlock.className = "layout-zoom-block";
     const zoomLabel = document.createElement("p");
@@ -23839,7 +23839,7 @@
     if (isSampleZipScreen()) {
       if (missingEl) missingEl.textContent = "";
       const status = document.getElementById("zip-status");
-      if (status && status.textContent.indexOf("写真が足りません") === 0) status.textContent = "";
+      if (status && status.textContent.indexOf("画像が足りません") === 0) status.textContent = "";
       if (zipBtn) {
         zipBtn.hidden = true;
         zipBtn.disabled = true;
@@ -23865,7 +23865,7 @@
         let label = tips.map((t) => "「" + t + "」").join("");
         if (extra > 0) label += "ほか" + extra + "件";
         missingEl.textContent =
-          "写真が足りません（" + label + "）。並び替え・確認画面から該当の画像項目を開いてください。";
+          "画像が足りません（" + label + "）。並び替え・確認画面から該当の画像項目を開いてください。";
       } else if (missingBar.length) {
         missingEl.textContent =
           "まだ " +
@@ -26389,7 +26389,7 @@
       let label = tips.map((t) => "「" + t + "」").join("");
       if (extra > 0) label += "ほか" + extra + "件";
       const missingText =
-        "写真が足りません（" + label + "）。並び替え・確認画面から該当の画像項目を開いてください。";
+        "画像が足りません（" + label + "）。並び替え・確認画面から該当の画像項目を開いてください。";
       if (status) status.textContent = missingText;
       paintSampleRouteStatus(missingText);
       updateZipGate();
@@ -26496,7 +26496,7 @@
       if (extra > 0) label += "ほか" + extra + "件";
       if (status) {
         status.textContent =
-          "写真が足りません（" + label + "）。並び替え・確認画面から該当の画像項目を開いてください。";
+          "画像が足りません（" + label + "）。並び替え・確認画面から該当の画像項目を開いてください。";
       }
       updateZipGate();
       return;
