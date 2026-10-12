@@ -1,0 +1,54 @@
+{
+    "id":  "03",
+    "folder":  "03-cafe-mix-ink-c",
+    "band":  "N",
+    "photoPack":  "P2",
+    "headingPack":  "H3",
+    "colorKey":  "ink",
+    "fontMood":  "bold",
+    "fonts":  {
+                  "catch":  "Zen Kaku Gothic New",
+                  "body":  "Zen Kaku Gothic New",
+                  "display":  "Dela Gothic One"
+              },
+    "scene":  "バー・グラス",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hero",
+                        "contact",
+                        "photos",
+                        "works",
+                        "values",
+                        "hours",
+                        "accordions"
+                    ],
+    "counts":  {
+                   "hero-leads":  2,
+                   "hero-values":  3,
+                   "about-accordions":  1,
+                   "about-photos":  3,
+                   "works-list":  3
+               },
+    "extras":  {
+                   "hours":  true,
+                   "access":  false,
+                   "address":  false
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "who":  "夜だけのカウンターバーを営む店主（クラシックを軸に、その日の柑橘で少しアレンジ）",
+                        "purpose":  "今夜の一杯を決めてもらう／貸切したくなる静けさを伝える",
+                        "show":  "グラス・氷・暗い木目・低い灯り",
+                        "colorIntent":  "墨の暗さに金の差し色",
+                        "worldviewOneLiner":  "氷の音がする、夜だけのカウンター"
+                    }
+}

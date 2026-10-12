@@ -1,0 +1,27 @@
+{
+    "id":  "30",
+    "folder":  "30-hotel-cafe-b",
+    "band":  "X",
+    "photoPack":  "P1",
+    "headingPack":  "H3",
+    "colorKey":  "brick",
+    "fontMood":  "mincho",
+    "status":  "rebuild-2026-09-19",
+    "scene":  "ギャラリー・額",
+    "designBrief":  {
+                        "who":  "額の灯りで作品を見せる小さなギャラリーの主",
+                        "purpose":  "余韻で帰る／額と灯りを覚えてもらう",
+                        "show":  "額・灯り・作品",
+                        "colorIntent":  "レンガ暖色・オレンジの元気",
+                        "worldviewOneLiner":  "額の灯りと作品が残る小さなギャラリー"
+                    },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ]
+}

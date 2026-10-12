@@ -1,0 +1,28 @@
+{
+    "id":  "27",
+    "folder":  "27-izakaya-ink-b",
+    "band":  "A",
+    "photoPack":  "P3",
+    "headingPack":  "H3",
+    "colorKey":  "cafe",
+    "fontMood":  "mincho",
+    "status":  "rebuild-2026-09-19",
+    "scene":  "宿・朝",
+    "designBrief":  {
+                        "who":  "朝の光を大切にする小さな旅宿の主人",
+                        "purpose":  "一晩泊まる／朝露と朝光を覚えてもらう",
+                        "show":  "朝光・和室・露の庭・朝食",
+                        "colorIntent":  "ベージュ暖色・木の落ち着き",
+                        "worldviewOneLiner":  "朝露と朝光だけの一晩の旅宿"
+                    },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "about-04.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ]
+}

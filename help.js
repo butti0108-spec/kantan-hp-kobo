@@ -1,0 +1,383 @@
+(() => {
+  const params = new URLSearchParams(window.location.search);
+  const fromOrder = params.get("return") === "order";
+  const SECTION_IDS = ["start", "why", "scope", "faq", "zip", "copy", "images", "look", "price"];
+
+  const stickyBack = document.getElementById("help-back-sticky");
+  const footBack = document.getElementById("help-back-foot");
+  const home = document.getElementById("help-home");
+
+  let helpDepth = 1;
+  const historyPush = history.pushState.bind(history);
+  history.pushState = function () {
+    helpDepth += 1;
+    return historyPush.apply(history, arguments);
+  };
+  window.addEventListener("popstate", function () {
+    if (helpDepth > 1) helpDepth -= 1;
+  });
+
+  function bindOrderReturn(link) {
+    if (!link || !fromOrder) return;
+    link.addEventListener("click", function (ev) {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button !== 0) return;
+      const ref = document.referrer || "";
+      const cameFromOrder = ref.indexOf("help.html") < 0 && (ref.indexOf("index.html") >= 0 || /\/sample-1man\/?(?:$|\?)/.test(ref));
+      if (!cameFromOrder) return;
+      ev.preventDefault();
+      history.go(-helpDepth);
+    });
+  }
+
+  bindOrderReturn(stickyBack);
+  bindOrderReturn(footBack);
+  document.querySelectorAll(".help-back-local").forEach(bindOrderReturn);
+
+  document.querySelectorAll(".help-back-local").forEach((link) => {
+    link.hidden = !fromOrder;
+  });
+
+  /* 注文画面から開いた一覧には、見出しの「注文画面に戻る」を出す。項目の中では各項目のボタンを使う */
+  function syncOrderBack() {
+    if (!fromOrder) {
+      if (stickyBack) stickyBack.hidden = false;
+      if (footBack) footBack.hidden = false;
+      return;
+    }
+    const onHome = !!(home && !home.hidden);
+    if (stickyBack) stickyBack.hidden = !onHome;
+    if (footBack) footBack.hidden = !onHome;
+  }
+
+  function resolveSectionId(id) {
+    if (!id || id === "help-toc" || id === "help-home" || id === "help-search") return null;
+    if (SECTION_IDS.indexOf(id) >= 0) return id;
+    const el = document.getElementById(id);
+    if (!el) return null;
+    const section = el.closest(".help-section");
+    return section && section.id ? section.id : null;
+  }
+
+  function showHome() {
+    document.body.classList.remove("help-topic-open");
+    if (home) home.hidden = false;
+    document.querySelectorAll(".help-section").forEach((section) => {
+      section.hidden = true;
+    });
+    document.querySelectorAll(".help-toc-card").forEach((card) => {
+      card.classList.remove("is-active");
+    });
+    syncOrderBack();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function showTopic(id, opts) {
+    const sectionId = resolveSectionId(id);
+    if (!sectionId) {
+      showHome();
+      return null;
+    }
+    document.body.classList.add("help-topic-open");
+    if (home) home.hidden = true;
+    let target = null;
+    document.querySelectorAll(".help-section").forEach((section) => {
+      const on = section.id === sectionId;
+      section.hidden = !on;
+      if (on) target = section;
+    });
+    document.querySelectorAll(".help-toc-card").forEach((card) => {
+      card.classList.toggle("is-active", card.getAttribute("data-help-nav") === sectionId);
+    });
+    syncOrderBack();
+    if (opts && opts.keepScroll) return target;
+    requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      if (id !== sectionId) {
+        const chunk = document.getElementById(id);
+        if (chunk) chunk.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+    return target;
+  }
+
+  function applyHash() {
+    const raw = (window.location.hash || "").replace(/^#/, "");
+    if (!raw || raw === "help-toc" || raw === "help-home") {
+      showHome();
+      return;
+    }
+    showTopic(raw);
+  }
+
+  if (window.PageShutter) window.PageShutter.resume();
+
+  applyHash();
+  function openForward(id) {
+    if (!id) return;
+    history.pushState(null, "", "#" + id);
+    showTopic(id);
+  }
+
+  document.querySelectorAll(".help-toc-card").forEach((card) => {
+    card.addEventListener("click", (ev) => {
+      if (ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey || ev.button !== 0) return;
+      ev.preventDefault();
+      const id = card.getAttribute("data-help-nav") || String(card.getAttribute("href") || "").replace(/^#/, "");
+      openForward(id);
+    });
+  });
+
+  window.addEventListener("hashchange", applyHash);
+
+  document.querySelectorAll(".help-back-toc").forEach((link) => {
+    link.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      history.pushState(null, "", "#help-toc");
+      showHome();
+    });
+  });
+
+  function normalize(text) {
+    return String(text || "")
+      .toLowerCase()
+      .replace(/[Ａ-Ｚａ-ｚ０-９]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
+      .replace(/[、。．，・\s　]+/g, " ")
+      .trim();
+  }
+
+  function entryText(el) {
+    const title =
+      (el.querySelector(".help-chunk-title") || el.querySelector(".help-panel-title") || {}).textContent ||
+      "";
+    const keywords = el.getAttribute("data-help-keywords") || "";
+    const body = el.textContent || "";
+    return normalize(title + " " + keywords + " " + body);
+  }
+
+  const entries = [];
+  document.querySelectorAll(".help-section").forEach((section) => {
+    const titleEl = section.querySelector(".help-panel-title");
+    entries.push({
+      id: section.id,
+      label: titleEl ? titleEl.textContent.trim() : section.id,
+      kind: "section",
+      hay: entryText(section)
+    });
+    section.querySelectorAll(".help-chunk[id], .help-chunk[data-help-keywords]").forEach((chunk, idx) => {
+      const chunkTitle = chunk.querySelector(".help-chunk-title");
+      const label = chunkTitle ? chunkTitle.textContent.trim() : "項目";
+      const id = chunk.id || section.id + "-chunk-" + idx;
+      if (!chunk.id) chunk.id = id;
+      entries.push({
+        id,
+        label: (titleEl ? titleEl.textContent.trim() + " ／ " : "") + label,
+        kind: "chunk",
+        hay: entryText(chunk) + " " + normalize(titleEl ? titleEl.textContent : "")
+      });
+    });
+  });
+
+  const input = document.getElementById("help-search-input");
+  const results = document.getElementById("help-search-results");
+  const hint = document.getElementById("help-search-hint");
+  if (!input || !results) return;
+
+  function score(hay, tokens) {
+    let s = 0;
+    for (let i = 0; i < tokens.length; i++) {
+      const t = tokens[i];
+      if (!t) continue;
+      if (hay.indexOf(t) >= 0) s += 2;
+      else return 0;
+    }
+    return s;
+  }
+
+  function render(matches, query) {
+    results.innerHTML = "";
+    if (!query) {
+      results.hidden = true;
+      if (hint) hint.textContent = "キーワードを入力すると、関連するヘルプ項目が表示されます。";
+      return;
+    }
+    if (!matches.length) {
+      results.hidden = false;
+      const li = document.createElement("li");
+      li.className = "help-search-empty";
+      li.textContent = "見つかりませんでした。別の言葉で試すか、目次から探してください。";
+      results.appendChild(li);
+      if (hint) hint.textContent = "見つかりませんでした。";
+      return;
+    }
+    results.hidden = false;
+    if (hint) hint.textContent = matches.length + "件見つかりました。";
+    matches.slice(0, 12).forEach((item) => {
+      const li = document.createElement("li");
+      const a = document.createElement("a");
+      a.href = "#" + item.id;
+      a.textContent = item.label;
+      a.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        const host = document.getElementById(item.id);
+        const mark = host && host.querySelector("mark.help-mark");
+        if (!mark) {
+          openForward(item.id);
+          return;
+        }
+        const all = [...document.querySelectorAll(".help-panels mark.help-mark")];
+        focusMark(all.indexOf(mark), { push: true });
+      });
+      li.appendChild(a);
+      results.appendChild(li);
+    });
+  }
+
+  const findBar = document.getElementById("help-find-bar");
+  const findCount = document.getElementById("help-find-count");
+  const findPrev = document.getElementById("help-find-prev");
+  const findNext = document.getElementById("help-find-next");
+  let markIndex = -1;
+
+  function syncFindBar() {
+    const marks = document.querySelectorAll(".help-panels mark.help-mark");
+    if (!findBar || !findCount) return;
+    if (!marks.length) {
+      findBar.hidden = true;
+      findCount.textContent = "";
+      return;
+    }
+    findBar.hidden = false;
+    findCount.textContent = markIndex < 0 ? marks.length + "件" : (markIndex + 1) + " / " + marks.length;
+  }
+
+  function clearMarks() {
+    document.querySelectorAll(".help-panels mark.help-mark").forEach((mark) => {
+      const parent = mark.parentNode;
+      if (!parent) return;
+      parent.replaceChild(document.createTextNode(mark.textContent), mark);
+      parent.normalize();
+    });
+    markIndex = -1;
+  }
+
+  function foldedMap(text) {
+    let folded = "";
+    const map = [];
+    for (let i = 0; i < text.length; i++) {
+      const code = text.charCodeAt(i);
+      const ch = code >= 0xff01 && code <= 0xff5e ? String.fromCharCode(code - 0xfee0) : text[i].toLowerCase();
+      folded += ch;
+      map.push(i);
+    }
+    return { folded, map };
+  }
+
+  function markNode(node, tokens) {
+    const text = node.nodeValue || "";
+    const mapped = foldedMap(text);
+    const ranges = [];
+    tokens.forEach((token) => {
+      if (!token) return;
+      let from = 0;
+      while (from <= mapped.folded.length - token.length) {
+        const at = mapped.folded.indexOf(token, from);
+        if (at < 0) break;
+        ranges.push({
+          start: mapped.map[at],
+          end: mapped.map[at + token.length - 1] + 1
+        });
+        from = at + token.length;
+      }
+    });
+    ranges.sort((a, b) => a.start - b.start || b.end - a.end);
+    const kept = [];
+    ranges.forEach((range) => {
+      const prev = kept[kept.length - 1];
+      if (prev && range.start < prev.end) return;
+      kept.push(range);
+    });
+    for (let i = kept.length - 1; i >= 0; i--) {
+      const range = document.createRange();
+      range.setStart(node, kept[i].start);
+      range.setEnd(node, kept[i].end);
+      const mark = document.createElement("mark");
+      mark.className = "help-mark";
+      range.surroundContents(mark);
+    }
+  }
+
+  function highlight(tokens) {
+    clearMarks();
+    const root = document.querySelector(".help-panels");
+    if (!root || !tokens.length) return;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode(node) {
+        if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+        const parent = node.parentElement;
+        if (!parent || parent.closest("mark, script, style")) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      }
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    nodes.forEach((node) => markNode(node, tokens));
+  }
+
+  function focusMark(index, opts) {
+    const marks = [...document.querySelectorAll(".help-panels mark.help-mark")];
+    if (!marks.length) return;
+    const i = ((index % marks.length) + marks.length) % marks.length;
+    marks.forEach((mark) => mark.classList.remove("is-current"));
+    const mark = marks[i];
+    mark.classList.add("is-current");
+    markIndex = i;
+    syncFindBar();
+    const section = mark.closest(".help-section");
+    if (section) {
+      const hash = "#" + section.id;
+      if (opts && opts.push) history.pushState(null, "", hash);
+      else history.replaceState(null, "", hash);
+      if (section.hidden || (home && !home.hidden)) showTopic(section.id, { keepScroll: true });
+    }
+    requestAnimationFrame(() => {
+      mark.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+  }
+
+  function runSearch() {
+    const q = normalize(input.value);
+    if (!q) {
+      clearMarks();
+      syncFindBar();
+      render([], "");
+      return;
+    }
+    const tokens = q.split(" ").filter(Boolean);
+    highlight(tokens);
+    syncFindBar();
+    const scored = entries
+      .map((item) => ({ item, s: score(item.hay, tokens) }))
+      .filter((row) => row.s > 0)
+      .sort((a, b) => b.s - a.s || a.item.label.length - b.item.label.length)
+      .map((row) => row.item);
+    render(scored, q);
+  }
+
+  if (findNext) {
+    findNext.addEventListener("click", () => {
+      const marks = document.querySelectorAll(".help-panels mark.help-mark");
+      if (!marks.length) return;
+      focusMark(markIndex < 0 ? 0 : markIndex + 1);
+    });
+  }
+  if (findPrev) {
+    findPrev.addEventListener("click", () => {
+      const marks = document.querySelectorAll(".help-panels mark.help-mark");
+      if (!marks.length) return;
+      focusMark(markIndex < 0 ? marks.length - 1 : markIndex - 1);
+    });
+  }
+
+  input.addEventListener("input", runSearch);
+  input.addEventListener("search", runSearch);
+})();

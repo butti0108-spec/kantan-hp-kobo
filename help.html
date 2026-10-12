@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="かんたんホームページ工房の操作説明です。">
+  <meta name="robots" content="noindex,nofollow">
+  <title>かんたんホームページ工房｜ヘルプ</title>
+  <link rel="icon" href="brand/walker-favicon.png?v=walker-20261002" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@700&family=Zen+Kaku+Gothic+New:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="help.css?v=help-tax-inset-20261004">
+  <script src="page-shutter.js?v=sample-only-20260929" defer></script>
+  <script src="help.js?v=nav-history-b-20261011" defer></script>
+</head>
+<body class="help-page">
+  <header class="help-topbar">
+    <div class="help-topbar-center">
+      <p class="help-product-catch">作るも、直すも。</p>
+      <h1 class="help-product-name">かんたんホームページ工房</h1>
+    </div>
+    <a class="help-back-sticky" id="help-back-sticky" href="index.html">注文画面に戻る</a>
+  </header>
+
+  <main class="help-wrap">
+    <div class="help-home" id="help-home">
+      <h2 class="help-page-title visually-hidden">ヘルプ</h2>
+      <p class="help-lead">迷ったときは、このヘルプをご確認ください。確認後は注文画面へ戻れます。</p>
+
+      <div class="help-search" id="help-search" role="search">
+        <label class="help-search-label" for="help-search-input">知りたいことを入力</label>
+        <input
+          type="search"
+          id="help-search-input"
+          class="help-search-input"
+          placeholder="例：見本、ZIP、写真、料金、URL"
+          autocomplete="off"
+          enterkeyhint="search"
+        >
+        <p class="help-search-hint" id="help-search-hint">キーワードを入力すると、関連するヘルプ項目が表示されます。</p>
+        <ul class="help-search-results" id="help-search-results" hidden></ul>
+      </div>
+
+      <nav class="help-toc" id="help-toc" aria-label="目次">
+        <div class="help-toc-head">
+          <p class="help-toc-title">目次</p>
+          <p class="help-tax-note help-tax-note--toc">※表示価格は税込</p>
+        </div>
+        <div class="help-toc-grid">
+          <a class="help-toc-card" href="#start" data-help-nav="start">進め方</a>
+          <a class="help-toc-card" href="#why" data-help-nav="why">なぜ1万円</a>
+          <a class="help-toc-card" href="#faq" data-help-nav="faq">よくある質問</a>
+          <a class="help-toc-card" href="#zip" data-help-nav="zip">確認とZIP</a>
+          <a class="help-toc-card" href="#copy" data-help-nav="copy">文章</a>
+          <a class="help-toc-card" href="#scope" data-help-nav="scope">プランの範囲</a>
+          <a class="help-toc-card" href="#images" data-help-nav="images">画像</a>
+          <a class="help-toc-card" href="#look" data-help-nav="look">色・書体</a>
+          <a class="help-toc-card" href="#price" data-help-nav="price">料金</a>
+        </div>
+      </nav>
+    </div>
+
+    <div class="help-find-bar" id="help-find-bar" hidden>
+      <p class="help-find-count" id="help-find-count"></p>
+      <button type="button" id="help-find-prev">前へ</button>
+      <button type="button" id="help-find-next">次へ</button>
+    </div>
+
+    <div class="help-panels" id="help-panels">
+      <section class="help-section" id="start" data-help-keywords="進め方 保存 見本から選ぶ 自分で作る 保存したデータから再開する 確認へ進む ひとつ戻る 最初からやり直す" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">進め方</h3>
+        </header>
+        <div class="help-section-body">
+          <p class="help-lead-in">はじめに保存方法を選び、次に進め方を選びます。</p>
+
+          <article class="help-chunk" data-help-keywords="保存のしかた 残さず このパソコンに残して続ける 写真">
+            <h4 class="help-chunk-title">保存のしかた</h4>
+            <p class="help-lead-in">端末に保存せず進むと、ページを更新したときに写真が消えることがあります。文章などはブラウザの中に残ることがあります。</p>
+            <p class="help-choice"><strong>残さず、そのまま作る</strong></p>
+            <p>保存せず、そのまま作ります。</p>
+            <p class="help-choice"><strong>このパソコンに残して続ける</strong></p>
+            <p>この端末に保存して続けます。変更のたびに端末内のデータを上書きします。当社のサーバーには保存されません。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="見本から選ぶ 自分で作る 保存したデータから再開する 最初からやり直す">
+            <h4 class="help-chunk-title">進め方</h4>
+            <p class="help-choice"><strong>見本から選ぶ</strong></p>
+            <p class="help-choice"><strong>自分で作る</strong></p>
+            <p class="help-choice"><strong>保存したデータから再開する</strong></p>
+            <p>途中でこの3つを切り替えるメニューはありません。</p>
+            <p>はじめからやり直す場合は、「最初からやり直す」を選びます。入力した内容はすべて消え、元に戻せません。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="見本 利用用途 記載項目 配色 キャッチ 画像 文章 色調整 確定">
+            <h4 class="help-chunk-title">見本から選ぶ場合の流れ</h4>
+            <p>見本 → 利用用途 → どの言葉を使いますか → 記載項目 → 配色 → 色調整 → 画像 → 文章 → 確定。</p>
+            <p>キャッチだけの画面はありません。写真は画像、言葉・位置・下地は文章、色は色調整で直せます。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="自分で作る 基本のページ 文章例">
+            <h4 class="help-chunk-title">自分で作る</h4>
+            <p>見本は選ばず、基本のページをもとに、自分で内容を決めて作ります。利用用途から始まります。</p>
+            <p>文章は空の欄から書けます。文章例も出せます。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="確定 確認へ進む 進捗バー">
+            <h4 class="help-chunk-title">確定</h4>
+            <p>確定の画面には「直したいところがあれば、上の進捗バーの文字から行けます。」と出ます。</p>
+            <p>入っていない写真は「ここがありません」と出ます。見本のままになっている写真や文章も、確認事項として表示されます。</p>
+            <p>「確認へ進む」ボタンを押します。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="作成データを保存する 制作・公開を依頼する 選択を変更する ZIP">
+            <h4 class="help-chunk-title">確認へ進んだあと</h4>
+            <p class="help-choice"><strong>作成データを保存する</strong></p>
+            <p>お使いの端末に無料で保存されます。</p>
+            <p class="help-choice"><strong>制作・公開を依頼する</strong></p>
+            <p>依頼ファイル（ZIP）をメールに添付してご送信いただきます。</p>
+            <p>「選択を変更する」で、この2つを選び直せます。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="ひとつ戻る 最初からやり直す">
+            <h4 class="help-chunk-title">戻る</h4>
+            <p><strong>ひとつ戻る</strong>。一つ前の画面へ戻ります。</p>
+            <p><strong>最初からやり直す</strong>。入力した内容はすべて消え、入り口からやり直します。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="why" data-help-keywords="なぜ1万円 月額 追加希望 納品" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">なぜ1万円か</h3>
+        </header>
+        <div class="help-section-body">
+          <article class="help-chunk" data-help-keywords="簡単 ホームページ 基本プラン 追加希望">
+            <h4 class="help-chunk-title">簡単なホームページを、簡単に</h4>
+            <p>このプランは、必要な内容をシンプルな1ページにまとめることで、1万円での制作・公開を実現しています。</p>
+            <p>基本プランに含まれる内容と、必要に応じて追加できる有料オプションを分けてご案内しています。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="月額 ツール フォーム 継続更新 追加希望">
+            <h4 class="help-chunk-title">月額ツールとの違い</h4>
+            <p>月額制のホームページ作成サービスは、ご自身で継続して更新したい方に適しています。</p>
+            <p>当工房の基本プランは、制作・公開を1回の料金でご依頼いただく形です。</p>
+            <p>名前や用件を書いて送る欄や、公開後の継続更新・保守は、基本プランに含まれません。メールアドレスの掲載と、コピーできるところまでは含まれます。独自ドメインの接続料金はありません。やり方が分からなければ、画面を見ながら案内できます。一部オリジナル、WordPress、画面共有、訪問は、追加で選べます。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="scope" data-help-keywords="プランの範囲 含む 含まない 追加希望 無料修正" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">プランの範囲</h3>
+        </header>
+        <div class="help-section-body">
+          <article class="help-chunk" data-help-keywords="含む 1ページ 文字 写真 色 書体 無料修正">
+            <h4 class="help-chunk-title">基本プランに含まれるもの</h4>
+            <p>見本と同じ基本構成の1ページ。</p>
+            <p>文字と写真の差し替え。</p>
+            <p>色と書体。</p>
+            <p>公開後1か月以内の無料修正1回。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="含まない フォーム 継続更新 保守">
+            <h4 class="help-chunk-title">基本プランに含まれないもの</h4>
+            <p>名前や用件を書いて送る欄（メールアドレスの掲載と、コピーできるところまでは含まれます）。</p>
+            <p>公開後の継続更新・保守。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="追加希望 独自ドメイン 独自レイアウト WordPress サポート 金額">
+            <h4 class="help-chunk-title">追加希望で選べるもの</h4>
+            <p>独自ドメインの接続料金はありません。やり方が分からなければ、画面を見ながら案内できます。一部オリジナル、WordPress、画面共有、訪問は、追加で選べます。</p>
+            <p>画面には料金または最低見積もり金額が表示されます。「〜」の付く料金は最低料金です。正式なお見積もりは、ご依頼内容を確認後にご案内します。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="faq" data-help-keywords="よくある質問 無料修正 URL GitHub Pages 追加希望" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">よくある質問</h3>
+        </header>
+        <div class="help-section-body">
+          <article class="help-chunk" data-help-keywords="無料修正 1回 1か月">
+            <h4 class="help-chunk-title">無料修正は何回ですか？</h4>
+            <p>無料修正は、公開後1か月以内に1回です。それ以降は、完成データの変更が500円／回、修正おまかせが2,000円〜／回です。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="URL GitHub Pages 独自ドメイン 追加希望">
+            <h4 class="help-chunk-title">公開のURLは何ですか？</h4>
+            <p>基本プランでは、GitHub Pagesを利用します。</p>
+            <p>独自ドメインの接続料金はありません。やり方が分からなければ、画面共有サポートを利用できます。依頼するときは、使いたいアドレスを入れます。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="独自レイアウト WordPress サポート 追加希望">
+            <h4 class="help-chunk-title">もっと変えたいときは？</h4>
+            <p>追加の有料オプションをご確認ください。独自レイアウト、WordPress、各種サポートなどを選べます。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="パソコン 苦手 ヘルプ 注文画面">
+            <h4 class="help-chunk-title">パソコンが苦手でも大丈夫？</h4>
+            <p>操作に迷ったときは、このヘルプから必要な項目をご確認いただけます。</p>
+            <p>ご自身での操作が難しい場合は、オンライン・訪問サポートもご用意しています。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="zip" data-help-keywords="ZIP 確認 依頼 追加希望 メール" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">確認とZIP</h3>
+        </header>
+        <div class="help-section-body">
+          <p class="help-lead-in">制作・公開をご依頼の場合は、以下の順に進みます。</p>
+
+          <article class="help-chunk" data-help-keywords="ご注文前の最終確認 GitHub Pages フォーム 継続更新 無料修正">
+            <h4 class="help-chunk-title">ご注文前の最終確認</h4>
+            <p>チェックは次の5つです。</p>
+            <p>基本プランのホームページは、GitHub Pagesを利用して公開します。</p>
+            <p>名前や用件を書いて送る欄は付きません。メールアドレスの掲載と、コピーできるところまでです。</p>
+            <p>公開後の継続更新・保守は基本プランに含まれません。</p>
+            <p>送られてきた画像や文字に誤字脱字や間違いがあっても、確認や編集はせず、送られてきた情報のまま掲載します。</p>
+            <p>公開後1か月以内の無料修正は1回までです。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="追加の有料オプション URL 独自レイアウト WordPress サポート 見積もり">
+            <h4 class="help-chunk-title">追加の有料オプション</h4>
+            <p>URL、独自レイアウト、WordPress、サポートを選べます。</p>
+            <p>画面には料金または最低見積もり金額が表示されます。「〜」の付く料金は最低料金です。正式なお見積もりは、ご依頼内容を確認後にご案内します。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="追加希望 URL 独自ドメイン 接続料金なし">
+            <h4 class="help-chunk-title">追加希望（URL）</h4>
+            <p>GitHub PagesのURLを使う（追加料金なし）。</p>
+            <p>独自ドメインを使う（接続料金なし）。使いたいアドレスを入れます。空のままでは、依頼ファイルは保存できません。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="独自レイアウト 2万円 個別見積もり">
+            <h4 class="help-chunk-title">追加希望（独自レイアウト）</h4>
+            <p>なし。</p>
+            <p>一部だけ独自にしたい（＋2万円〜）。</p>
+            <p>全体を独自にしたい（個別見積もり）。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="WordPress 5万円">
+            <h4 class="help-chunk-title">追加希望（WordPress）</h4>
+            <p>なし。</p>
+            <p>あり（＋5万円〜）。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="サポート 画面共有 1500円 訪問 5万円">
+            <h4 class="help-chunk-title">追加希望（サポート）</h4>
+            <p>自分で進める。</p>
+            <p>画面を見ながら進めたい（30分1,500円）。</p>
+            <p>訪問して一緒に進めたい（5万円〜・基本の制作料金を含む）。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="その他のご希望">
+            <h4 class="help-chunk-title">その他のご希望</h4>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="依頼ファイル ZIP を保存する">
+            <h4 class="help-chunk-title">依頼ファイルを保存する</h4>
+            <p class="help-choice"><strong>依頼ファイル（ZIP）を保存する</strong></p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="依頼メールを作成する 添付 送信先 コピー atsushi.masubuchi.work@gmail.com">
+            <h4 class="help-chunk-title">依頼メールを作成する</h4>
+            <p class="help-choice"><strong>依頼メールを作成する</strong></p>
+            <p>保存したZIPファイルを、開いたメールに添付してご送信ください。</p>
+            <p>ご依頼内容を確認後、正式なお見積もりとお振込先をご案内します。</p>
+            <p>メールが開かなかったときは、下の送信先と本文をコピーして送れます。</p>
+            <p>送信先は atsushi.masubuchi.work@gmail.com です。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="copy" data-help-keywords="文章 枚数 順番 文章例" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">文章</h3>
+        </header>
+        <div class="help-section-body">
+          <article class="help-chunk" data-help-keywords="文章 見本 自分で作る 空の欄 文章例を出す">
+            <h4 class="help-chunk-title">文を書く</h4>
+            <p>文章の画面で、掲載する項目の文章を入力します。</p>
+            <p>「文章例を出す」で、参考の文章例を出せます。文章例は参考で、直して使えます。</p>
+            <p>見本から選ぶ場合は、見本の文章を、ご自身の文章に変更します。</p>
+            <p>自分で作る場合は、空の欄から書きます。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="枚数 順番">
+            <h4 class="help-chunk-title">枚数、順番</h4>
+            <p>文章の画面で、項目を開くと変えられます。</p>
+            <p><strong>枚数</strong></p>
+            <p>項目が2つ以上あるときは、<strong>⋮⋮</strong>で順番を変えられます。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="images" data-help-keywords="画像 写真 ページ幅 位置" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">画像</h3>
+        </header>
+        <div class="help-section-body">
+          <article class="help-chunk" data-help-keywords="写真 ページ幅いっぱい ページ幅半分 位置 ランダムに選ぶ">
+            <h4 class="help-chunk-title">写真を選ぶ</h4>
+            <p>画像の画面で、載せる写真を選びます。</p>
+            <p>「ランダムに選ぶ」で、候補の中から写真を選べます。</p>
+            <p>大きさは<strong>ページ幅いっぱい</strong>か<strong>ページ幅半分</strong>です。位置も、この画面で整えます。</p>
+            <p>枚数を変えるのは、文章の画面です。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="look" data-help-keywords="配色 色調整 書体 見出し書体 本文書体 キャッチ書体" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">色・書体</h3>
+        </header>
+        <div class="help-section-body">
+          <article class="help-chunk" data-help-keywords="配色 色調整 雰囲気">
+            <h4 class="help-chunk-title">色</h4>
+            <p>配色で、サイト全体の色の雰囲気を選びます。</p>
+            <p>色調整で、場所ごとの色を選びます。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="見出し書体 本文書体 キャッチ書体 ロゴ">
+            <h4 class="help-chunk-title">書体</h4>
+            <p><strong>見出し書体</strong>と<strong>本文書体</strong>は、「文章」画面の上部で選べます。</p>
+            <p><strong>キャッチ書体</strong>は、「文章」画面の最後で選べます。</p>
+          </article>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+
+      <section class="help-section" id="price" data-help-keywords="料金 オプション 1万円 500円 2000円 1500円 2万円 5万円 見積もり" hidden>
+        <header class="help-panel-head">
+          <h3 class="help-panel-title">料金</h3>
+        </header>
+        <div class="help-section-body">
+          <p class="help-tax-note">表示価格はすべて税込です。</p>
+          <p class="help-lead-in">よく使う料金です。</p>
+
+          <article class="help-chunk" data-help-keywords="基本サイト 1万円 無料修正">
+            <h4 class="help-chunk-title">基本サイト　10,000円（税込）</h4>
+            <p>公開後1か月以内の修正1回無料。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="独自ドメイン 接続 無料">
+            <h4 class="help-chunk-title">独自ドメイン接続　無料</h4>
+            <p>接続料金は無料です。やり方が分からなければ、画面を見ながら案内できます。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="完成データ 変更 500円">
+            <h4 class="help-chunk-title">完成データの変更　500円／回（税込）</h4>
+            <p>お客様自身で工房から完成ZIPを作成して送付した場合です。変更箇所数は問わず、そのまま公開できる完成データであれば500円です。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="修正おまかせ 2000円">
+            <h4 class="help-chunk-title">修正おまかせ　2,000円〜／回（税込）</h4>
+            <p>メール・LINE・フォーム等で修正内容を送り、こちらで文章・画像等を編集して公開する場合です。画像は送付されたデータをそのまま使用し、拡大・縮小・トリミング・加工は含みません。</p>
+          </article>
+          <article class="help-chunk" data-help-keywords="画面共有 30分 1500円">
+            <h4 class="help-chunk-title">画面共有サポート　30分1,500円（税込）</h4>
+            <p>独自ドメインのつなぎ方、操作方法、各種設定などを画面共有しながら案内します。</p>
+          </article>
+
+          <article class="help-chunk" data-help-keywords="その他オプション 一部オリジナル WordPress 訪問 画像加工">
+            <h4 class="help-chunk-title">その他オプション</h4>
+            <p>一部オリジナル対応　20,000円〜（基本の10,000円に加わります）。</p>
+            <p>WordPress化　50,000円〜（基本の10,000円に加わります。工房で作ったサイトのWordPress化です。管理画面と問い合わせフォームが基本範囲です。追加機能は別途見積です）。</p>
+            <p>訪問制作・訪問対応　50,000円〜（サイト制作料金を含みます）。</p>
+            <p>画像加工・特殊作業、その他個別作業は、内容確認後に見積します。</p>
+          </article>
+
+          <p><a class="help-inline-link" href="https://butti0108-spec.github.io/arch1man.special/pricing/02_price_list_reference.html" target="_blank" rel="noopener noreferrer">料金表を見る</a></p>
+        </div>
+        <footer class="help-panel-nav help-panel-nav--foot">
+          <a class="help-back-toc" href="#help-toc">一覧に戻る</a>
+          <a class="help-back-local" href="index.html">注文画面に戻る</a>
+        </footer>
+      </section>
+    </div>
+
+    <p class="help-foot"><a id="help-back-foot" href="index.html">注文画面に戻る</a></p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,4 @@
+catalog.bak-*.json
+.DS_Store
+
+_verify-tmp/

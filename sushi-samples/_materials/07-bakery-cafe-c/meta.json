@@ -1,0 +1,53 @@
+{
+    "id":  "07",
+    "folder":  "07-bakery-cafe-c",
+    "band":  "N",
+    "photoPack":  "P2",
+    "headingPack":  "H4",
+    "colorKey":  "ink",
+    "fontMood":  "brush",
+    "fonts":  {
+                  "catch":  "Yuji Syuku",
+                  "body":  "Sawarabi Gothic",
+                  "display":  "Yuji Syuku"
+              },
+    "scene":  "ラーメン・丼",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hero",
+                        "works",
+                        "photos",
+                        "values",
+                        "hours",
+                        "contact"
+                    ],
+    "counts":  {
+                   "hero-leads":  2,
+                   "hero-values":  3,
+                   "about-accordions":  1,
+                   "about-photos":  3,
+                   "works-list":  3
+               },
+    "extras":  {
+                   "hours":  true,
+                   "access":  false,
+                   "address":  false
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "who":  "商店街の小さなラーメン店（醤油と鶏ガラを軸）",
+                        "purpose":  "今すぐ一杯、熱いうちに食べてもらう",
+                        "show":  "丼正面・湯気・カウンター",
+                        "colorIntent":  "墨の落ち着きに筆文字の強さ",
+                        "worldviewOneLiner":  "丼から湯気が立つ一杯屋"
+                    }
+}

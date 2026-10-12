@@ -1,0 +1,55 @@
+{
+    "id":  "04",
+    "folder":  "04-salon-clinic-a",
+    "band":  "N",
+    "photoPack":  "P2",
+    "headingPack":  "H4",
+    "colorKey":  "clinic",
+    "fontMood":  "mincho",
+    "fonts":  {
+                  "catch":  "Shippori Mincho",
+                  "body":  "Zen Kaku Gothic New",
+                  "display":  "Shippori Mincho"
+              },
+    "scene":  "サロン・白",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hours",
+                        "contact",
+                        "hero",
+                        "values",
+                        "works",
+                        "access",
+                        "address",
+                        "accordions"
+                    ],
+    "counts":  {
+                   "hero-leads":  2,
+                   "hero-values":  3,
+                   "about-accordions":  2,
+                   "about-photos":  3,
+                   "works-list":  3
+               },
+    "extras":  {
+                   "hours":  true,
+                   "access":  true,
+                   "address":  true
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "who":  "白を基調にした少人数制のヘアサロン（個室寄りの静けさ）",
+                        "purpose":  "相談してから予約してもらう／帰宅後も整えやすい形を伝える",
+                        "show":  "白壁・余白・柔らかい光・静かな個室感",
+                        "colorIntent":  "白磁の余白に紺のきれいめ",
+                        "worldviewOneLiner":  "白い光と余白で髪を整える個室"
+                    }
+}

@@ -1,0 +1,32 @@
+{
+    "id":  "23",
+    "folder":  "23-cowork-green-a",
+    "band":  "A",
+    "photoPack":  "P2",
+    "headingPack":  "H4",
+    "colorKey":  "cafe",
+    "fontMood":  "mincho",
+    "fonts":  {
+                  "catch":  "Shippori Mincho",
+                  "body":  "Zen Kaku Gothic New",
+                  "display":  "Shippori Mincho"
+              },
+    "scene":  "コワーキング",
+    "status":  "rebuild-2026-09-19",
+    "designBrief":  {
+                        "who":  "長机の共席ワークスペースを運営する小さなラボの主",
+                        "purpose":  "ひとりでも隣と座って仕事する／共席の空気を覚えてもらう",
+                        "show":  "長机・隣席・電源・セルフ珈琲",
+                        "colorIntent":  "ベージュ暖色・木の落ち着き",
+                        "worldviewOneLiner":  "ひとりでも隣と座れる共有の仕事場"
+                    },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ]
+}

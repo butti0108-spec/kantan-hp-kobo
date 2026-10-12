@@ -1,0 +1,56 @@
+{
+    "id":  "14",
+    "folder":  "14-ramen-brick-b",
+    "band":  "N",
+    "photoPack":  "P3",
+    "headingPack":  "H4",
+    "colorKey":  "ink",
+    "fontMood":  "bold",
+    "fonts":  {
+                  "catch":  "Zen Kaku Gothic New",
+                  "body":  "Zen Kaku Gothic New",
+                  "display":  "Dela Gothic One"
+              },
+    "scene":  "ギャラリー・壁",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hero",
+                        "photos",
+                        "values",
+                        "works",
+                        "accordions",
+                        "hours",
+                        "access",
+                        "address",
+                        "contact"
+                    ],
+    "extras":  {
+                   "hours":  true,
+                   "access":  true,
+                   "address":  true
+               },
+    "counts":  {
+                   "works-list":  3,
+                   "hero-values":  3,
+                   "hero-leads":  2,
+                   "about-photos":  3,
+                   "about-accordions":  2
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "colorIntent":  "墨と白・強いコントラスト",
+                        "who":  "白い壁を主役にする小さなギャラリー",
+                        "purpose":  "作品を見に来る／余韻を残して帰る",
+                        "worldviewOneLiner":  "白い壁に作品だけを残す",
+                        "show":  "余白の白い壁・作品"
+                    }
+}

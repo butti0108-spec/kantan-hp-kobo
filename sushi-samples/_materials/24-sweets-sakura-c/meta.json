@@ -1,0 +1,27 @@
+{
+    "id":  "24",
+    "folder":  "24-sweets-sakura-c",
+    "band":  "A",
+    "photoPack":  "P2",
+    "headingPack":  "H3",
+    "colorKey":  "clinic",
+    "fontMood":  "gothic",
+    "status":  "rebuild-2026-09-19",
+    "scene":  "診療所",
+    "designBrief":  {
+                        "who":  "近所のていねいな診療所を営む医師と受付",
+                        "purpose":  "不安が短くなる受診／受付と案内の安心を伝える",
+                        "show":  "受付・案内・待合の静けさ",
+                        "colorIntent":  "紺・きれいめ・白い余白",
+                        "worldviewOneLiner":  "不安が短くなるていねいな診療所"
+                    },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ]
+}

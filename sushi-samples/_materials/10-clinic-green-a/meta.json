@@ -1,0 +1,54 @@
+{
+    "id":  "10",
+    "folder":  "10-clinic-green-a",
+    "band":  "N",
+    "photoPack":  "P1",
+    "headingPack":  "H3",
+    "colorKey":  "brick",
+    "fontMood":  "bold",
+    "fonts":  {
+                  "catch":  "Zen Kaku Gothic New",
+                  "body":  "Zen Kaku Gothic New",
+                  "display":  "Dela Gothic One"
+              },
+    "scene":  "居酒屋・提灯",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "works",
+                        "photos",
+                        "hero",
+                        "hours",
+                        "access",
+                        "contact",
+                        "address"
+                    ],
+    "counts":  {
+                   "hero-leads":  2,
+                   "hero-values":  3,
+                   "about-accordions":  1,
+                   "about-photos":  3,
+                   "works-list":  3
+               },
+    "extras":  {
+                   "hours":  true,
+                   "access":  true,
+                   "address":  true
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "who":  "路地に赤い提灯を出す小さな居酒屋",
+                        "purpose":  "今夜の一杯で寄ってもらう",
+                        "show":  "提灯・赤のれん・串・カウンター",
+                        "colorIntent":  "レンガ暖色に太ゴの力強さ",
+                        "worldviewOneLiner":  "提灯が灯る路地で一杯"
+                    }
+}

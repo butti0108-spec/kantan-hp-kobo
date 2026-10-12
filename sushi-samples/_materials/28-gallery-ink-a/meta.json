@@ -1,0 +1,27 @@
+{
+    "id":  "28",
+    "folder":  "28-gallery-ink-a",
+    "band":  "X",
+    "photoPack":  "P2",
+    "headingPack":  "H3",
+    "colorKey":  "green",
+    "fontMood":  "softGothic",
+    "status":  "rebuild-2026-09-19",
+    "scene":  "ヨガ・スタジオ",
+    "designBrief":  {
+                        "who":  "葉の音のなかで呼吸をそろえる小さなヨガ教室の講師",
+                        "purpose":  "静かな呼吸のクラスに来てもらう／葉と光のスタジオを覚えてもらう",
+                        "show":  "葉・光・マット（虫は被写体にしない）",
+                        "colorIntent":  "薄い緑・白い余白",
+                        "worldviewOneLiner":  "葉の音のなかで呼吸する静かなヨガ"
+                    },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ]
+}

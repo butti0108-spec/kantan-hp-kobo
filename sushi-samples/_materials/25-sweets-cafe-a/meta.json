@@ -1,0 +1,27 @@
+{
+    "id":  "25",
+    "folder":  "25-sweets-cafe-a",
+    "band":  "A",
+    "photoPack":  "P1",
+    "headingPack":  "H4",
+    "colorKey":  "brick",
+    "fontMood":  "softGothic",
+    "status":  "rebuild-2026-09-19",
+    "scene":  "パン・小麦",
+    "designBrief":  {
+                        "who":  "小麦のローフを焼く小さなベーカリーの店主",
+                        "purpose":  "焼き立てを買う／小麦の香りを覚えてもらう",
+                        "show":  "小麦・ローフ・粉・木のボード",
+                        "colorIntent":  "レンガ暖色・オレンジの元気",
+                        "worldviewOneLiner":  "小麦の香りがする焼き立て"
+                    },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ]
+}

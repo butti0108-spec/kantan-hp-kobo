@@ -1,0 +1,27 @@
+{
+    "id":  "29",
+    "folder":  "29-gallery-clinic-c",
+    "band":  "X",
+    "photoPack":  "P1",
+    "headingPack":  "H4",
+    "colorKey":  "sakura",
+    "fontMood":  "round",
+    "status":  "rebuild-2026-09-19",
+    "scene":  "花屋・アレンジ",
+    "designBrief":  {
+                        "who":  "近所で花を整えて渡す小さな花屋の店主",
+                        "purpose":  "選んで帰る／手元のアレンジを覚えてもらう",
+                        "show":  "手元の花・アレンジ・リボン",
+                        "colorIntent":  "桜ピンク・やわらかい余白",
+                        "worldviewOneLiner":  "近くで整えて持ち帰れる花屋"
+                    },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ]
+}

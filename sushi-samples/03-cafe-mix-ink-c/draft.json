@@ -1,0 +1,222 @@
+{
+    "version":  17,
+    "savedAt":  "2026-09-19T09:28:35.835Z",
+    "uiMode":  "self",
+    "sitePurpose":  "shop",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hero",
+                        "contact",
+                        "photos",
+                        "works",
+                        "values",
+                        "hours",
+                        "accordions",
+                        "access",
+                        "address"
+                    ],
+    "layoutSelected":  true,
+    "layoutSchema":  2,
+    "itemLayouts":  {
+                        "about-photos":  {
+                                             "sizes":  [
+                                                           "L",
+                                                           "L",
+                                                           "L"
+                                                       ],
+                                             "gap":  "tight",
+                                             "growDirs":  [
+
+                                                          ],
+                                             "focalYs":  [
+                                                             40,
+                                                             20,
+                                                             55
+                                                         ],
+                                             "focalXs":  [
+                                                             50,
+                                                             50,
+                                                             50
+                                                         ]
+                                         },
+                        "works-list":  {
+                                           "sizes":  [
+                                                         "H",
+                                                         "H",
+                                                         "L"
+                                                     ],
+                                           "gap":  "normal",
+                                           "growDirs":  [
+
+                                                        ],
+                                           "focalYs":  [
+                                                           25,
+                                                           30,
+                                                           15
+                                                       ],
+                                           "focalXs":  [
+                                                           50,
+                                                           50,
+                                                           50
+                                                       ]
+                                       }
+                    },
+    "heroTextOnPhoto":  false,
+    "heroFocalX":  50,
+    "heroFocalY":  75,
+    "aboutItemsDisplay":  "accordion",
+    "heroTextPlate":  "round",
+    "heroTextPlateTone":  "white",
+    "guidedImageUnlocked":  true,
+    "guidedTextUnlocked":  false,
+    "presetChosen":  true,
+    "chosenPresetKey":  "ink",
+    "intakeDone":  true,
+    "entryBranch":  "detail",
+    "hubEntrySource":  "detail-entry",
+    "easyFlowActive":  false,
+    "sushiSampleId":  "03",
+    "sushiSampleKey":  "cafe-mix-ink-c",
+    "siteColorMode":  "detail",
+    "slotGradients":  {
+
+                      },
+    "slotGradientPartners":  {
+
+                             },
+    "draftColors":  {
+                        "pageBg":  "#2e3333",
+                        "pageBgSoft":  "#3a4040",
+                        "heroInk":  "#ffffff",
+                        "bodyInk":  "#f5f5f5",
+                        "bodyMuted":  "#c8c8c8",
+                        "chromeBg":  "#111111",
+                        "chromeInk":  "#f5f5f5",
+                        "accent":  "#c9a227",
+                        "cardBg":  "#1f2424",
+                        "valuesBg":  "#1f2424",
+                        "contactBg":  "#111111",
+                        "contactInk":  "#f5f5f5",
+                        "radius":  "0.6rem",
+                        "headingScale":  "1",
+                        "accentBar":  "mid"
+                    },
+    "draftCounts":  {
+                        "hero-leads":  2,
+                        "hero-values":  3,
+                        "about-accordions":  1,
+                        "about-photos":  3,
+                        "works-list":  3
+                    },
+    "draftExtras":  {
+                        "hours":  true,
+                        "access":  false,
+                        "address":  false
+                    },
+    "layoutBlockOff":  {
+
+                       },
+    "confirmed":  {
+                      "easy-basics":  false,
+                      "easy-sec-hero":  false,
+                      "easy-sec-about":  false,
+                      "easy-sec-works":  false,
+                      "easy-sec-contact":  false,
+                      "easy-img-wire":  false,
+                      "easy-loading":  false,
+                      "easy-done":  false,
+                      "purpose":  true,
+                      "layout":  true,
+                      "guide":  true,
+                      "global-preset":  true,
+                      "global-chrome-bg":  true,
+                      "global-chrome-ink":  true,
+                      "global-bg":  true,
+                      "hero-color":  true,
+                      "values-color":  true,
+                      "global-body":  true,
+                      "global-accent":  true,
+                      "global-card":  true,
+                      "contact-color":  true,
+                      "hero-image":  false,
+                      "about-images":  false,
+                      "works-images":  false,
+                      "logo-text":  false,
+                      "site-fonts":  true,
+                      "hero-text":  false,
+                      "values-text":  false,
+                      "about-text":  false,
+                      "works-text":  false,
+                      "hours-text":  false,
+                      "access-text":  false,
+                      "address-text":  false,
+                      "contact-text":  false,
+                      "finish":  false
+                  },
+    "fields":  {
+                   "brand_name":  "グラスサイド",
+                   "hero_title":  "氷の音がする、夜のカウンター。",
+                   "hero_lead_1":  "薄暗い店内で、グラスの縁が光るバー。柑橘とハーブで、その日の一杯を整えます。",
+                   "hero_lead_2":  "会話は低く、音楽は控えめ。一人の夜も、二人の夜も、同じ椅子の高さでお迎えします。",
+                   "hero_lead_3":  "",
+                   "value_1_title":  "グラスから決める一杯",
+                   "value_1_text":  "ロックもストレートも。好みを聞いてから、ベースとトニックのバランスを合わせます。",
+                   "value_2_title":  "静かな席の距離感",
+                   "value_2_text":  "カウンター7席と奥の2卓のみ。席の間を空け、着信はマナーモードでお願いします。",
+                   "value_3_title":  "通いやすい夜の距離",
+                   "value_3_text":  "初めてでも、いつもの一杯でも、同じ椅子の高さで迎えします。",
+                   "about_section_name":  "バーについて",
+                   "about_heading":  "路地の奥、小さなネオンの扉",
+                   "about_name":  "グラスサイド",
+                   "about_lead":  "ビルの地下一階。看板は小さなネオンだけです。スモークは出さず、柑橘の皮を捻る香りで空気を整えています。フードはナッツとチーズの軽いものに絞り、お酒の味を邪魔しないようにしています。",
+                   "acc_1_title":  "ご利用の目安",
+                   "acc_1_body":  "予約はカウンター席のみ前日まで受付。混雑時は2時間程度の目安をお願いすることがあります。ドレスコードはありませんが、強い香りの香水はご遠慮ください。",
+                   "acc_2_title":  "",
+                   "acc_2_body":  "",
+                   "works_section_name":  "今夜のグラス",
+                   "works_heading":  "定番から始める",
+                   "works_lead":  "迷ったら、まずこの二杯。",
+                   "work_1_title":  "ハウス・オールドファッション",
+                   "work_1_text":  "ブラウンシュガーとオレンジ。氷は大きめひとつで、ゆっくり溶けます。",
+                   "work_2_title":  "季節のジン・トニック",
+                   "work_2_text":  "週替わりの柑橘とハーブ。トニックは炭酸を立てすぎず、香りが残る分量で。",
+                   "work_3_title":  "ノンアルコールの一杯",
+                   "work_3_text":  "柑橘とハーブで作る、夜でも軽いグラス。香りで揃えます。",
+                   "hours_text":  "火〜日 19:00–26:00（L.O. 25:30）　月曜定休　／　最終受付は閉店30分前。",
+                   "address_text":  "架空市よるべ区グラス横丁 B1",
+                   "access_text":  "最寄駅から徒歩5分。駐車場は近隣コインパーキングをご利用ください。",
+                   "contact_section_name":  "ご連絡",
+                   "contact_label":  "ご連絡",
+                   "contact_email":  "reserve@glass-side.example",
+                   "contact_note_1":  "カウンター席のご予約はメールで。希望日と人数を書いてください。",
+                   "contact_note_2":  "営業中は返信が遅れることがあります。2営業日以内を目安にします。"
+               },
+    "fonts":  {
+                  "display":  "Dela Gothic One",
+                  "catch":  "Zen Kaku Gothic New",
+                  "body":  "Zen Kaku Gothic New"
+              },
+    "imagePaths":  {
+                       "work_3_image":  "sushi-samples/03-cafe-mix-ink-c/images/work-03.jpg?v=1789809995272",
+                       "work_1_image":  "sushi-samples/03-cafe-mix-ink-c/images/work-01.jpg?v=1789809995272",
+                       "work_2_image":  "sushi-samples/03-cafe-mix-ink-c/images/work-02.jpg?v=1789809995272",
+                       "about_image_3":  "sushi-samples/03-cafe-mix-ink-c/images/about-03.jpg?v=1789809995272",
+                       "about_image_2":  "sushi-samples/03-cafe-mix-ink-c/images/about-02.jpg?v=1789809995272",
+                       "about_image_1":  "sushi-samples/03-cafe-mix-ink-c/images/about-01.jpg?v=1789809995272",
+                       "hero_image":  "sushi-samples/03-cafe-mix-ink-c/images/hero.jpg?v=1789809995272"
+                   },
+    "blurb":  "夜カウンターバー。今夜の一杯／貸切。グラス・氷・暗木",
+    "scene":  "バー・グラス",
+    "layoutRecipeNote":  "rebuild night bar glass ice ink-bold",
+    "brushUpStructure":  "2026-09-14-v01",
+    "brushUpMeaning":  "2026-09-15-v01",
+    "brushUpPhoto":  "2026-09-19-ai-gen",
+    "designBrief":  {
+                        "who":  "夜だけのカウンターバーを営む店主（クラシックを軸に、その日の柑橘で少しアレンジ）",
+                        "purpose":  "今夜の一杯を決めてもらう／貸切したくなる静けさを伝える",
+                        "show":  "グラス・氷・暗い木目・低い灯り",
+                        "colorIntent":  "墨の暗さに金の差し色",
+                        "worldviewOneLiner":  "氷の音がする、夜だけのカウンター"
+                    },
+    "brushUpCopy":  "2026-09-19-restore-from-copy"
+}

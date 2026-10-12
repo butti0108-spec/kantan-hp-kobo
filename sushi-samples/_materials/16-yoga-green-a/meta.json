@@ -1,0 +1,55 @@
+{
+    "id":  "16",
+    "folder":  "16-yoga-green-a",
+    "band":  "N",
+    "photoPack":  "P1",
+    "headingPack":  "H4",
+    "colorKey":  "sakura",
+    "fontMood":  "round",
+    "fonts":  {
+                  "catch":  "Kiwi Maru",
+                  "body":  "M PLUS Rounded 1c",
+                  "display":  "Zen Maru Gothic"
+              },
+    "scene":  "サロン・花",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hero",
+                        "accordions",
+                        "photos",
+                        "values",
+                        "works",
+                        "hours",
+                        "access",
+                        "address",
+                        "contact"
+                    ],
+    "extras":  {
+                   "hours":  true,
+                   "access":  true,
+                   "address":  true
+               },
+    "counts":  {
+                   "works-list":  3,
+                   "hero-values":  3,
+                   "hero-leads":  2,
+                   "about-photos":  2,
+                   "about-accordions":  1
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "colorIntent":  "桜色のやわらかさ・温かみ",
+                        "who":  "花のある小さなヘアサロン",
+                        "purpose":  "予約の温度を感じてもらう／髪を整える",
+                        "worldviewOneLiner":  "花と髪を同じ手で整える",
+                        "show":  "切り花＋サロン空間"
+                    }
+}

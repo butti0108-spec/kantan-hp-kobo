@@ -1,0 +1,56 @@
+{
+    "id":  "18",
+    "folder":  "18-studio-clinic-c",
+    "band":  "N",
+    "photoPack":  "P3",
+    "headingPack":  "H4",
+    "colorKey":  "clinic",
+    "fontMood":  "gothic",
+    "fonts":  {
+                  "catch":  "Zen Kaku Gothic New",
+                  "body":  "Noto Sans JP",
+                  "display":  "Zen Kaku Gothic New"
+              },
+    "scene":  "写真館・余白",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hero",
+                        "works",
+                        "values",
+                        "accordions",
+                        "photos",
+                        "hours",
+                        "access",
+                        "address",
+                        "contact"
+                    ],
+    "extras":  {
+                   "hours":  true,
+                   "access":  true,
+                   "address":  true
+               },
+    "counts":  {
+                   "works-list":  3,
+                   "hero-values":  3,
+                   "hero-leads":  2,
+                   "about-photos":  3,
+                   "about-accordions":  1
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "colorIntent":  "白と紺・きれいめ",
+                        "who":  "白い床と余白のフォトスタジオ",
+                        "purpose":  "撮ってほしい／作例で雰囲気を伝える",
+                        "worldviewOneLiner":  "余白の多い写真で人を撮る",
+                        "show":  "白床の作例・余白構図"
+                    }
+}

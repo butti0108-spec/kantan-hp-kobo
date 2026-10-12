@@ -1,0 +1,57 @@
+{
+    "id":  "20",
+    "folder":  "20-pet-cafe-b",
+    "band":  "N",
+    "photoPack":  "P3",
+    "headingPack":  "H4",
+    "colorKey":  "sakura",
+    "fontMood":  "round",
+    "fonts":  {
+                  "catch":  "Kiwi Maru",
+                  "body":  "M PLUS Rounded 1c",
+                  "display":  "Zen Maru Gothic"
+              },
+    "scene":  "スイーツ",
+    "status":  "rebuild-2026-09-19",
+    "layoutPattern":  "a",
+    "layoutOrder":  [
+                        "hero",
+                        "values",
+                        "works",
+                        "accordions",
+                        "photos",
+                        "hours",
+                        "access",
+                        "address",
+                        "contact"
+                    ],
+    "extras":  {
+                   "hours":  true,
+                   "access":  true,
+                   "address":  true
+               },
+    "counts":  {
+                   "works-list":  3,
+                   "hero-values":  3,
+                   "hero-leads":  2,
+                   "about-photos":  4,
+                   "about-accordions":  1
+               },
+    "imageSlots":  [
+                       "hero.jpg",
+                       "about-01.jpg",
+                       "about-02.jpg",
+                       "about-03.jpg",
+                       "about-04.jpg",
+                       "work-01.jpg",
+                       "work-02.jpg",
+                       "work-03.jpg"
+                   ],
+    "designBrief":  {
+                        "colorIntent":  "桜色のやわらかさ・甘さ",
+                        "who":  "ガラスの層が見えるパルフェ屋",
+                        "purpose":  "午後のご褒美を一杯選ぶ",
+                        "worldviewOneLiner":  "午後のご褒美としての層のある甘いもの",
+                        "show":  "層・ガラスカップ"
+                    }
+}
