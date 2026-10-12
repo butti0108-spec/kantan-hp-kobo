@@ -25,7 +25,15 @@
   <script>document.documentElement.classList.add("js");</script>
   <style>
     html:not(.dash-boot-ready) .dash-pane .dash-block,
-    html:not(.dash-boot-ready) .preview-pane {
+    html:not(.dash-boot-ready) .preview-pane,
+    html:not(.dash-boot-ready) .atelier-mobile-tabs,
+    html:not(.dash-boot-ready) .atelier-shell {
+      display: none !important;
+    }
+    html:not(.dash-boot-ready) body {
+      background: #fff !important;
+    }
+    body.entry-gate-open .atelier-mobile-tabs {
       display: none !important;
     }
   </style>
