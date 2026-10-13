@@ -9951,7 +9951,7 @@ body.atelier.color-mode-easy .zone-badge[data-open-step="site-fonts"] {
 .sushi-lane {
   overflow: hidden;
   touch-action: pan-y;
-  cursor: grab;
+  cursor: default;
   padding: 1rem calc(var(--sushi-tile-w) * 0.28) 1.15rem;
   user-select: none;
   flex: 1 1 auto;
@@ -9963,7 +9963,7 @@ body.atelier.color-mode-easy .zone-badge[data-open-step="site-fonts"] {
 }
 
 .sushi-lane.is-dragging {
-  cursor: grabbing;
+  cursor: default;
 }
 
 .sushi-lane-track {
@@ -15228,11 +15228,15 @@ body:has([data-step-id="easy-img-wire"].is-photo-solo) .wizard-foot-dock {
   box-shadow: none;
   border-radius: 0.35rem;
   overflow: hidden;
-  cursor: grab;
+  cursor: url("cursors/grab-open.png") 16 16, grab;
   touch-action: none;
 }
-#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing {
-  cursor: grabbing;
+#easy-img-layout-host.is-photo-solo .layout-source-map img {
+  cursor: url("cursors/grab-open.png") 16 16, grab;
+}
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing img {
+  cursor: url("cursors/grab-closed.png") 16 16, grabbing;
 }
 #easy-img-layout-host.is-photo-solo .layout-source-window {
   display: block;
