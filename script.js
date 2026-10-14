@@ -19828,7 +19828,7 @@
     return true;
   }
 
-  function focalFromWindowRatios(map, blockId, slot, leftRatio, topRatio) {
+  function focalFromWindowRatios(map, blockId, slot, leftRatio, topRatio, scaleOverride) {
     const img = map.querySelector("img");
     const view = layoutFrameViewState(blockId, slot);
     const nw = img ? img.naturalWidth : 0;
@@ -19838,7 +19838,8 @@
     const frameRatio = measured > 0 ? measured : 16 / 9;
     const frameH = 100;
     const frameW = frameH * frameRatio;
-    const z = Math.max(1, normalizeImageScale(view.scale) / 100);
+    const scaleNow = scaleOverride == null ? view.scale : scaleOverride;
+    const z = Math.max(1, normalizeImageScale(scaleNow) / 100);
     const cover = Math.max(frameW / nw, frameH / nh);
     const denomX = nw * cover - frameW + frameW * (1 - 1 / z);
     const denomY = nh * cover - frameH + frameH * (1 - 1 / z);
@@ -19861,20 +19862,114 @@
     else img.style.transform = "scale(" + s / 100 + ")";
   }
 
+  function frameWindowWidthBounds(map, blockId, slot) {
+    const img = map.querySelector("img");
+    const nw = img ? img.naturalWidth : 0;
+    const nh = img ? img.naturalHeight : 0;
+    const mapW = map.getBoundingClientRect().width;
+    if (!nw || !nh || mapW < 1) return null;
+    const measured = layoutPreviewFrameRatio(blockId, slot);
+    const frameRatio = measured > 0 ? measured : 16 / 9;
+    const frameW = 100 * frameRatio;
+    const cover = Math.max(frameW / nw, 100 / nh);
+    const maxRatio = Math.min(1, frameW / (cover * nw));
+    const minRatio = Math.max(0.04, maxRatio * IMAGE_SCALE_MIN / IMAGE_SCALE_MAX);
+    return {
+      minW: minRatio * mapW,
+      maxW: Math.max(minRatio * mapW, maxRatio * mapW)
+    };
+  }
+
+  function scaleFromWindowWidth(map, blockId, slot, widthPx) {
+    const img = map.querySelector("img");
+    const nw = img ? img.naturalWidth : 0;
+    const nh = img ? img.naturalHeight : 0;
+    const mapW = map.getBoundingClientRect().width;
+    if (!nw || !nh || mapW < 1 || widthPx <= 0) return null;
+    const measured = layoutPreviewFrameRatio(blockId, slot);
+    const frameRatio = measured > 0 ? measured : 16 / 9;
+    const frameW = 100 * frameRatio;
+    const cover = Math.max(frameW / nw, 100 / nh);
+    const z = frameW / ((widthPx / mapW) * cover * nw);
+    if (!Number.isFinite(z) || z <= 0) return null;
+    return normalizeImageScale(z * 100);
+  }
+
+  function farthestFrameCorner(rect, x, y) {
+    const corners = [
+      { x: rect.left, y: rect.top },
+      { x: rect.right, y: rect.top },
+      { x: rect.left, y: rect.bottom },
+      { x: rect.right, y: rect.bottom }
+    ];
+    let best = corners[0];
+    let bestD = -1;
+    corners.forEach((corner) => {
+      const d = (corner.x - x) * (corner.x - x) + (corner.y - y) * (corner.y - y);
+      if (d > bestD) {
+        bestD = d;
+        best = corner;
+      }
+    });
+    return best;
+  }
+
+  function pointerInsideWindow(rect, x, y) {
+    if (!rect || rect.width < 8 || rect.height < 8) return false;
+    return x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+  }
+
+  function pointerOnFrameEdge(rect, x, y) {
+    if (!rect || rect.width < 8 || rect.height < 8) return false;
+    if (x < rect.left || x > rect.right || y < rect.top || y > rect.bottom) return false;
+    const room = Math.min(rect.width, rect.height) / 2 - 12;
+    const band = Math.max(8, Math.min(16, room));
+    if (!(band > 0)) return false;
+    const inMiddle = x >= rect.left + band && x <= rect.right - band
+      && y >= rect.top + band && y <= rect.bottom - band;
+    return !inMiddle;
+  }
+
+  function frameEdgeCursorName(rect, x, y) {
+    const room = Math.min(rect.width, rect.height) / 2 - 12;
+    const band = Math.max(8, Math.min(16, room));
+    const nearL = x <= rect.left + band;
+    const nearR = x >= rect.right - band;
+    const nearT = y <= rect.top + band;
+    const nearB = y >= rect.bottom - band;
+    if ((nearL && nearT) || (nearR && nearB)) return "nwse";
+    if ((nearR && nearT) || (nearL && nearB)) return "nesw";
+    if (nearT || nearB) return "ns";
+    if (nearL || nearR) return "ew";
+    return "nwse";
+  }
+
+  function clearFrameCursor(map) {
+    map.classList.remove("is-frame-move", "is-frame-resize", "is-cursor-nwse", "is-cursor-nesw", "is-cursor-ew", "is-cursor-ns");
+    map.style.cursor = "";
+  }
+
+  function paintFrameHoverCursor(map, win, clientX, clientY) {
+    clearFrameCursor(map);
+    if (!win) return;
+    const rect = win.getBoundingClientRect();
+    if (pointerOnFrameEdge(rect, clientX, clientY)) {
+      map.classList.add("is-frame-resize", "is-cursor-" + frameEdgeCursorName(rect, clientX, clientY));
+      return;
+    }
+    if (pointerInsideWindow(rect, clientX, clientY)) map.classList.add("is-frame-move");
+  }
+
   function bindSoloFrameDrag(map, blockId, slot) {
     if (!map || map.dataset.frameDragBound === "1") return;
     map.dataset.frameDragBound = "1";
-    const pointerInsideWindow = (rect, x, y) => rect && rect.width >= 8 && rect.height >= 8
-      && x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
     map.addEventListener("pointermove", (ev) => {
       if (map.classList.contains("is-grabbing")) return;
-      const hoverWin = map.querySelector(".layout-source-window");
-      if (!hoverWin) return;
-      map.classList.toggle("is-frame-move", pointerInsideWindow(hoverWin.getBoundingClientRect(), ev.clientX, ev.clientY));
+      paintFrameHoverCursor(map, map.querySelector(".layout-source-window"), ev.clientX, ev.clientY);
     });
     map.addEventListener("pointerleave", () => {
       if (map.classList.contains("is-grabbing")) return;
-      map.classList.remove("is-frame-move");
+      clearFrameCursor(map);
     });
     map.addEventListener("pointerdown", (ev) => {
       if (ev.button !== 0) return;
@@ -19883,37 +19978,97 @@
       if (!win) return;
       const mapRect = map.getBoundingClientRect();
       const winRect = win.getBoundingClientRect();
+      const onFrame = pointerOnFrameEdge(winRect, ev.clientX, ev.clientY);
       if (!pointerInsideWindow(winRect, ev.clientX, ev.clientY)) return;
-      map.classList.add("is-frame-move");
-      const grabX = ev.clientX - winRect.left;
-      const grabY = ev.clientY - winRect.top;
+      paintFrameHoverCursor(map, win, ev.clientX, ev.clientY);
       const start = layoutFrameViewState(blockId, slot);
-      const scale = start.scale;
-      const live = { x: start.focalX, y: start.focalY, px: ev.clientX, py: ev.clientY };
+      const live = { x: start.focalX, y: start.focalY, scale: start.scale, px: ev.clientX, py: ev.clientY };
       let raf = 0;
       map.classList.add("is-grabbing");
       if (map.setPointerCapture) {
         try { map.setPointerCapture(ev.pointerId); } catch (err) { /* pointer already gone */ }
       }
-      const place = () => {
-        const rect = map.getBoundingClientRect();
-        const maxL = Math.max(0, rect.width - winRect.width);
-        const maxT = Math.max(0, rect.height - winRect.height);
-        const left = Math.max(0, Math.min(maxL, live.px - rect.left - grabX));
-        const top = Math.max(0, Math.min(maxT, live.py - rect.top - grabY));
-        win.style.left = (left / Math.max(1, rect.width)) * 100 + "%";
-        win.style.top = (top / Math.max(1, rect.height)) * 100 + "%";
-        const focal = focalFromWindowRatios(
-          map,
-          blockId,
-          slot,
-          left / Math.max(1, rect.width),
-          top / Math.max(1, rect.height)
-        );
-        live.x = focal.x;
-        live.y = focal.y;
-        applyLiveFrameFocal(blockId, slot, live.x, live.y, scale);
-      };
+      const zoomBox = map.closest(".layout-photo-tools")
+        ? map.closest(".layout-photo-tools").querySelector(".layout-adjust-zoom")
+        : null;
+      let place;
+      if (onFrame) {
+        const anchor = farthestFrameCorner(winRect, ev.clientX, ev.clientY);
+        const anchorX = anchor.x - mapRect.left;
+        const anchorY = anchor.y - mapRect.top;
+        const oppX = (anchor.x === winRect.left ? winRect.right : winRect.left) - mapRect.left;
+        const oppY = (anchor.y === winRect.top ? winRect.bottom : winRect.top) - mapRect.top;
+        const startDx = oppX - anchorX;
+        const startDy = oppY - anchorY;
+        const startW = Math.max(1, winRect.width);
+        const startH = Math.max(1, winRect.height);
+        const denom = startDx * startDx + startDy * startDy;
+        const downX = ev.clientX;
+        const downY = ev.clientY;
+        place = () => {
+          const rect = map.getBoundingClientRect();
+          const bounds = frameWindowWidthBounds(map, blockId, slot);
+          const moveX = live.px - downX;
+          const moveY = live.py - downY;
+          let factor = denom ? 1 + (moveX * startDx + moveY * startDy) / denom : 1;
+          if (!Number.isFinite(factor)) factor = 1;
+          let newW = startW * Math.max(0.05, factor);
+          if (bounds) newW = Math.max(bounds.minW, Math.min(bounds.maxW, newW));
+          let newH = newW * startH / startW;
+          let left = startDx >= 0 ? anchorX : anchorX - newW;
+          let top = startDy >= 0 ? anchorY : anchorY - newH;
+          if (newW > rect.width) {
+            newH *= rect.width / newW;
+            newW = rect.width;
+          }
+          if (newH > rect.height) {
+            newW *= rect.height / newH;
+            newH = rect.height;
+          }
+          left = Math.max(0, Math.min(rect.width - newW, left));
+          top = Math.max(0, Math.min(rect.height - newH, top));
+          win.style.left = (left / Math.max(1, rect.width)) * 100 + "%";
+          win.style.top = (top / Math.max(1, rect.height)) * 100 + "%";
+          win.style.width = (newW / Math.max(1, rect.width)) * 100 + "%";
+          win.style.height = (newH / Math.max(1, rect.height)) * 100 + "%";
+          const scale = scaleFromWindowWidth(map, blockId, slot, newW);
+          if (scale != null) live.scale = scale;
+          const focal = focalFromWindowRatios(
+            map,
+            blockId,
+            slot,
+            left / Math.max(1, rect.width),
+            top / Math.max(1, rect.height),
+            live.scale
+          );
+          live.x = focal.x;
+          live.y = focal.y;
+          applyLiveFrameFocal(blockId, slot, live.x, live.y, live.scale);
+          syncOpenLayoutScale(zoomBox, live.scale);
+        };
+      } else {
+        const grabX = ev.clientX - winRect.left;
+        const grabY = ev.clientY - winRect.top;
+        place = () => {
+          const rect = map.getBoundingClientRect();
+          const maxL = Math.max(0, rect.width - winRect.width);
+          const maxT = Math.max(0, rect.height - winRect.height);
+          const left = Math.max(0, Math.min(maxL, live.px - rect.left - grabX));
+          const top = Math.max(0, Math.min(maxT, live.py - rect.top - grabY));
+          win.style.left = (left / Math.max(1, rect.width)) * 100 + "%";
+          win.style.top = (top / Math.max(1, rect.height)) * 100 + "%";
+          const focal = focalFromWindowRatios(
+            map,
+            blockId,
+            slot,
+            left / Math.max(1, rect.width),
+            top / Math.max(1, rect.height)
+          );
+          live.x = focal.x;
+          live.y = focal.y;
+          applyLiveFrameFocal(blockId, slot, live.x, live.y, start.scale);
+        };
+      }
       const move = (e) => {
         live.px = e.clientX;
         live.py = e.clientY;
@@ -19932,15 +20087,24 @@
         live.py = e.clientY;
         place();
         map.classList.remove("is-grabbing");
-        map.classList.toggle("is-frame-move", pointerInsideWindow(win.getBoundingClientRect(), e.clientX, e.clientY));
         if (map.releasePointerCapture) {
-          try { map.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
+          try { map.releasePointerCapture(e.pointerId); } catch (err2) { /* already released */ }
         }
         map.removeEventListener("pointermove", move);
         map.removeEventListener("pointerup", up);
         map.removeEventListener("pointercancel", up);
-        setLayoutFrameFocal(blockId, slot, live.x, live.y, true);
+        if (onFrame) {
+          const scaleSame = normalizeImageScale(live.scale) === normalizeImageScale(start.scale);
+          const focalSame = Math.round(live.x) === Math.round(start.focalX)
+            && Math.round(live.y) === Math.round(start.focalY);
+          if (!scaleSame || !focalSame) pushLayoutUndo();
+          if (!scaleSame) setFrameImageScale(blockId, slot, live.scale, false);
+          if (!focalSame) setLayoutFrameFocal(blockId, slot, live.x, live.y, false);
+        } else {
+          setLayoutFrameFocal(blockId, slot, live.x, live.y, true);
+        }
         paintLayoutSourceMap(map);
+        paintFrameHoverCursor(map, win, e.clientX, e.clientY);
       };
       map.addEventListener("pointermove", move);
       map.addEventListener("pointerup", up);

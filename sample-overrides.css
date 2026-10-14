@@ -15242,6 +15242,28 @@ body:has([data-step-id="easy-img-wire"].is-photo-solo) .wizard-foot-dock {
 #easy-img-layout-host.is-photo-solo .layout-source-map.is-frame-move.is-grabbing img {
   cursor: grabbing;
 }
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-frame-resize,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-frame-resize img {
+  cursor: nwse-resize;
+}
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-cursor-nesw,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-cursor-nesw img,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing.is-cursor-nesw,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing.is-cursor-nesw img {
+  cursor: nesw-resize;
+}
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-cursor-ew,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-cursor-ew img,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing.is-cursor-ew,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing.is-cursor-ew img {
+  cursor: ew-resize;
+}
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-cursor-ns,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-cursor-ns img,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing.is-cursor-ns,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing.is-cursor-ns img {
+  cursor: ns-resize;
+}
 #easy-img-layout-host.is-photo-solo .layout-source-window {
   display: block;
   z-index: 2;
