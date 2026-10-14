@@ -15228,15 +15228,19 @@ body:has([data-step-id="easy-img-wire"].is-photo-solo) .wizard-foot-dock {
   box-shadow: none;
   border-radius: 0.35rem;
   overflow: hidden;
-  cursor: url("cursors/grab-open.png") 16 16, grab;
+  cursor: default;
   touch-action: none;
 }
 #easy-img-layout-host.is-photo-solo .layout-source-map img {
-  cursor: url("cursors/grab-open.png") 16 16, grab;
+  cursor: default;
 }
-#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing,
-#easy-img-layout-host.is-photo-solo .layout-source-map.is-grabbing img {
-  cursor: url("cursors/grab-closed.png") 16 16, grabbing;
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-frame-move,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-frame-move img {
+  cursor: url("cursors/grab-open.png") 39 57, grab;
+}
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-frame-move.is-grabbing,
+#easy-img-layout-host.is-photo-solo .layout-source-map.is-frame-move.is-grabbing img {
+  cursor: url("cursors/grab-closed.png") 42 67, grabbing;
 }
 #easy-img-layout-host.is-photo-solo .layout-source-window {
   display: block;

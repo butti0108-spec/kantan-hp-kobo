@@ -1,0 +1,7 @@
+開いた手: Material Symbols の pan_tool（Apache License 2.0）
+https://github.com/google/material-design-icons
+Copyright Google
+
+握った手: Twemoji の握りこぶしを白くしたもの（CC BY 4.0）
+https://github.com/twitter/twemoji
+Copyright Twitter, Inc and other contributors

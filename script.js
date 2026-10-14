@@ -19864,6 +19864,18 @@
   function bindSoloFrameDrag(map, blockId, slot) {
     if (!map || map.dataset.frameDragBound === "1") return;
     map.dataset.frameDragBound = "1";
+    const pointerInsideWindow = (rect, x, y) => rect && rect.width >= 8 && rect.height >= 8
+      && x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
+    map.addEventListener("pointermove", (ev) => {
+      if (map.classList.contains("is-grabbing")) return;
+      const hoverWin = map.querySelector(".layout-source-window");
+      if (!hoverWin) return;
+      map.classList.toggle("is-frame-move", pointerInsideWindow(hoverWin.getBoundingClientRect(), ev.clientX, ev.clientY));
+    });
+    map.addEventListener("pointerleave", () => {
+      if (map.classList.contains("is-grabbing")) return;
+      map.classList.remove("is-frame-move");
+    });
     map.addEventListener("pointerdown", (ev) => {
       if (ev.button !== 0) return;
       if (ev.target.closest("button, a, input, .hub-tip-wrap")) return;
@@ -19871,6 +19883,8 @@
       if (!win) return;
       const mapRect = map.getBoundingClientRect();
       const winRect = win.getBoundingClientRect();
+      if (!pointerInsideWindow(winRect, ev.clientX, ev.clientY)) return;
+      map.classList.add("is-frame-move");
       const grabX = ev.clientX - winRect.left;
       const grabY = ev.clientY - winRect.top;
       const start = layoutFrameViewState(blockId, slot);
@@ -19918,6 +19932,7 @@
         live.py = e.clientY;
         place();
         map.classList.remove("is-grabbing");
+        map.classList.toggle("is-frame-move", pointerInsideWindow(win.getBoundingClientRect(), e.clientX, e.clientY));
         if (map.releasePointerCapture) {
           try { map.releasePointerCapture(e.pointerId); } catch (err) { /* already released */ }
         }
