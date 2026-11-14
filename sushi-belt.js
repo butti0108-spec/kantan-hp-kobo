@@ -108,6 +108,15 @@
     return "sushi-samples/" + p;
   }
 
+  /* ギャラリーカード用：ページ全体図（preview-full.jpg）。無い場合は previewUrl へ落とす */
+  function galleryThumbUrl(sample) {
+    var p = sample.previewPath || "";
+    if (/preview\.png$/i.test(p)) {
+      return "sushi-samples/" + p.replace(/preview\.png$/i, "preview-full.jpg");
+    }
+    return previewUrl(sample);
+  }
+
   function stockIds() {
     var ids = {};
     stock.forEach(function (s) {
@@ -163,6 +172,8 @@
     els.guideModal = $("sushi-guide-modal");
     els.hintOpen = $("sushi-hint-open");
     els.gallery = $("sushi-gallery");
+    els.galFilters = $("sushi-gal-filters");
+    els.galEmpty = $("sushi-gal-empty");
     els.galGrid = $("sushi-gal-grid");
     els.galTotal = $("sushi-gal-total");
     els.galView = $("sushi-gal-view");
@@ -678,8 +689,152 @@
   var galIndex = 0;
   var galScrollY = 0;
 
+  /* 見本選びは全幅でギャラリー形式に統一（2026-11-14 本人決定）。
+     寿司レーンは選択手段として使わない（レーンのコード自体は残置し、
+     選択画面では初期化も表示もしない）。 */
   function galleryActive() {
-    return !!(galMq && galMq.matches);
+    return true;
+  }
+
+  /* ==========================================================
+     ギャラリーの絞り込み（2026-11-14 本人決定）
+     軸は実測で成立が確認できた2つだけ：
+     ・テーマカラー（manifest の colorKey が正本）
+     ・最初の画面の型（実測分析の付け方が正本。見本ID→型は下表）
+     軸ごとに1つ選択＋「すべて」で解除。2軸は AND で重なる。
+     ========================================================== */
+  var COLOR_ORDER = ["green", "ink", "clinic", "brick", "cafe", "sakura"];
+  var COLOR_LABELS = {
+    green: "緑",
+    ink: "墨",
+    clinic: "青",
+    brick: "レンガ",
+    cafe: "カフェ",
+    sakura: "桜"
+  };
+  var COLOR_DOTS = {
+    green: "#3d8a48",
+    ink: "#333a3e",
+    clinic: "#1a4d8c",
+    brick: "#c1632f",
+    cafe: "#c45c26",
+    sakura: "#c95d7a"
+  };
+  var TYPE_ORDER = ["photo", "overlay", "multi", "cards", "text"];
+  var TYPE_LABELS = {
+    photo: "写真主役",
+    overlay: "写真＋文字重ね",
+    multi: "複数写真",
+    cards: "商品カード先行",
+    text: "文字寄り"
+  };
+  var HERO_TYPE_BY_ID = {
+    "03": "photo", "05": "photo", "07": "photo", "11": "photo",
+    "12": "photo", "13": "photo", "14": "photo", "15": "photo",
+    "16": "photo", "18": "photo", "19": "photo",
+    "01": "overlay", "21": "overlay", "23": "overlay",
+    "26": "overlay", "30": "overlay",
+    "02": "multi", "08": "multi", "09": "multi", "28": "multi",
+    "06": "cards", "10": "cards", "29": "cards",
+    "04": "text", "31": "text", "32": "text", "33": "text"
+  };
+  var galFilter = { color: "all", type: "all" };
+  var galFiltersBuilt = false;
+
+  function sampleMatchesFilter(sample) {
+    if (!sample) return false;
+    if (galFilter.color !== "all" && sample.colorKey !== galFilter.color) {
+      return false;
+    }
+    if (galFilter.type !== "all" && HERO_TYPE_BY_ID[sample.id] !== galFilter.type) {
+      return false;
+    }
+    return true;
+  }
+
+  function filterChipHtml(axis, value, label, count, dotColor) {
+    var active = galFilter[axis] === value;
+    return (
+      '<button type="button" class="sushi-gal-chip' +
+      (active ? " is-active" : "") +
+      '" data-filter-axis="' +
+      axis +
+      '" data-filter-value="' +
+      value +
+      '" aria-pressed="' +
+      (active ? "true" : "false") +
+      '">' +
+      (dotColor
+        ? '<span class="sushi-gal-chip-dot" style="background:' +
+          dotColor +
+          '" aria-hidden="true"></span>'
+        : "") +
+      escapeHtml(label) +
+      (typeof count === "number"
+        ? '<span class="sushi-gal-chip-count">' + count + "</span>"
+        : "") +
+      "</button>"
+    );
+  }
+
+  function buildGalleryFilters() {
+    if (galFiltersBuilt || !els.galFilters) return;
+    var list = laneSamples || [];
+    var colorCounts = {};
+    var typeCounts = {};
+    list.forEach(function (s) {
+      if (s.colorKey) colorCounts[s.colorKey] = (colorCounts[s.colorKey] || 0) + 1;
+      var t = HERO_TYPE_BY_ID[s.id];
+      if (t) typeCounts[t] = (typeCounts[t] || 0) + 1;
+    });
+    var html = "";
+    html += '<div class="sushi-gal-filter-group" role="group" aria-label="テーマカラーで絞り込む">';
+    html += '<span class="sushi-gal-filter-label">テーマカラー</span>';
+    html += filterChipHtml("color", "all", "すべて", list.length, null);
+    COLOR_ORDER.forEach(function (key) {
+      if (!colorCounts[key]) return;
+      html += filterChipHtml("color", key, COLOR_LABELS[key] || key, colorCounts[key], COLOR_DOTS[key] || null);
+    });
+    html += "</div>";
+    html += '<div class="sushi-gal-filter-group" role="group" aria-label="最初の画面の型で絞り込む">';
+    html += '<span class="sushi-gal-filter-label">最初の画面</span>';
+    html += filterChipHtml("type", "all", "すべて", list.length, null);
+    TYPE_ORDER.forEach(function (key) {
+      if (!typeCounts[key]) return;
+      html += filterChipHtml("type", key, TYPE_LABELS[key] || key, typeCounts[key], null);
+    });
+    html += "</div>";
+    html += '<p class="sushi-gal-filter-count" id="sushi-gal-filter-count" role="status" aria-live="polite"></p>';
+    els.galFilters.innerHTML = html;
+    galFiltersBuilt = true;
+  }
+
+  function applyGalleryFilter() {
+    if (!els.galGrid) return;
+    var cards = els.galGrid.children;
+    var shown = 0;
+    for (var i = 0; i < cards.length; i++) {
+      var ok = sampleMatchesFilter(laneSamples[i]);
+      cards[i].hidden = !ok;
+      if (ok) shown++;
+    }
+    var countEl = document.getElementById("sushi-gal-filter-count");
+    if (countEl) {
+      if (galFilter.color === "all" && galFilter.type === "all") {
+        countEl.textContent = "ぜんぶで " + shown + " 件の見本があります。";
+      } else {
+        countEl.textContent = "条件に合う見本は " + shown + " 件です。";
+      }
+    }
+    if (els.galEmpty) els.galEmpty.hidden = shown !== 0;
+    if (els.galFilters) {
+      els.galFilters.querySelectorAll("[data-filter-axis]").forEach(function (chip) {
+        var axis = chip.getAttribute("data-filter-axis");
+        var active = galFilter[axis] === chip.getAttribute("data-filter-value");
+        chip.classList.toggle("is-active", active);
+        chip.setAttribute("aria-pressed", active ? "true" : "false");
+      });
+    }
   }
 
   function buildGallery() {
@@ -693,8 +848,10 @@
         i +
         '">' +
         '<span class="sushi-gal-card-clip"><img src="' +
+        escapeAttr(galleryThumbUrl(sample)) +
+        '" onerror="this.onerror=null;this.src=\'' +
         escapeAttr(previewUrl(sample)) +
-        '" alt="' +
+        '\'" alt="' +
         escapeAttr(sample.brand || "") +
         '" loading="lazy" decoding="async"></span>' +
         '<span class="sushi-gal-card-name">No.' +
@@ -709,11 +866,20 @@
     els.galGrid.innerHTML = html;
     if (els.galTotal) els.galTotal.textContent = String(list.length);
     galBuilt = true;
+    buildGalleryFilters();
+    applyGalleryFilter();
+  }
+
+  function setGateGalleryClass(on) {
+    if (!els.root || !els.root.closest) return;
+    var gate = els.root.closest(".entry-gate");
+    if (gate) gate.classList.toggle("is-gallery-active", !!on);
   }
 
   function enterGalleryMode() {
     if (!els.root) return;
     els.root.classList.add("is-gallery-mode");
+    setGateGalleryClass(true);
     buildGallery();
     if (els.gallery) els.gallery.hidden = false;
     closeGuideModal(false);
@@ -722,6 +888,7 @@
   function exitGalleryMode() {
     if (!els.root) return;
     els.root.classList.remove("is-gallery-mode");
+    setGateGalleryClass(false);
     closeGalView(false);
     if (els.gallery) els.gallery.hidden = true;
   }
@@ -843,12 +1010,26 @@
         galDecide();
       });
     }
+    if (els.galFilters && !els.galFilters.dataset.bound) {
+      els.galFilters.dataset.bound = "1";
+      els.galFilters.addEventListener("click", function (ev) {
+        var chip = ev.target.closest("[data-filter-axis]");
+        if (!chip) return;
+        ev.preventDefault();
+        var axis = chip.getAttribute("data-filter-axis");
+        var value = chip.getAttribute("data-filter-value");
+        if (axis === "color" || axis === "type") {
+          galFilter[axis] = value;
+          applyGalleryFilter();
+        }
+      });
+    }
     if (galMq && !window.__sushiGalMqBound) {
       window.__sushiGalMqBound = true;
       var onGalMq = function () {
         if (!els.root || !els.root.isConnected) return;
-        if (galMq.matches) enterGalleryMode();
-        else exitGalleryMode();
+        /* 全幅ギャラリー統一のため、幅が変わっても常にギャラリー形式 */
+        enterGalleryMode();
       };
       if (galMq.addEventListener) galMq.addEventListener("change", onGalMq);
       else if (galMq.addListener) galMq.addListener(onGalMq);
@@ -856,7 +1037,7 @@
   }
 
   var BOOT_MSGS = [
-    "ただいま見本をレーンに流しています…",
+    "ただいま見本を並べています…",
     "並べ方を調整しています…",
     "まもなく表示します…"
   ];
@@ -1383,18 +1564,12 @@
       clearTouchPause();
       offsetX = 0;
       renderStock();
-      rebuildLane(false);
-      await Promise.race([
-        preloadLaneImages(laneSamples),
-        waitMinMs(12000)
-      ]);
+      /* 全幅ギャラリー統一：レーンの初期化（トラック構築・画像先読み・
+         アニメーション）は選択画面では走らせない。データだけ用意する。 */
+      laneSamples = laneList();
       await minShow;
-      measureLoopWidth();
-      offsetX = normalizeLoopOffset(offsetX || loopWidth);
-      warmVisibleLaneImages();
-      applyTrackTransform();
     } catch (e) {
-      /* 失敗でもレーンは出す */
+      /* 失敗でもギャラリーは出す */
     }
     window.clearTimeout(failSafe);
     ready = true;
@@ -1407,12 +1582,8 @@
       els.root.style.setProperty("--sushi-stock-out-ms", MS_STOCK_OUT + "ms");
     }
     hideBootLoading();
-    startRaf();
-    if (galleryActive()) {
-      enterGalleryMode();
-    } else {
-      maybeShowFirstGuide();
-    }
+    /* 全幅でギャラリー形式（レーンは選択手段として使わない） */
+    enterGalleryMode();
   }
 
   function unmount() {

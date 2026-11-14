@@ -1,9 +1,10 @@
 /* ============================================================
    タッチ幅（スマホ・タブレット ≤1180px）調整 — 2026-11-07 バッチ1
-   ・見本選びをギャラリー形式に（回転レーンはPC幅のみ）
    ・デモ経路の文字床（本文16px／注釈14px）とタップ的（≥40px）
    ・色エディタ右パネルの画面外はみ出しの暫定封じ込め（本修理はバッチ2）
-   PC幅（≥1280px）の見た目・挙動は一切変えない。
+   ※見本選びは 2026-11-14 に全幅ギャラリー形式へ統一したため、
+     ギャラリー用ルールは下の「全幅共通」セクション側に置く。
+     それ以外のルールは PC幅（≥1280px）の見た目・挙動を変えない。
    ============================================================ */
 
 /* hidden の安全弁（全幅） */
@@ -12,127 +13,245 @@
   display: none !important;
 }
 
-@media (max-width: 1180px) {
-  /* ---------- 見本選び：ギャラリー形式 ---------- */
-  .sushi-shelf.is-gallery-mode .sushi-lane-wrap,
-  .sushi-shelf.is-gallery-mode .sushi-upper-band,
-  .sushi-shelf.is-gallery-mode #sushi-hint-open {
-    display: none !important;
-  }
-  .sushi-gallery {
-    padding: 0.75rem 0 1.5rem;
-  }
-  .sushi-gallery-lead {
-    font-size: 1rem;
-    line-height: 1.7;
-    margin: 0 0 1rem;
-  }
-  .sushi-gal-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.9rem;
-  }
-  .sushi-gal-card {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 0.55rem;
-    background: #fff;
-    border: 1px solid rgba(20, 28, 36, 0.25);
-    border-radius: 0.8rem;
-    text-align: left;
-    font: inherit;
-    color: inherit;
-    cursor: pointer;
-    min-height: 44px;
-  }
-  .sushi-gal-card-clip {
-    display: block;
-    aspect-ratio: 1200 / 706;
-    overflow: hidden;
-    border-radius: 0.5rem;
-    background: #f4f1ea;
-  }
-  .sushi-gal-card-clip img {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-  .sushi-gal-card-name {
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.4;
-  }
-  .sushi-gal-card-brand {
-    font-size: 0.875rem;
-    line-height: 1.4;
-    opacity: 0.75;
-  }
-  .sushi-gal-view {
-    padding: 0.75rem 0 1.5rem;
-  }
-  .sushi-gal-view-head {
-    margin-bottom: 0.75rem;
-  }
-  .sushi-gal-back {
-    min-height: 44px;
-    padding: 0.55rem 1rem;
-    font-size: 1rem;
-    font-weight: 700;
-    background: #fff;
-    border: 1px solid rgba(20, 28, 36, 0.3);
-    border-radius: 0.6rem;
-    cursor: pointer;
-  }
-  .sushi-gal-title {
-    font-size: 1.125rem;
-    font-weight: 700;
-    margin: 0.7rem 0 0.2rem;
-  }
-  .sushi-gal-count {
-    font-size: 0.875rem;
-    margin: 0;
-    opacity: 0.75;
-  }
-  .sushi-gal-frame {
-    height: 56vh;
-    min-height: 340px;
-    flex: none;
-    border: 1px solid rgba(20, 28, 36, 0.25);
-    border-radius: 0.6rem;
-  }
-  .sushi-gal-frame .sushi-zoom-iframe {
-    width: 100%;
-    border: 0;
-    display: block;
-  }
-  .sushi-gal-nav {
-    display: flex;
-    gap: 0.6rem;
-    margin-top: 0.9rem;
-  }
-  .sushi-gal-navbtn {
-    flex: 1 1 0;
-    min-height: 52px;
-    font-size: 1rem;
-    font-weight: 700;
-    background: #fff;
-    border: 1px solid rgba(20, 28, 36, 0.3);
-    border-radius: 0.6rem;
-    cursor: pointer;
-  }
-  .sushi-gal-decide {
-    flex: 1.5 1 0;
-    min-height: 52px;
-    font-size: 1.0625rem;
-    font-weight: 700;
-    background: #1d3468;
-    color: #fff;
-    border: 1px solid #1d3468;
-    border-radius: 0.6rem;
-    cursor: pointer;
-  }
+/* ============================================================
+   見本選び：ギャラリー形式（全幅共通） — 2026-11-14 統一
+   幅によらず「グリッド＋絞り込み」で選ぶ形に統一。
+   寿司レーンは選択手段として使わない。
+   ============================================================ */
 
+/* ---------- 見本選び：ギャラリー形式 ---------- */
+.sushi-shelf.is-gallery-mode .sushi-lane-wrap,
+.sushi-shelf.is-gallery-mode .sushi-upper-band,
+.sushi-shelf.is-gallery-mode #sushi-hint-open {
+  display: none !important;
+}
+.sushi-gallery {
+  padding: 0.75rem 0 1.5rem;
+}
+.sushi-gallery-lead {
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0 0 1rem;
+}
+.sushi-gal-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+.sushi-gal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.55rem;
+  background: #fff;
+  border: 1px solid rgba(20, 28, 36, 0.25);
+  border-radius: 0.8rem;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  min-height: 44px;
+}
+.sushi-gal-card-clip {
+  display: block;
+  /* 全件同じ縮尺・同じ枠。上部から中盤（典型ページの約半分）までを見せる深さ。
+     実測（幅1200px撮影）: 全高3080〜4388px・中央値3938px → 深さ1970px相当に統一 */
+  aspect-ratio: 1200 / 1970;
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background: #f4f1ea;
+}
+.sushi-gal-card-clip img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.sushi-gal-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+.sushi-gal-card-brand {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  opacity: 0.75;
+}
+.sushi-gal-view {
+  padding: 0.75rem 0 1.5rem;
+}
+.sushi-gal-view-head {
+  margin-bottom: 0.75rem;
+}
+.sushi-gal-back {
+  min-height: 44px;
+  padding: 0.55rem 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid rgba(20, 28, 36, 0.3);
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+.sushi-gal-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0.7rem 0 0.2rem;
+}
+.sushi-gal-count {
+  font-size: 0.875rem;
+  margin: 0;
+  opacity: 0.75;
+}
+.sushi-gal-frame {
+  height: 56vh;
+  min-height: 340px;
+  flex: none;
+  border: 1px solid rgba(20, 28, 36, 0.25);
+  border-radius: 0.6rem;
+}
+.sushi-gal-frame .sushi-zoom-iframe {
+  width: 100%;
+  border: 0;
+  display: block;
+}
+.sushi-gal-nav {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+.sushi-gal-navbtn {
+  flex: 1 1 0;
+  min-height: 52px;
+  font-size: 1rem;
+  font-weight: 700;
+  background: #fff;
+  border: 1px solid rgba(20, 28, 36, 0.3);
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+.sushi-gal-decide {
+  flex: 1.5 1 0;
+  min-height: 52px;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  background: #1d3468;
+  color: #fff;
+  border: 1px solid #1d3468;
+  border-radius: 0.6rem;
+  cursor: pointer;
+}
+
+/* ---------- ギャラリー時：見本ステップ全体をゲートのスクロールに乗せる ----------
+   通常の見本ステップはレーン上演のため画面ぴったり＋overflow:hidden だが、
+   ギャラリー形式では他の入口ステップと同じく .entry-gate の
+   overflow-y:auto で全体をスクロールさせる（最後の見本まで届くように）。 */
+#entry-gate.is-gallery-active[data-entry-step="sushi"] .entry-gate-panel--full {
+  overflow: visible;
+}
+#entry-gate.is-gallery-active #entry-sushi-field.sushi-shelf {
+  flex: 0 0 auto;
+  min-height: 0;
+  overflow: visible;
+}
+
+/* ---------- 詳細画面：操作ボタン群を下部に固定表示 ---------- */
+.sushi-gal-nav {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  padding: 0.6rem 0.1rem calc(0.6rem + env(safe-area-inset-bottom, 0px));
+  background: #fff;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  box-shadow: 0 -6px 16px rgba(0, 0, 0, 0.06);
+}
+
+/* カードの絞り込み状態（hidden の安全弁） */
+.sushi-gal-card[hidden] {
+  display: none !important;
+}
+
+/* 絞り込みチップ */
+.sushi-gal-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  margin: 0 0 1.1rem;
+}
+.sushi-gal-filter-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sushi-gal-filter-label {
+  font-size: 0.875rem;
+  font-weight: 700;
+  margin-right: 0.15rem;
+}
+.sushi-gal-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 40px;
+  padding: 0.4rem 0.8rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  line-height: 1.3;
+  color: inherit;
+  background: #fff;
+  border: 1px solid rgba(20, 28, 36, 0.3);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.sushi-gal-chip.is-active {
+  background: #1d3468;
+  border-color: #1d3468;
+  color: #fff;
+  font-weight: 700;
+}
+.sushi-gal-chip-dot {
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  border: 1px solid rgba(20, 28, 36, 0.25);
+  flex: none;
+}
+.sushi-gal-chip.is-active .sushi-gal-chip-dot {
+  border-color: rgba(255, 255, 255, 0.65);
+}
+.sushi-gal-chip-count {
+  font-size: 0.8125rem;
+  opacity: 0.75;
+}
+.sushi-gal-filter-count {
+  font-size: 0.9375rem;
+  margin: 0.1rem 0 0;
+}
+.sushi-gal-empty {
+  font-size: 1rem;
+  line-height: 1.7;
+  padding: 0.5rem 0 1.5rem;
+}
+
+/* ステップ見出しが上部バーに隠れないための余白（全幅） */
+#sushi-gallery,
+#sushi-gal-view {
+  scroll-margin-top: 4.5rem;
+}
+
+/* PC幅では列数を増やす（選ぶ仕組み自体は全幅で同一） */
+@media (min-width: 1181px) {
+  .sushi-gal-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1500px) {
+  .sushi-gal-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1180px) {
   /* ---------- デモ経路：文字の床とタップ的 ---------- */
   .chrome-product-catch {
     font-size: 0.875rem;
@@ -273,9 +392,4 @@
   .gct-honey-wrap,
   .gct-pick-host {
     max-width: 100%;
-  }}
-
-@media (min-width: 700px) and (max-width: 1180px) {
-  .sushi-gal-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }}
