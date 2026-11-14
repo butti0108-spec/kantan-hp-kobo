@@ -1035,7 +1035,7 @@
                   },
                   {
                       "id":  "gen_close_first_2",
-                      "text":  "はじめてでも入りやすいお店です。",
+                      "text":  "初めてでも入りやすいお店です。",
                       "axisIds":  [
                                       "clear"
                                   ],
@@ -2277,7 +2277,7 @@
                   },
                   {
                       "id":  "pet_fill_bright_close_1",
-                      "text":  "はじめてでも落ち着いて過ごせます。",
+                      "text":  "初めてでも落ち着いて過ごせます。",
                       "axisIds":  [
                                       "bright"
                                   ],
@@ -2331,7 +2331,7 @@
                   },
                   {
                       "id":  "pet_fill_works_open_1",
-                      "text":  "はじめての爪切り",
+                      "text":  "初めての爪切り",
                       "axisIds":  [
                                       "invite"
                                   ],

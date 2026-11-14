@@ -1035,7 +1035,7 @@
                   },
                   {
                       "id":  "gen_close_first_2",
-                      "text":  "はじめてでも入りやすいお店です。",
+                      "text":  "初めてでも入りやすいお店です。",
                       "axisIds":  [
                                       "clear"
                                   ],
@@ -2301,7 +2301,7 @@
                   },
                   {
                       "id":  "salon_fill_bright_close_3",
-                      "text":  "はじめてでも安心してお任せください。",
+                      "text":  "初めてでも安心してお任せください。",
                       "axisIds":  [
                                       "bright"
                                   ],

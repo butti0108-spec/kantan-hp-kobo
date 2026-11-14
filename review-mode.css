@@ -35,10 +35,8 @@ body.is-review-mode #entry-gate,
 body.is-review-mode .dash-pane,
 body.is-review-mode #split-handle,
 body.is-review-mode .atelier-menu,
-body.is-review-mode .draft-notice,
 body.is-review-mode .chrome-help-btn,
 body.is-review-mode .dash-reset-btn,
-body.is-review-mode .atelier-preview-guide,
 body.is-review-mode .zone-badge-rail,
 body.is-review-mode .zone-badge {
   display: none !important;

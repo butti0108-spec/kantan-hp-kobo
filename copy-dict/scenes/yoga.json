@@ -1035,7 +1035,7 @@
                   },
                   {
                       "id":  "gen_close_first_2",
-                      "text":  "はじめてでも入りやすいお店です。",
+                      "text":  "初めてでも入りやすいお店です。",
                       "axisIds":  [
                                       "clear"
                                   ],
@@ -2246,7 +2246,7 @@
                   },
                   {
                       "id":  "yoga_fill_bright_mid_3",
-                      "text":  "はじめての方向けの説明から入ります",
+                      "text":  "初めての方向けの説明から入ります",
                       "axisIds":  [
                                       "bright"
                                   ],
@@ -2332,7 +2332,7 @@
                   },
                   {
                       "id":  "yoga_fill_works_open_2",
-                      "text":  "はじめて向け体験",
+                      "text":  "初めて向け体験",
                       "axisIds":  [
                                       "invite"
                                   ],

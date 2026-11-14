@@ -1,0 +1,449 @@
+/* ============================================================
+   デザイン骨格バリアント（2026-11-07 バッチ1）
+   見本 draft の designVariant で #preview-root[data-design] が切り替わる。
+   std = 従来デザイン（このファイルでは何もしない）
+   d1  = ポスター型（全面写真＋斜め＋重なりプレート＋太枠・ハードシャドウ）
+   d2  = エディトリアル型（左右分割ヒーロー＋罫線＋番号リスト＋横並びカード）
+   d3  = ミニマル型（中央寄せ＋帯写真＋余白＋ヘアライン）
+   色・書体は従来どおり draftColors / fonts の変数から受ける。
+   ============================================================ */
+
+/* ---------- 共通：見本バッジはグリッドの外へ ---------- */
+#preview-root[data-design="d1"] .hero-mock-notice,
+#preview-root[data-design="d2"] .hero-mock-notice,
+#preview-root[data-design="d3"] .hero-mock-notice {
+  position: absolute;
+  top: 0.75rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+}
+
+/* ============================================================
+   d1 ポスター型
+   ============================================================ */
+#preview-root[data-design="d1"] .site-header {
+  border-bottom: 5px solid var(--accent);
+}
+#preview-root[data-design="d1"] .hero {
+  padding-top: 0;
+}
+#preview-root[data-design="d1"] .hero > .shell {
+  width: 100%;
+}
+#preview-root[data-design="d1"] .hero-box {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+#preview-root[data-design="d1"] .hero-stage {
+  aspect-ratio: 16 / 8.4;
+  border-radius: 0;
+  overflow: visible;
+}
+#preview-root[data-design="d1"] .hero-photo {
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3.2rem), 0 100%);
+}
+#preview-root[data-design="d1"] .hero-copy {
+  justify-content: flex-end;
+  align-items: flex-start;
+  text-align: left;
+  padding: 2rem 2.5rem 3.4rem;
+}
+#preview-root[data-design="d1"] .hero-copy-plate {
+  background: var(--chrome-bg) !important;
+  border-radius: 0 !important;
+  transform: rotate(-1.3deg);
+  box-shadow: 12px 12px 0 var(--accent);
+  padding: 1.4rem 2rem 1.5rem !important;
+}
+#preview-root[data-design="d1"] .hero-copy-plate h1,
+#preview-root[data-design="d1"] .hero-copy-plate .hero-lead {
+  color: var(--chrome-ink) !important;
+  -webkit-text-fill-color: var(--chrome-ink) !important;
+  text-shadow: none !important;
+  text-align: left;
+}
+#preview-root[data-design="d1"] .section-label {
+  display: inline-block;
+  align-self: flex-start;
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
+  background: var(--accent);
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  padding: 0.32rem 0.85rem;
+  transform: rotate(-1deg);
+  letter-spacing: 0.1em;
+}
+#preview-root[data-design="d1"] .hero-value-list > li {
+  border: 2px solid var(--body-ink);
+  border-radius: 0;
+  background: var(--card-bg);
+  box-shadow: 7px 7px 0 var(--accent);
+}
+#preview-root[data-design="d1"] #about-photos .skill-card {
+  border: 2px solid var(--body-ink);
+}
+#preview-root[data-design="d1"] #about-photos .skill-card img {
+  border-radius: 0;
+}
+#preview-root[data-design="d1"] .work-item-link {
+  border: 2px solid var(--body-ink);
+  border-radius: 0 !important;
+  background: var(--card-bg);
+  box-shadow: 7px 7px 0 var(--accent);
+  overflow: hidden;
+}
+#preview-root[data-design="d1"] .work-thumb {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 1.1rem));
+}
+#preview-root[data-design="d1"] [data-layout-block="photos"],
+#preview-root[data-design="d1"] [data-layout-block="works"] {
+  background: var(--page-bg-soft);
+}
+#preview-root[data-design="d1"] .accordion {
+  border: 2px solid var(--body-ink);
+  border-radius: 0;
+  background: var(--card-bg);
+}
+#preview-root[data-design="d1"] .contact-band {
+  clip-path: polygon(0 2.2rem, 100% 0, 100% 100%, 0 100%);
+  padding-top: 4.5rem;
+}
+
+/* ============================================================
+   d2 エディトリアル型
+   ============================================================ */
+#preview-root[data-design="d2"] .hero {
+  padding-top: 0;
+}
+#preview-root[data-design="d2"] .hero > .shell {
+  width: 100%;
+}
+#preview-root[data-design="d2"] .hero-box {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+#preview-root[data-design="d2"] .hero-stage {
+  aspect-ratio: auto;
+  height: 540px;
+  border-radius: 0;
+  grid-template-columns: 44% 56%;
+}
+#preview-root[data-design="d2"] .hero-photo {
+  grid-area: 1 / 2;
+  height: 100%;
+}
+/* コピー層は全面オーバーレイ（テキストON時 position:absolute）。
+   見えるパネルはプレート側で幅44%に絞り、右56%に写真を見せる。 */
+#preview-root[data-design="d2"] .hero-copy {
+  background: transparent;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 0;
+  min-height: 0;
+}
+#preview-root[data-design="d2"] .hero-copy-plate {
+  flex: 0 0 44%;
+  width: 44%;
+  max-width: 44%;
+  box-sizing: border-box;
+  background: var(--page-bg-soft) !important;
+  box-shadow: none !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.2rem 2.4rem !important;
+  text-align: left;
+}
+#preview-root[data-design="d2"] .hero-copy h1 {
+  color: var(--body-ink) !important;
+  -webkit-text-fill-color: var(--body-ink) !important;
+  text-shadow: none !important;
+  text-align: left;
+}
+#preview-root[data-design="d2"] .hero-copy h1::before {
+  content: "";
+  display: block;
+  width: 3.2rem;
+  height: 0.45rem;
+  background: var(--accent);
+  margin-bottom: 1.4rem;
+}
+#preview-root[data-design="d2"] .hero-copy .hero-lead {
+  color: var(--body-ink) !important;
+  -webkit-text-fill-color: var(--body-ink) !important;
+  text-shadow: none !important;
+  text-align: left;
+  margin-left: 0;
+}
+#preview-root[data-design="d2"] .section-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+#preview-root[data-design="d2"] .section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--body-ink);
+  opacity: 0.35;
+}
+#preview-root[data-design="d2"] .hero-value-list {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0;
+  counter-reset: dv-num;
+}
+#preview-root[data-design="d2"] .hero-value-list > li {
+  counter-increment: dv-num;
+  flex-direction: row;
+  align-items: baseline;
+  gap: 1.5rem;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--body-ink) 30%, transparent);
+  border-radius: 0;
+  padding: 1.3rem 0.25rem 1.4rem;
+}
+#preview-root[data-design="d2"] .hero-value-list > li::before {
+  content: counter(dv-num, decimal-leading-zero);
+  font-family: var(--font-display);
+  font-size: 2rem;
+  line-height: 1;
+  color: var(--accent);
+  flex: 0 0 3.5rem;
+  align-self: center;
+}
+#preview-root[data-design="d2"] .hero-value-list > li .hero-value-title {
+  flex: 0 0 26%;
+  width: auto;
+}
+#preview-root[data-design="d2"] .hero-value-list > li > p:last-child {
+  flex: 1 1 auto;
+  width: auto;
+}
+#preview-root[data-design="d2"] #works-list {
+  grid-template-columns: minmax(0, 1fr) !important;
+  gap: 0;
+}
+#preview-root[data-design="d2"] .work-item {
+  border-top: 1px solid color-mix(in srgb, var(--body-ink) 30%, transparent);
+  padding: 1.4rem 0;
+}
+#preview-root[data-design="d2"] .work-item-link {
+  display: grid;
+  grid-template-columns: 40% 60%;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+#preview-root[data-design="d2"] .work-thumb {
+  height: 100%;
+  min-height: 11rem;
+}
+#preview-root[data-design="d2"] .work-item-body {
+  padding: 0.5rem 0 0.5rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+#preview-root[data-design="d2"] .accordion {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--body-ink) 30%, transparent);
+  border-radius: 0;
+  background: transparent;
+}
+#preview-root[data-design="d2"] .contact-band {
+  border-top: 6px solid var(--accent);
+}
+
+/* ============================================================
+   d3 ミニマル型
+   ============================================================ */
+#preview-root[data-design="d3"] .site-header {
+  background-color: var(--page-bg) !important;
+  background-image: none !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--body-ink) 22%, transparent);
+}
+#preview-root[data-design="d3"] .site-header .logo,
+#preview-root[data-design="d3"] .site-header .logo-wrap,
+#preview-root[data-design="d3"] .site-header .preview-nav-static,
+#preview-root[data-design="d3"] .site-header .preview-nav-hint {
+  color: var(--body-ink) !important;
+  -webkit-text-fill-color: var(--body-ink) !important;
+}
+#preview-root[data-design="d3"] .site-footer {
+  background-color: var(--page-bg) !important;
+  background-image: none !important;
+  border-top: 1px solid color-mix(in srgb, var(--body-ink) 22%, transparent);
+}
+#preview-root[data-design="d3"] .site-footer p {
+  color: var(--body-ink) !important;
+  -webkit-text-fill-color: var(--body-ink) !important;
+}
+#preview-root[data-design="d3"] .hero-box {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+#preview-root[data-design="d3"] .hero-stage {
+  aspect-ratio: auto;
+  grid-template-rows: auto 330px;
+  border-radius: 0;
+  overflow: visible;
+}
+#preview-root[data-design="d3"] .hero-copy {
+  grid-area: 1 / 1;
+  min-height: 0;
+  padding: 3.8rem 1.5rem 2.6rem;
+}
+#preview-root[data-design="d3"] .hero-copy-plate {
+  background: color-mix(in srgb, var(--page-bg) 86%, transparent) !important;
+  box-shadow: none !important;
+  padding: 1.7rem 2.3rem !important;
+}
+#preview-root[data-design="d3"] .hero-copy h1 {
+  color: var(--body-ink) !important;
+  -webkit-text-fill-color: var(--body-ink) !important;
+  text-shadow: none !important;
+  letter-spacing: 0.16em;
+}
+#preview-root[data-design="d3"] .hero-copy .hero-lead {
+  color: var(--body-muted) !important;
+  -webkit-text-fill-color: var(--body-muted) !important;
+  text-shadow: none !important;
+}
+#preview-root[data-design="d3"] .hero-photo {
+  grid-area: 2 / 1;
+  height: 100%;
+  border: 1px solid color-mix(in srgb, var(--body-ink) 38%, transparent);
+  box-shadow: 0 0 0 7px var(--page-bg), 0 0 0 8px color-mix(in srgb, var(--body-ink) 38%, transparent);
+}
+#preview-root[data-design="d3"] .section {
+  padding-top: 4.6rem;
+  padding-bottom: 3.6rem;
+}
+#preview-root[data-design="d3"] .section > .shell > .section-label,
+#preview-root[data-design="d3"] .section > .shell > h2,
+#preview-root[data-design="d3"] .section > .shell > .profile-name,
+#preview-root[data-design="d3"] .section > .shell > .section-lead {
+  text-align: center;
+}
+#preview-root[data-design="d3"] .section-label {
+  letter-spacing: 0.32em;
+}
+#preview-root[data-design="d3"] .section h2::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+#preview-root[data-design="d3"] .hero-value-list > li {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--body-ink) 30%, transparent);
+  border-radius: 0;
+  padding-top: 1.5rem;
+}
+#preview-root[data-design="d3"] .work-item-link {
+  background: transparent;
+  border: 0;
+  border-radius: 0 !important;
+  box-shadow: none;
+}
+#preview-root[data-design="d3"] .work-thumb {
+  border: 1px solid color-mix(in srgb, var(--body-ink) 30%, transparent);
+}
+#preview-root[data-design="d3"] .work-item-body {
+  text-align: center;
+  align-items: center;
+}
+#preview-root[data-design="d3"] #about-photos .skill-card img {
+  border: 1px solid color-mix(in srgb, var(--body-ink) 30%, transparent);
+  border-radius: 0;
+}
+#preview-root[data-design="d3"] .accordion {
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--body-ink) 30%, transparent);
+  border-radius: 0;
+  background: transparent;
+}
+#preview-root[data-design="d3"] .contact-band {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-top: 1px solid color-mix(in srgb, var(--body-ink) 22%, transparent);
+}
+#preview-root[data-design="d3"] .contact-band,
+#preview-root[data-design="d3"] .contact-band .section-label,
+#preview-root[data-design="d3"] .contact-band h2,
+#preview-root[data-design="d3"] .contact-band-lead,
+#preview-root[data-design="d3"] .sample-mail,
+#preview-root[data-design="d3"] .sample-phone {
+  color: var(--body-ink) !important;
+  -webkit-text-fill-color: var(--body-ink) !important;
+}
+#preview-root[data-design="d3"] .contact-band h2::after {
+  background: var(--accent) !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================================
+   プレビューのスマホ幅（.preview-viewport.is-phone / is-fit-narrow）
+   ============================================================ */
+.preview-viewport.is-phone #preview-root[data-design="d1"] .hero-stage,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d1"] .hero-stage {
+  aspect-ratio: 4 / 3.6;
+}
+.preview-viewport.is-phone #preview-root[data-design="d1"] .hero-copy,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d1"] .hero-copy {
+  padding: 1.25rem 1.25rem 2.6rem;
+}
+.preview-viewport.is-phone #preview-root[data-design="d2"] .hero-stage,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d2"] .hero-stage {
+  height: auto;
+  aspect-ratio: 4 / 3.8;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: none;
+}
+.preview-viewport.is-phone #preview-root[data-design="d2"] .hero-photo,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d2"] .hero-photo {
+  grid-area: 1 / 1;
+}
+.preview-viewport.is-phone #preview-root[data-design="d2"] .hero-copy,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d2"] .hero-copy {
+  flex-direction: column;
+  align-items: stretch;
+}
+.preview-viewport.is-phone #preview-root[data-design="d2"] .hero-copy-plate,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d2"] .hero-copy-plate {
+  flex: none;
+  width: 100%;
+  max-width: 100%;
+  padding: 1.5rem 1.3rem !important;
+}
+.preview-viewport.is-phone #preview-root[data-design="d2"] .hero-value-list > li,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d2"] .hero-value-list > li {
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+.preview-viewport.is-phone #preview-root[data-design="d2"] .hero-value-list > li .hero-value-title,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d2"] .hero-value-list > li .hero-value-title {
+  flex: 1 1 auto;
+}
+.preview-viewport.is-phone #preview-root[data-design="d3"] .hero-stage,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d3"] .hero-stage {
+  grid-template-rows: auto 190px;
+}
+.preview-viewport.is-phone #preview-root[data-design="d3"] .section,
+.preview-viewport.is-fit-narrow #preview-root[data-design="d3"] .section {
+  padding-top: 3rem;
+  padding-bottom: 2.4rem;
+}

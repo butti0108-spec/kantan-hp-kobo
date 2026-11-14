@@ -1035,7 +1035,7 @@
                   },
                   {
                       "id":  "gen_close_first_2",
-                      "text":  "はじめてでも入りやすいお店です。",
+                      "text":  "初めてでも入りやすいお店です。",
                       "axisIds":  [
                                       "clear"
                                   ],
@@ -2393,7 +2393,7 @@
                   },
                   {
                       "id":  "clinic_fill_bright_close_3",
-                      "text":  "はじめてでも迷わない導線です。",
+                      "text":  "初めてでも迷わない導線です。",
                       "axisIds":  [
                                       "bright"
                                   ],
@@ -2426,7 +2426,7 @@
                   },
                   {
                       "id":  "clinic_fill_works_open_2",
-                      "text":  "はじめての方の流れ",
+                      "text":  "初めての方の流れ",
                       "axisIds":  [
                                       "invite"
                                   ],

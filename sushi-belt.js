@@ -58,7 +58,10 @@
     "26": 1,
     "28": 1,
     "29": 1,
-    "30": 1
+    "30": 1,
+    "31": 1,
+    "32": 1,
+    "33": 1
   };
 
   var manifest = null;
@@ -159,6 +162,17 @@
     els.slotPop = $("sushi-slot-pop");
     els.guideModal = $("sushi-guide-modal");
     els.hintOpen = $("sushi-hint-open");
+    els.gallery = $("sushi-gallery");
+    els.galGrid = $("sushi-gal-grid");
+    els.galTotal = $("sushi-gal-total");
+    els.galView = $("sushi-gal-view");
+    els.galTitle = $("sushi-gal-title");
+    els.galCount = $("sushi-gal-count");
+    els.galFrameWrap = $("sushi-gal-frame-wrap");
+    els.galBack = $("sushi-gal-back");
+    els.galPrev = $("sushi-gal-prev");
+    els.galNext = $("sushi-gal-next");
+    els.galDecide = $("sushi-gal-decide");
   }
 
   function tileHtml(sample, opts) {
@@ -640,11 +654,205 @@
 
   function onEmbedReadyMessage(ev) {
     if (!ev || !ev.data || ev.data.type !== "sushi-embed-ready") return;
-    if (!isZoomed || !els.zoomInner) return;
-    var iframe = els.zoomInner.querySelector(".sushi-zoom-iframe");
+    var iframe = null;
+    if (isZoomed && els.zoomInner) {
+      iframe = els.zoomInner.querySelector(".sushi-zoom-iframe");
+    } else if (els.galView && !els.galView.hidden && els.galFrameWrap) {
+      iframe = els.galFrameWrap.querySelector(".sushi-zoom-iframe");
+    }
     if (!iframe) return;
     if (ev.source && iframe.contentWindow && ev.source !== iframe.contentWindow) return;
     revealZoomIframe(iframe);
+  }
+
+  /* ==========================================================
+     ギャラリー形式（スマホ・タブレット幅 ≤1180px）
+     回転レーンの代わりに静止グリッド → タップで拡大 → 前後送り／決定。
+     決定はレーンと同じ confirmPick 経路（fetchDraft → onConfirm）。
+     ========================================================== */
+  var galMq =
+    typeof window !== "undefined" && window.matchMedia
+      ? window.matchMedia("(max-width: 1180px)")
+      : null;
+  var galBuilt = false;
+  var galIndex = 0;
+  var galScrollY = 0;
+
+  function galleryActive() {
+    return !!(galMq && galMq.matches);
+  }
+
+  function buildGallery() {
+    if (galBuilt || !els.galGrid) return;
+    var list = laneSamples || [];
+    if (!list.length) return;
+    var html = "";
+    list.forEach(function (sample, i) {
+      html +=
+        '<button type="button" class="sushi-gal-card" data-gal-index="' +
+        i +
+        '">' +
+        '<span class="sushi-gal-card-clip"><img src="' +
+        escapeAttr(previewUrl(sample)) +
+        '" alt="' +
+        escapeAttr(sample.brand || "") +
+        '" loading="lazy" decoding="async"></span>' +
+        '<span class="sushi-gal-card-name">No.' +
+        escapeHtml(sample.id) +
+        " " +
+        escapeHtml(sample.name || "") +
+        "</span>" +
+        '<span class="sushi-gal-card-brand">' +
+        escapeHtml(sample.brand || "") +
+        "</span></button>";
+    });
+    els.galGrid.innerHTML = html;
+    if (els.galTotal) els.galTotal.textContent = String(list.length);
+    galBuilt = true;
+  }
+
+  function enterGalleryMode() {
+    if (!els.root) return;
+    els.root.classList.add("is-gallery-mode");
+    buildGallery();
+    if (els.gallery) els.gallery.hidden = false;
+    closeGuideModal(false);
+  }
+
+  function exitGalleryMode() {
+    if (!els.root) return;
+    els.root.classList.remove("is-gallery-mode");
+    closeGalView(false);
+    if (els.gallery) els.gallery.hidden = true;
+  }
+
+  function galShow(i) {
+    var list = laneSamples || [];
+    if (!list.length || !els.galFrameWrap) return;
+    galIndex = ((i % list.length) + list.length) % list.length;
+    var sample = list[galIndex];
+    if (els.galTitle) {
+      els.galTitle.textContent =
+        "No." + sample.id + " " + (sample.name || sample.brand || "");
+    }
+    if (els.galCount) {
+      els.galCount.textContent = galIndex + 1 + " / " + list.length;
+    }
+    var old = els.galFrameWrap.querySelector("iframe");
+    if (old) stopEmbedFit(old);
+    var folder = sampleFolderKey(sample);
+    var src =
+      "index.html?embedPreview=1&sample=" +
+      encodeURIComponent(folder) +
+      "&brand=" +
+      encodeURIComponent(sample.brand || "") +
+      "&v=sushi-gal-v1";
+    els.galFrameWrap.classList.add("is-pending");
+    els.galFrameWrap.innerHTML =
+      '<p class="sushi-zoom-pending" aria-live="polite">見本を準備しています…</p>' +
+      '<iframe class="sushi-zoom-iframe" title="見本プレビュー No.' +
+      escapeAttr(sample.id) +
+      '" src="' +
+      escapeAttr(src) +
+      '"></iframe>';
+    var iframe = els.galFrameWrap.querySelector("iframe");
+    bindZoomWheel(els.galFrameWrap, iframe);
+    if (iframe) {
+      var failSafe = window.setTimeout(function () {
+        revealZoomIframe(iframe);
+      }, 12000);
+      iframe.addEventListener("load", function () {
+        window.clearTimeout(failSafe);
+        window.setTimeout(function () {
+          if (iframe && !iframe.classList.contains("is-ready")) {
+            revealZoomIframe(iframe);
+          }
+        }, 8000);
+      });
+    }
+  }
+
+  function openGalView(i) {
+    if (!els.gallery || !els.galView) return;
+    galScrollY = window.scrollY || window.pageYOffset || 0;
+    els.gallery.hidden = true;
+    els.galView.hidden = false;
+    galShow(i);
+    if (els.galView.scrollIntoView) {
+      els.galView.scrollIntoView({ block: "start" });
+    }
+  }
+
+  function closeGalView(restoreScroll) {
+    if (!els.galView || els.galView.hidden) return;
+    var iframe =
+      els.galFrameWrap && els.galFrameWrap.querySelector("iframe");
+    if (iframe) stopEmbedFit(iframe);
+    els.galView.hidden = true;
+    if (
+      els.gallery &&
+      els.root &&
+      els.root.classList.contains("is-gallery-mode")
+    ) {
+      els.gallery.hidden = false;
+    }
+    if (restoreScroll) window.scrollTo(0, galScrollY);
+  }
+
+  function galDecide() {
+    var list = laneSamples || [];
+    var sample = list[galIndex];
+    if (!sample) return;
+    stock = [sample, null, null];
+    selectedStockSlot = 0;
+    closeGalView(false);
+    confirmPick(0);
+  }
+
+  function bindGallery() {
+    if (els.galGrid && !els.galGrid.dataset.bound) {
+      els.galGrid.dataset.bound = "1";
+      els.galGrid.addEventListener("click", function (ev) {
+        var card = ev.target.closest("[data-gal-index]");
+        if (!card) return;
+        ev.preventDefault();
+        openGalView(Number(card.getAttribute("data-gal-index")));
+      });
+    }
+    if (els.galBack && !els.galBack.dataset.bound) {
+      els.galBack.dataset.bound = "1";
+      els.galBack.addEventListener("click", function () {
+        closeGalView(true);
+      });
+    }
+    if (els.galPrev && !els.galPrev.dataset.bound) {
+      els.galPrev.dataset.bound = "1";
+      els.galPrev.addEventListener("click", function () {
+        galShow(galIndex - 1);
+      });
+    }
+    if (els.galNext && !els.galNext.dataset.bound) {
+      els.galNext.dataset.bound = "1";
+      els.galNext.addEventListener("click", function () {
+        galShow(galIndex + 1);
+      });
+    }
+    if (els.galDecide && !els.galDecide.dataset.bound) {
+      els.galDecide.dataset.bound = "1";
+      els.galDecide.addEventListener("click", function () {
+        galDecide();
+      });
+    }
+    if (galMq && !window.__sushiGalMqBound) {
+      window.__sushiGalMqBound = true;
+      var onGalMq = function () {
+        if (!els.root || !els.root.isConnected) return;
+        if (galMq.matches) enterGalleryMode();
+        else exitGalleryMode();
+      };
+      if (galMq.addEventListener) galMq.addEventListener("change", onGalMq);
+      else if (galMq.addListener) galMq.addListener(onGalMq);
+    }
   }
 
   var BOOT_MSGS = [
@@ -1112,7 +1320,7 @@
     }
     if (!sample) {
       window.alert(
-        "まだ上の枠に見本がありません。下の見本を短く選択すると、ここに入れられます。"
+        "まだ上の枠に見本がありません。下の見本をタップすると、上の枠に入ります。"
       );
       return;
     }
@@ -1126,6 +1334,7 @@
 
   function setup() {
     bindEls();
+    bindGallery();
     if (!window.__sushiEmbedReadyBound) {
       window.__sushiEmbedReadyBound = true;
       window.addEventListener("message", onEmbedReadyMessage);
@@ -1199,12 +1408,18 @@
     }
     hideBootLoading();
     startRaf();
-    maybeShowFirstGuide();
+    if (galleryActive()) {
+      enterGalleryMode();
+    } else {
+      maybeShowFirstGuide();
+    }
   }
 
   function unmount() {
     hideBootLoading();
     stopRaf();
+    closeGalView(false);
+    if (els.gallery) els.gallery.hidden = true;
     closeZoom();
     closeReplaceModal();
     closeSlotPop();
