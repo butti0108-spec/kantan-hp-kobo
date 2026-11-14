@@ -775,19 +775,29 @@
   }
 
   function buildGalleryFilters() {
-    if (galFiltersBuilt || !els.galFilters) return;
+    if (!els.galFilters) return;
     var list = laneSamples || [];
+    /* 連動式（2026-11-14夜 本人決定）：もう一方の軸の選択に合わせた実数で数え直し、
+       0件になる選択肢は出さない。どう重ねても0件にはならない。 */
     var colorCounts = {};
     var typeCounts = {};
+    var colorBase = 0;
+    var typeBase = 0;
     list.forEach(function (s) {
-      if (s.colorKey) colorCounts[s.colorKey] = (colorCounts[s.colorKey] || 0) + 1;
       var t = HERO_TYPE_BY_ID[s.id];
-      if (t) typeCounts[t] = (typeCounts[t] || 0) + 1;
+      if (galFilter.type === "all" || t === galFilter.type) {
+        colorBase += 1;
+        if (s.colorKey) colorCounts[s.colorKey] = (colorCounts[s.colorKey] || 0) + 1;
+      }
+      if (galFilter.color === "all" || s.colorKey === galFilter.color) {
+        typeBase += 1;
+        if (t) typeCounts[t] = (typeCounts[t] || 0) + 1;
+      }
     });
     var html = "";
     html += '<div class="sushi-gal-filter-group" role="group" aria-label="テーマカラーで絞り込む">';
     html += '<span class="sushi-gal-filter-label">テーマカラー</span>';
-    html += filterChipHtml("color", "all", "すべて", list.length, null);
+    html += filterChipHtml("color", "all", "すべて", colorBase, null);
     COLOR_ORDER.forEach(function (key) {
       if (!colorCounts[key]) return;
       html += filterChipHtml("color", key, COLOR_LABELS[key] || key, colorCounts[key], COLOR_DOTS[key] || null);
@@ -795,7 +805,7 @@
     html += "</div>";
     html += '<div class="sushi-gal-filter-group" role="group" aria-label="最初の画面の型で絞り込む">';
     html += '<span class="sushi-gal-filter-label">最初の画面</span>';
-    html += filterChipHtml("type", "all", "すべて", list.length, null);
+    html += filterChipHtml("type", "all", "すべて", typeBase, null);
     TYPE_ORDER.forEach(function (key) {
       if (!typeCounts[key]) return;
       html += filterChipHtml("type", key, TYPE_LABELS[key] || key, typeCounts[key], null);
@@ -1017,6 +1027,7 @@
         var value = chip.getAttribute("data-filter-value");
         if (axis === "color" || axis === "type") {
           galFilter[axis] = value;
+          buildGalleryFilters();
           applyGalleryFilter();
         }
       });
