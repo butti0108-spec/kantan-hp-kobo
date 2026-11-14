@@ -321,7 +321,7 @@ a {
   color: #3a4a38;
   -webkit-text-fill-color: #3a4a38;
   -webkit-text-stroke: 0;
-  font-size: 0.98rem;
+  font-size: 1rem;
   font-weight: 400;
   line-height: 2;
   word-break: keep-all;
@@ -464,7 +464,7 @@ a {
 
 .hero-value-list p:last-child {
   margin: 0;
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.7;
   color: #1f3d18;
   -webkit-text-stroke: 0;
@@ -960,7 +960,7 @@ a {
 
 .offer-lead {
   margin: 1rem 0 1.25rem;
-  font-size: 0.95rem;
+  font-size: 1rem;
   color: var(--ink);
   font-weight: 400;
 }
@@ -1216,7 +1216,7 @@ a {
   color: var(--ink);
   font-weight: 400;
   line-height: 1.7;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .value-mark {
@@ -1250,7 +1250,7 @@ a {
   color: var(--ink);
   font-weight: 400;
   line-height: 1.7;
-  font-size: 0.95rem;
+  font-size: 1rem;
 }
 
 .about-points {
@@ -1398,7 +1398,7 @@ a {
 .work-item-copy p {
   margin: 0;
   color: var(--ink);
-  font-size: 0.92rem;
+  font-size: 1rem;
   line-height: 1.65;
   word-break: normal;
   overflow-wrap: anywhere;
@@ -1584,7 +1584,7 @@ a {
 
 .footer-inner p {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 14px;
   color: rgba(255, 255, 255, 0.88);
 }
 
@@ -2414,5 +2414,48 @@ body.lightbox-open {
     .has-reveal [data-reveal-group] [data-reveal="work"] {
       transition-duration: 1.3s;
     }
+  }
+}
+
+/* 長押しメニューの抑止は、ドラッグのつかみ所（グリップ）の上だけに限る。
+   2026-11-07 全面抑止で追加 → 2026-11-14 本人指示でグリップ限定に変更。
+   グリップ以外ではブラウザ標準の動き（コピー＆ペースト、長押しメニュー等）を止めない。
+   contextmenu の抑止は longpress-guard.js 側でグリップに限定している。 */
+.layout-arrange-handle,
+.layout-inner-handle {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.layout-arrange-cell,
+.easy-copy-list-cell,
+.easy-copy-list-head {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* つかみ所のそばの文字案内（2026-11-14 本人仕様）:
+   PCでは出さない。スマホ幅ではホバーが無く、押した瞬間に指で隠れるため、
+   グリップのそばに短い文字で出し続ける。 */
+.drag-guide-note {
+  display: none;
+}
+@media (max-width: 860px) {
+  /* 案内はグリップの行の2行目に置く（横に並べると名前やグリップを押し潰すため） */
+  .layout-arrange-summary:has(> .drag-guide-note),
+  .layout-closed-head:has(> .drag-guide-note),
+  .easy-copy-list-head:has(> .drag-guide-note) {
+    flex-wrap: wrap;
+  }
+  .drag-guide-note {
+    display: block;
+    flex: 1 0 100%;
+    order: 99;
+    margin-top: 0.15rem;
+    font-size: 0.72rem;
+    line-height: 1.3;
+    color: #5a635c;
+    white-space: normal;
   }
 }

@@ -102,6 +102,30 @@
       extraKey: "announce"
     },
     {
+      /* CTA帯の複数配置（問い合わせ重視型）。announce と同じ描画・色・リンク表示トグルを共有し、
+         文・ボタン文言・リンク先だけをインスタンス別フィールド（announce_2_*）で持つ。 */
+      id: "announce2",
+      label: "案内2",
+      selector: "#announce-2",
+      links: [
+        { step: "announce-color", kind: "color", label: "色" },
+        { step: "announce-text", kind: "text", label: "文字" }
+      ],
+      counts: null,
+      extraKey: "announce2"
+    },
+    {
+      id: "announce3",
+      label: "案内3",
+      selector: "#announce-3",
+      links: [
+        { step: "announce-color", kind: "color", label: "色" },
+        { step: "announce-text", kind: "text", label: "文字" }
+      ],
+      counts: null,
+      extraKey: "announce3"
+    },
+    {
       id: "contact",
       label: "ご連絡",
       selector: "#contact",
@@ -148,6 +172,8 @@
       access: "L",
       address: "L",
       announce: "L",
+      announce2: "L",
+      announce3: "L",
       contact: "L"
     },
     b: {
@@ -160,6 +186,8 @@
       access: "H",
       address: "H",
       announce: "H",
+      announce2: "H",
+      announce3: "H",
       contact: "H"
     },
     c: {
@@ -172,6 +200,8 @@
       access: "H",
       address: "H",
       announce: "H",
+      announce2: "H",
+      announce3: "H",
       contact: "L"
     }
   };
@@ -180,6 +210,20 @@
     if (LAYOUT_IDS.indexOf(id) >= 0) return id;
     if (LAYOUT_LEGACY[id]) return LAYOUT_LEGACY[id];
     return "a";
+  }
+
+  /* デザイン骨格バリアント（2026-11-07 バッチ1で追加）
+     std=従来デザイン / d1=斜めポスター / d2=左右分割エディトリアル / d3=ミニマル・ギャラリー
+     見本 draft の designVariant で切り替わり、#preview-root の data-design 属性と
+     design-variants.css の規則で骨格・構図そのものを変える。 */
+  const DESIGN_VARIANTS = ["std", "d1", "d2", "d3"];
+  function normalizeDesignVariant(v) {
+    const s = String(v || "std");
+    return DESIGN_VARIANTS.indexOf(s) >= 0 ? s : "std";
+  }
+  function applyDesignVariant(v) {
+    store.designVariant = normalizeDesignVariant(v);
+    if (root) root.setAttribute("data-design", store.designVariant);
   }
 
   /* 旧スキーマ（A小さい/B混合/C横長）→ 新スキーマ */
@@ -327,6 +371,12 @@
     announce_text: 100,
     announce_label: 100,
     announce_url: 200,
+    announce_2_text: 100,
+    announce_2_label: 100,
+    announce_2_url: 200,
+    announce_3_text: 100,
+    announce_3_label: 100,
+    announce_3_url: 200,
     access_text: 100,
     address_text: 100,
     extra_notes: 200,
@@ -1741,7 +1791,9 @@
         hours: !!(store.draftExtras && store.draftExtras.hours),
         access: !!(store.draftExtras && store.draftExtras.access),
         address: !!(store.draftExtras && store.draftExtras.address),
-        announce: !!(store.draftExtras && store.draftExtras.announce)
+        announce: !!(store.draftExtras && store.draftExtras.announce),
+        announce2: !!(store.draftExtras && store.draftExtras.announce2),
+        announce3: !!(store.draftExtras && store.draftExtras.announce3)
       },
       layoutBlockOff: Object.assign({}, store.layoutBlockOff || {}),
       draftCounts: Object.fromEntries(
@@ -1782,7 +1834,7 @@
       store.layoutSelected = true;
       if (snap.draftExtras) {
         store.draftExtras = Object.assign(
-          { hours: false, access: false, address: false, announce: false },
+          { hours: false, access: false, address: false, announce: false, announce2: false, announce3: false },
           snap.draftExtras
         );
       }
@@ -2240,7 +2292,7 @@
     draftCounts: Object.fromEntries(
       COUNT_IDS.map((id) => [id, COUNT_META[id] ? COUNT_META[id].defaultCount : 1])
     ),
-    draftExtras: { hours: false, access: false, address: false, announce: false },
+    draftExtras: { hours: false, access: false, address: false, announce: false, announce2: false, announce3: false },
     layoutBlockOff: {},
     draftContact: { label: true, note1: true, note2: true },
     confirmed: Object.fromEntries(STEP_IDS.map((id) => [id, false])),
@@ -2269,6 +2321,7 @@
     pendingFontRoleFocus: null,
     sitePurpose: null,
     layoutPattern: "a",
+    designVariant: "std",
     layoutOrder: LAYOUT_DEFAULT_ORDER.slice(),
     layoutSwapFrom: null,
     layoutDragId: null,
@@ -4228,6 +4281,7 @@
       uiMode: store.uiMode,
       sitePurpose: store.sitePurpose,
       layoutPattern: store.layoutPattern,
+      designVariant: store.designVariant || "std",
       layoutOrder: normalizeLayoutOrder(store.layoutOrder),
       layoutSelected: !!store.layoutSelected,
       layoutSchema: 2,
@@ -4309,7 +4363,9 @@
         hours: !!(store.draftExtras && store.draftExtras.hours),
         access: !!(store.draftExtras && store.draftExtras.access),
         address: !!(store.draftExtras && store.draftExtras.address),
-        announce: !!(store.draftExtras && store.draftExtras.announce)
+        announce: !!(store.draftExtras && store.draftExtras.announce),
+        announce2: !!(store.draftExtras && store.draftExtras.announce2),
+        announce3: !!(store.draftExtras && store.draftExtras.announce3)
       },
       layoutBlockOff: Object.assign({}, store.layoutBlockOff || {}),
       draftContact: { ...store.draftContact },
@@ -4491,7 +4547,9 @@
         hours: !!draft.extras.hours,
         access: !!draft.extras.access,
         address: !!draft.extras.address,
-        announce: !!draft.extras.announce
+        announce: !!draft.extras.announce,
+        announce2: !!draft.extras.announce2,
+        announce3: !!draft.extras.announce3
       };
     }
     if (draft.counts && typeof draft.counts === "object" && !draft.draftCounts) {
@@ -11238,6 +11296,7 @@
       store.layoutPattern = "a";
       store.layoutOrder = LAYOUT_DEFAULT_ORDER.slice();
       applyLayoutPattern("a", { silent: true });
+      applyDesignVariant("std");
       COLOR_STEP_IDS_ORDERED.forEach((id) => {
         store.confirmed[id] = false;
         delete store.snapshots[id];
@@ -12163,6 +12222,8 @@
       store.layoutSelected = true;
       store.confirmed.layout = true;
     }
+    /* デザイン骨格は見本ごとに切り替える（指定が無い見本は従来デザインへ戻す） */
+    applyDesignVariant(draft.designVariant || "std");
     /* 見本の色は draftColors／confirmed で載せる。
        サンプル本線では draft の detail を持ち込まない（finish が 1ブロック隠しで消えるため） */
     const sampleMainline =
@@ -12260,7 +12321,7 @@
     markPresetChosen(store.chosenPresetKey || draft.chosenPresetKey || "clinic");
     if (draft.draftExtras) {
       store.draftExtras = Object.assign(
-        { hours: false, access: false, address: false, announce: false },
+        { hours: false, access: false, address: false, announce: false, announce2: false, announce3: false },
         draft.draftExtras
       );
       ["hours", "access", "address", "announce"].forEach(function (key) {
@@ -12391,7 +12452,7 @@
   }
 
   function paintCopyPreviewFieldText(key, text) {
-    if (key === "announce_url") {
+    if (/^announce(_\d+)?_url$/.test(key)) {
       paintAnnounceFromForm();
       return;
     }
@@ -13078,6 +13139,8 @@
     { id: "access", label: "アクセス", layoutId: "access", singleKey: "access_text", singleLabel: "文" },
     { id: "address", label: "住所", layoutId: "address", singleKey: "address_text", singleLabel: "文" },
     { id: "announce", label: "案内", layoutId: "announce", singleKey: "announce_text", singleLabel: "文" },
+    { id: "announce2", label: "案内2", layoutId: "announce2", singleKey: "announce_2_text", singleLabel: "文" },
+    { id: "announce3", label: "案内3", layoutId: "announce3", singleKey: "announce_3_text", singleLabel: "文" },
     { id: "contact", label: "ご連絡", countId: null, layoutId: "contact" }
   ];
 
@@ -13328,10 +13391,12 @@
     row.className = "check";
     const input = document.createElement("input");
     input.type = "checkbox";
-    input.checked = which === "announce" ? !!store.announceLinkOn : workLinkShown(which);
+    /* announce系（announce/announce2/announce3）はリンク表示トグルを共有する */
+    const isAnnounceFamily = which === "announce" || which === "announce2" || which === "announce3";
+    input.checked = isAnnounceFamily ? !!store.announceLinkOn : workLinkShown(which);
     input.addEventListener("change", function (ev) {
       ev.stopPropagation();
-      if (which === "announce") store.announceLinkOn = input.checked;
+      if (isAnnounceFamily) store.announceLinkOn = input.checked;
       else {
         if (!store.workLinkOn || typeof store.workLinkOn !== "object") store.workLinkOn = {};
         store.workLinkOn[String(which)] = input.checked;
@@ -13640,6 +13705,10 @@
     if (fieldKey === "address_text") return rootEl.querySelector("#address-lead");
     if (fieldKey === "announce_text") return rootEl.querySelector("#announce-lead");
     if (fieldKey === "announce_label") return rootEl.querySelector("#announce-go");
+    if (fieldKey === "announce_2_text") return rootEl.querySelector("#announce-2-lead");
+    if (fieldKey === "announce_2_label") return rootEl.querySelector("#announce-2-go");
+    if (fieldKey === "announce_3_text") return rootEl.querySelector("#announce-3-lead");
+    if (fieldKey === "announce_3_label") return rootEl.querySelector("#announce-3-go");
     if (fieldKey === "contact_email") return rootEl.querySelector("#contact .sample-mail");
     if (fieldKey === "contact_label") return rootEl.querySelector("#contact-label");
     if (fieldKey === "contact_note_1") return rootEl.querySelector('[data-contact-note="1"]');
@@ -14371,16 +14440,17 @@
         store.copyListFocusField || sec.singleKey,
         sec.id
       );
-      if (sec.id === "announce") {
-        appendLinkShowToggle(wrap, "announce");
+      if (sec.id === "announce" || sec.id === "announce2" || sec.id === "announce3") {
+        const aPrefix = sec.id === "announce" ? "announce" : sec.id === "announce2" ? "announce_2" : "announce_3";
+        appendLinkShowToggle(wrap, sec.id);
         if (store.announceLinkOn) {
           appendCopyListFieldUi(
             wrap,
             [
-              { key: "announce_label", label: "ボタン" },
-              { key: "announce_url", label: "URLリンク", placeholder: "http://..." }
+              { key: aPrefix + "_label", label: "ボタン" },
+              { key: aPrefix + "_url", label: "URLリンク", placeholder: "http://..." }
             ],
-            store.copyListFocusField || "announce_label",
+            store.copyListFocusField || aPrefix + "_label",
             sec.id
           );
         }
@@ -14424,7 +14494,7 @@
 
   function copyFieldSkipsOmakase(key) {
     if (key === "contact_email" || key === "address_text" || key === "access_text" || key === "about_name") return true;
-    if (key === "announce_label" || key === "announce_url") return true;
+    if (/^announce(_\d+)?_(label|url)$/.test(key)) return true;
     if (/^work_\d+_url$/.test(key) || /^work_\d+_link_label$/.test(key)) return true;
     return false;
   }
@@ -14684,6 +14754,11 @@
         setHoverTip(handle, "つかんだまま上下に動かすと、順番を変えられます");
         if (!open) bindCopyListDrag(handle, cell, sec.id);
         head.appendChild(handle);
+        /* スマホ幅のみ、つかみ所のそばに文字の案内を出す（2026-11-14 本人仕様） */
+        const dragNote = document.createElement("span");
+        dragNote.className = "drag-guide-note";
+        dragNote.textContent = "押して動かすと並び替えできます";
+        head.appendChild(dragNote);
       }
       const name = document.createElement("p");
       name.className = "easy-copy-list-name layout-arrange-name";
@@ -15858,7 +15933,9 @@
       "work_1_url", "work_1_link_label", "work_2_url", "work_2_link_label", "work_3_url", "work_3_link_label",
       "hours_text", "access_text", "address_text",
       "contact_label", "contact_section_name", "contact_note_1", "contact_note_2", "contact_email",
-      "announce_text", "announce_label", "announce_url", "extra_notes"
+      "announce_text", "announce_label", "announce_url",
+      "announce_2_text", "announce_2_label", "announce_2_url",
+      "announce_3_text", "announce_3_label", "announce_3_url", "extra_notes"
     ].forEach(function (name) {
       setFieldValue(name, "");
       const el = form.elements.namedItem(name);
@@ -15887,7 +15964,7 @@
     store.heroTextOnPhoto = false;
     store.announceLinkOn = false;
     store.workLinkOn = {};
-    store.draftExtras = { hours: false, access: false, address: false, announce: false };
+    store.draftExtras = { hours: false, access: false, address: false, announce: false, announce2: false, announce3: false };
 
     const purpose = PURPOSE_PACKS[purposeKey] ? purposeKey : "shop";
     const purposeRadio =
@@ -18326,39 +18403,52 @@
     syncPreviewHeaderChrome();
   }
 
+  /* CTA帯（announce系）のインスタンス定義。文・ボタン文言・URLはインスタンス別フィールド、
+     リンク表示トグル（store.announceLinkOn）と色（announceBg）は全インスタンス共通。 */
+  const ANNOUNCE_INSTANCES = [
+    { leadId: "announce-lead", goId: "announce-go", textKey: "announce_text", labelKey: "announce_label", urlKey: "announce_url" },
+    { leadId: "announce-2-lead", goId: "announce-2-go", textKey: "announce_2_text", labelKey: "announce_2_label", urlKey: "announce_2_url" },
+    { leadId: "announce-3-lead", goId: "announce-3-go", textKey: "announce_3_text", labelKey: "announce_3_label", urlKey: "announce_3_url" }
+  ];
+
   function paintAnnounceFromForm() {
-    const lead = document.getElementById("announce-lead");
-    const go = document.getElementById("announce-go");
-    const text = String(fieldValue("announce_text") || "");
-    const label = String(fieldValue("announce_label") || "");
-    const url = String(fieldValue("announce_url") || "").trim();
-    if (lead) lead.textContent = text;
-    if (!go) return;
-    const action = go.closest(".announce-action") || go;
-    action.hidden = !store.announceLinkOn;
-    if (!go.dataset.bound) {
-      go.dataset.bound = "1";
-      go.addEventListener("click", function (ev) {
-        const href = String(fieldValue("announce_url") || "").trim();
-        if (!href) ev.preventDefault();
-      });
-    }
-    if (label) go.textContent = label;
-    if (url) {
-      go.setAttribute("href", url);
-      go.setAttribute("target", "_blank");
-      go.setAttribute("rel", "noopener");
-    } else {
-      go.setAttribute("href", "#");
-      go.removeAttribute("target");
-    }
+    ANNOUNCE_INSTANCES.forEach((inst) => {
+      const lead = document.getElementById(inst.leadId);
+      const go = document.getElementById(inst.goId);
+      const text = String(fieldValue(inst.textKey) || "");
+      const label = String(fieldValue(inst.labelKey) || "");
+      const url = String(fieldValue(inst.urlKey) || "").trim();
+      if (lead) lead.textContent = text;
+      if (!go) return;
+      const action = go.closest(".announce-action") || go;
+      action.hidden = !store.announceLinkOn;
+      if (!go.dataset.bound) {
+        go.dataset.bound = "1";
+        go.addEventListener("click", function (ev) {
+          const href = String(fieldValue(inst.urlKey) || "").trim();
+          if (!href) ev.preventDefault();
+        });
+      }
+      if (label) go.textContent = label;
+      if (url) {
+        go.setAttribute("href", url);
+        go.setAttribute("target", "_blank");
+        go.setAttribute("rel", "noopener");
+      } else {
+        go.setAttribute("href", "#");
+        go.removeAttribute("target");
+      }
+    });
   }
 
   function applyExtrasToPreview(extras) {
-    const e = extras || { hours: false, access: false, address: false, announce: false };
-    ["hours", "access", "address", "announce"].forEach((key) => {
+    const e = extras || { hours: false, access: false, address: false, announce: false, announce2: false, announce3: false };
+    ["hours", "access", "address", "announce", "announce2", "announce3"].forEach((key) => {
       const section = document.querySelector('[data-extra="' + key + '"]');
-      if (section) section.hidden = !e[key];
+      if (!section) return;
+      /* 呼び出し側のオブジェクトに無いキーは store の現行値で補う（announce2/3 の後方互換） */
+      const on = key in e ? !!e[key] : !!(store.draftExtras && store.draftExtras[key]);
+      section.hidden = !on;
     });
   }
 
@@ -18694,7 +18784,9 @@
       ["#contact-heading", 2],
       ["#hours h2", 2],
       ["#access h2", 2],
-      ["#announce h2", 2]
+      ["#announce h2", 2],
+      ["#announce-2 h2", 2],
+      ["#announce-3 h2", 2]
     ].forEach(function (pair) {
       fitElToLineFrame(rootEl.querySelector(pair[0]), pair[1]);
     });
@@ -18713,7 +18805,7 @@
     rootEl.querySelectorAll("#about-accordions summary").forEach(function (el) {
       fitElToLineFrame(el, 2);
     });
-    rootEl.querySelectorAll("#about .section-lead, #works-lead, #hours-lead, #access-lead, #announce-lead, #address-lead").forEach(function (el) {
+    rootEl.querySelectorAll("#about .section-lead, #works-lead, #hours-lead, #access-lead, #announce-lead, #announce-2-lead, #announce-3-lead, #address-lead").forEach(function (el) {
       fitElToLineFrame(el, 6);
     });
     rootEl.querySelectorAll("#contact .contact-band-lead").forEach(function (el) {
@@ -22622,6 +22714,11 @@
           handle.textContent = "⋮⋮";
           handle.setAttribute("aria-label", "この段の順番を変えられます");
           setHoverTip(handle, "つかんだまま上下に動かすと、順番を変えられます");
+          /* スマホではホバーが無く押した瞬間に指で隠れるため、つかみ所のそばに
+             文字の案内を出す（表示はCSS側でスマホ幅のみ。2026-11-14 本人仕様） */
+          const dragNote = document.createElement("span");
+          dragNote.className = "drag-guide-note";
+          dragNote.textContent = "押して動かすと並び替えできます";
 
           let head = null;
           if (imageBlock) {
@@ -22629,6 +22726,7 @@
             head.className = "layout-closed-head" + (imageOnly ? " layout-closed-head--list" : "");
             if (!imageOnly) head.appendChild(visLabel);
             head.appendChild(handle);
+            head.appendChild(dragNote);
             head.appendChild(name);
             if (!imageOnly) appendLayoutHeadCountGap(head, id);
             const secOpen = document.createElement("button");
@@ -22676,6 +22774,7 @@
           } else {
             summary.appendChild(visLabel);
             summary.appendChild(handle);
+            summary.appendChild(dragNote);
           }
 
           const body = document.createElement("div");
@@ -24115,7 +24214,7 @@
     });
     (cfg.files || []).forEach(clearFileInput);
     if (cfg.extrasReset) {
-      ["hours", "access", "address", "announce"].forEach((key) => {
+      ["hours", "access", "address", "announce", "announce2", "announce3"].forEach((key) => {
         document.querySelectorAll('[data-extra-toggle="' + key + '"]').forEach((input) => {
           input.checked = false;
         });
@@ -25984,6 +26083,7 @@
       createdAt: new Date().toISOString(),
       plan: "1man-sample-atelier-confirm-v4",
       layoutPattern: store.layoutPattern,
+      designVariant: store.designVariant || "std",
       layoutOrder: normalizeLayoutOrder(store.layoutOrder),
       layoutLabel: layoutLabel(store.layoutPattern),
       sitePurpose: store.sitePurpose,
@@ -26010,7 +26110,9 @@
         hours: !!(store.draftExtras && store.draftExtras.hours),
         access: !!(store.draftExtras && store.draftExtras.access),
         address: !!(store.draftExtras && store.draftExtras.address),
-        announce: !!(store.draftExtras && store.draftExtras.announce)
+        announce: !!(store.draftExtras && store.draftExtras.announce),
+        announce2: !!(store.draftExtras && store.draftExtras.announce2),
+        announce3: !!(store.draftExtras && store.draftExtras.announce3)
       },
       layoutBlockOff: Object.assign({}, store.layoutBlockOff || {}),
       fields: formToObject({ includeHidden: true }),
@@ -26144,7 +26246,9 @@
           hours: !!(store.draftExtras && store.draftExtras.hours),
           access: !!(store.draftExtras && store.draftExtras.access),
           address: !!(store.draftExtras && store.draftExtras.address),
-          announce: !!(store.draftExtras && store.draftExtras.announce)
+          announce: !!(store.draftExtras && store.draftExtras.announce),
+          announce2: !!(store.draftExtras && store.draftExtras.announce2),
+          announce3: !!(store.draftExtras && store.draftExtras.announce3)
         },
         layoutBlockOff: Object.assign({}, store.layoutBlockOff || {}),
         draftContact: { ...store.draftContact },
@@ -26187,6 +26291,7 @@
           fromLegacyKey ? 1 : data.layoutSchema
         );
       }
+      applyDesignVariant(data.designVariant || "std");
       if (data.layoutOrder) {
         store.layoutOrder = normalizeLayoutOrder(data.layoutOrder);
       }
@@ -26500,7 +26605,7 @@
         const migrated = { ...data.draftExtras };
         if (migrated.address == null && migrated.map != null) migrated.address = !!migrated.map;
         delete migrated.map;
-        store.draftExtras = { hours: false, access: false, address: false, announce: false, ...migrated };
+        store.draftExtras = { hours: false, access: false, address: false, announce: false, announce2: false, announce3: false, ...migrated };
         syncExtraPanels();
         applyLayoutOrderToPreview();
         renderLayoutArrangeWire();
@@ -26586,6 +26691,7 @@
       "1万円プラン 依頼内容（確定フロー試作）",
       "作成: " + meta.createdAt,
       "レイアウト: " + meta.layoutLabel,
+      "デザイン骨格: " + (meta.designVariant || "std"),
       "用途: " + purposeLabel(meta.sitePurpose),
       "色（ライブ／ZIP時確認済み）: " + JSON.stringify(meta.draftColors),
       "指定カラーコード: " + JSON.stringify(meta.colorCodes),

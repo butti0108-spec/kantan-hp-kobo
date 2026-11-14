@@ -14,6 +14,8 @@
   <link rel="icon" href="brand/walker-favicon.png?v=walker-20261002" type="image/png">
   <link rel="stylesheet" href="sample-overrides.css?v=frame-arrow-20261015">
   <link rel="stylesheet" href="free-photo-gallery/gallery.css?v=omakase-ok-20260929">
+  <link rel="stylesheet" href="design-variants.css?v=batch1-20261107">
+  <link rel="stylesheet" href="touch-ui.css?v=batch1-20261107">
   <script>
     (function () {
       var h = location.hostname;
@@ -74,6 +76,7 @@
   <script src="free-photo-gallery/gallery.js?v=gallery-act-20261001" defer></script>
   <script src="page-shutter.js?v=sample-only-20260929" defer></script>
   <script src="script.js?v=frame-arrow-20261015" defer></script>
+  <script src="longpress-guard.js" defer></script>
   <script>
     (function () {
       var h = location.hostname;
@@ -323,6 +326,26 @@
         <div class="sushi-lane-wrap">
           <div class="sushi-lane" id="sushi-lane" aria-label="見本の列（短く選択で上の枠へ。ドラッグで送れます）">
             <div class="sushi-lane-track" id="sushi-lane-track"></div>
+          </div>
+        </div>
+
+        <div id="sushi-gallery" class="sushi-gallery" hidden>
+          <p class="sushi-gallery-lead">見本はぜんぶで <span id="sushi-gal-total">33</span> 種類あります。気になる見本をタップすると大きく見られます。気に入ったら「この見本にする」で進みます。</p>
+          <div id="sushi-gal-grid" class="sushi-gal-grid"></div>
+        </div>
+        <div id="sushi-gal-view" class="sushi-gal-view" hidden>
+          <div class="sushi-gal-view-head">
+            <button type="button" class="sushi-gal-back" id="sushi-gal-back">← 見本の一覧に戻る</button>
+            <p class="sushi-gal-title" id="sushi-gal-title"></p>
+            <p class="sushi-gal-count" id="sushi-gal-count"></p>
+          </div>
+          <div class="sushi-zoom-frame sushi-gal-frame is-pending" id="sushi-gal-frame-wrap">
+            <p class="sushi-zoom-pending" aria-live="polite">見本を準備しています…</p>
+          </div>
+          <div class="sushi-gal-nav">
+            <button type="button" class="sushi-gal-navbtn" id="sushi-gal-prev">← 前の見本</button>
+            <button type="button" class="sushi-gal-decide" id="sushi-gal-decide">この見本にする</button>
+            <button type="button" class="sushi-gal-navbtn" id="sushi-gal-next">次の見本 →</button>
           </div>
         </div>
 
@@ -1553,6 +1576,12 @@
           <input name="announce_text" type="text" value="詳しくは、こちらからどうぞ。">
           <input name="announce_label" type="text" value="こちらへ">
           <input name="announce_url" type="text" value="">
+          <input name="announce_2_text" type="text" value="">
+          <input name="announce_2_label" type="text" value="">
+          <input name="announce_2_url" type="text" value="">
+          <input name="announce_3_text" type="text" value="">
+          <input name="announce_3_label" type="text" value="">
+          <input name="announce_3_url" type="text" value="">
         </div>
 
         <details class="dash-block" data-step-id="contact-text" data-preview-target="#contact">
@@ -1776,6 +1805,7 @@
             class="preview-site sample-1man"
             id="preview-root"
             data-layout="a"
+            data-design="std"
             data-accent-bar="mid"
             aria-hidden="false"
             style="
@@ -1995,6 +2025,22 @@
                   <h2>案内</h2>
                   <p class="section-lead" id="announce-lead">詳しくは、こちらからどうぞ。</p>
                   <p class="announce-action"><a class="announce-go" id="announce-go" href="#">こちらへ</a></p>
+                </div>
+              </section>
+
+              <section id="announce-2" class="section sample-extra announce-band preview-hit" data-layout-block="announce2" aria-label="案内2" hidden data-extra="announce2">
+                <div class="shell">
+                  <h2>案内</h2>
+                  <p class="section-lead" id="announce-2-lead"></p>
+                  <p class="announce-action"><a class="announce-go" id="announce-2-go" href="#">こちらへ</a></p>
+                </div>
+              </section>
+
+              <section id="announce-3" class="section sample-extra announce-band preview-hit" data-layout-block="announce3" aria-label="案内3" hidden data-extra="announce3">
+                <div class="shell">
+                  <h2>案内</h2>
+                  <p class="section-lead" id="announce-3-lead"></p>
+                  <p class="announce-action"><a class="announce-go" id="announce-3-go" href="#">こちらへ</a></p>
                 </div>
               </section>
 
