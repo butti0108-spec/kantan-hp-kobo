@@ -292,7 +292,7 @@
         <div id="sushi-boot-loading" class="sushi-boot-loading" hidden aria-busy="true" aria-live="polite">
           <div class="sushi-boot-loading-inner">
             <div class="sushi-boot-spinner" aria-hidden="true"></div>
-            <p id="sushi-boot-loading-msg" class="sushi-boot-loading-msg">ただいま見本をレーンに流しています…</p>
+            <p id="sushi-boot-loading-msg" class="sushi-boot-loading-msg">ただいま見本を並べています…</p>
           </div>
         </div>
         <div class="sushi-stage-top">
@@ -331,7 +331,9 @@
 
         <div id="sushi-gallery" class="sushi-gallery" hidden>
           <p class="sushi-gallery-lead">見本はぜんぶで <span id="sushi-gal-total">33</span> 種類あります。気になる見本をタップすると大きく見られます。気に入ったら「この見本にする」で進みます。</p>
+          <div id="sushi-gal-filters" class="sushi-gal-filters"></div>
           <div id="sushi-gal-grid" class="sushi-gal-grid"></div>
+          <p id="sushi-gal-empty" class="sushi-gal-empty" hidden>条件に合う見本がありません。ほかの条件でお試しください。</p>
         </div>
         <div id="sushi-gal-view" class="sushi-gal-view" hidden>
           <div class="sushi-gal-view-head">
@@ -1592,7 +1594,7 @@
                   <label class="check"><input type="checkbox" name="sample_order_form" value="1"> お名前やご用件を書いて送る欄（フォーム）は付きません。メールアドレスの掲載と、アドレスをコピーできるところまでが含まれます。</label>
                   <label class="check"><input type="checkbox" name="sample_order_keep" value="1"> 公開後の継続更新・保守は基本プランに含まれません。</label>
                   <label class="check"><input type="checkbox" name="sample_order_as_sent" value="1"> 送られてきた画像や文字に誤字脱字や間違いがあっても、確認や編集はせず、送られてきた情報のまま掲載します。</label>
-                  <label class="check"><input type="checkbox" name="sample_order_revision" value="1"> 公開後1か月以内の無料修正は1回までです。</label>
+                  <label class="check"><input type="checkbox" name="sample_order_revision" value="1"> 完成URLの送付から1か月以内の無料修正は2回までです。</label>
                 </section>
                 <section class="sample-zip-section">
                   <details class="sample-price-accordion">
@@ -1674,7 +1676,7 @@
             <label class="check"><input type="checkbox" name="scope_no_form" value="1"> お名前やご用件を書いて送る欄（フォーム）は付きません。メールアドレスの掲載と、アドレスをコピーできるところまでが含まれます。</label>
             <label class="check"><input type="checkbox" name="scope_update" value="1"> 公開後の<strong>継続更新・保守</strong>は含みません</label>
             <label class="check"><input type="checkbox" name="scope_as_sent" value="1"> 送られてきた画像や文字に誤字脱字や間違いがあっても、確認や編集はせず、送られてきた情報のまま掲載します。</label>
-            <label class="check"><input type="checkbox" name="scope_revision_once" value="1"> 納品後の<strong>無料修正は1回まで</strong>です（次回以降は別料金。<a href="help.html?return=order#faq">ヘルプはこちら</a>）</label>
+            <label class="check"><input type="checkbox" name="scope_revision_once" value="1"> 納品後の<strong>無料修正は2回まで</strong>です（完成URLの送付から1か月以内。回数を超える場合は、1回のご依頼につき3,000円。<a href="help.html?return=order#faq">ヘルプはこちら</a>）</label>
           </fieldset>
           <div class="finish-summary" id="finish-summary" aria-live="polite">
             <p class="finish-summary-lead">右の見本を見てください。直したいところや足りないところがあれば、下の項目をタップして<strong>直す・追加</strong>してください。足りない項目は赤い文字です。直し終わると、またこの画面に戻ります。</p>

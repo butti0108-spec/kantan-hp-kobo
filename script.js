@@ -4806,7 +4806,7 @@
   function buildFolderOrderPayload() {
     const draft = buildDraftPayload();
     draft.colorFinalAck = true;
-    draft.freeRevisionNote = "作成後の無料修正は1回のみ";
+    draft.freeRevisionNote = "作成後の無料修正は2回まで（完成URLの送付から1か月以内）";
     draft.kind = "sample1man-order";
     draft.saveMode = "folder";
     return draft;
@@ -25021,7 +25021,7 @@
 
     const meta = collectSettings();
     meta.colorFinalAck = true;
-    meta.freeRevisionNote = "作成後の無料修正は1回のみ";
+    meta.freeRevisionNote = "作成後の無料修正は2回まで（完成URLの送付から1か月以内）";
     if (samplePriceState().domain === "own") meta.ownDomain = sampleOwnDomainName();
     const zip = new JSZip();
     zip.file("order.json", JSON.stringify(meta, null, 2));
@@ -25040,7 +25040,7 @@
       "追加: " + JSON.stringify(meta.extras),
       "画像・文字の確定: " + JSON.stringify(meta.confirmed),
       "色最終確認: はい",
-      "無料修正: 作成後1回のみ",
+      "無料修正: 作成後2回まで（完成URLの送付から1か月以内）",
       "使いたいアドレス: " + (meta.ownDomain || "(なし)"),
       "URLローマ字希望: " + ((meta.fields && meta.fields.url_slug_wish) || "(なし)"),
       "",
