@@ -9644,6 +9644,12 @@ html.is-embed-preview body.is-embed-preview {
   overflow-x: hidden !important;
   overflow-y: hidden !important;
 }
+/* embedを単独ページとして開いた時（iframe内ではない時）は、ページ自体を縦スクロールできるようにする。
+   iframe内では従来通りスクロールさせない（親側が枠の高さを合わせる）。2026-11-15 ポートフォリオからの直リンクで発覚 */
+html.is-embed-preview.is-embed-standalone,
+html.is-embed-preview.is-embed-standalone body.is-embed-preview {
+  overflow-y: auto !important;
+}
 body.is-embed-preview #preview-root,
 body.is-embed-preview .preview-site,
 body.is-embed-preview .atelier-shell {
