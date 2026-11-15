@@ -22212,7 +22212,6 @@
     return {
       domain: picked("sample_price_domain", "github"),
       custom: picked("sample_price_custom", "none"),
-      wp: picked("sample_price_wp", "no") === "yes",
       support: picked("sample_price_support", "none")
     };
   }
@@ -22235,16 +22234,12 @@
       notes.push("一部オリジナル対応は2万円からです。基本の1万円に加わります。金額は内容によって変わります。");
     }
     if (state.custom === "full") notes.push("全体の独自構成は、個別の見積もりです。その費用は、上の金額に含まれていません。");
-    if (state.wp) {
-      total += 50000;
-      notes.push("WordPress化は5万円からです。基本の1万円に加わります。管理画面とお問い合わせフォームが基本の範囲です。追加機能は別途見積もりです。");
-    }
     if (state.support === "online") {
       total += 1500;
       notes.push("画面共有サポートは30分1,500円です。それを超える場合は、内容を確認してから金額をご案内します。");
     }
     if (state.support === "visit") notes.push("訪問サポートは5万円からです。基本プランを含みます。訪問先によっては、追加料金が別にかかります。");
-    const from = state.custom === "partial" || state.wp || state.support === "visit";
+    const from = state.custom === "partial" || state.support === "visit";
     return { total: total, notes: notes, from: from };
   }
 
@@ -22255,7 +22250,6 @@
     return {
       domain: domain[state.domain] || "GitHub Pages",
       custom: custom[state.custom] || "なし",
-      wp: state.wp ? "あり" : "なし",
       support: support[state.support] || "自分で進める"
     };
   }
@@ -22274,7 +22268,6 @@
     if (state.domain === "own") lines.push("使いたいアドレス：" + sampleOwnDomainName());
     lines.push(
       "独自レイアウト：" + label.custom,
-      "WordPress：" + label.wp,
       "サポート：" + label.support,
       "【シミュレーター表示額】",
       "見積もりは " + formatTaxPrice(price.total) + (price.from ? "から" : "") + "です"
@@ -22407,7 +22400,7 @@
       if (!el) return;
       el.addEventListener("change", renderSampleZipBranch);
     });
-    ["sample_price_domain", "sample_price_custom", "sample_price_wp", "sample_price_support"].forEach(function (name) {
+    ["sample_price_domain", "sample_price_custom", "sample_price_support"].forEach(function (name) {
       form.querySelectorAll('input[name="' + name + '"]').forEach(function (el) {
         el.addEventListener("change", renderSampleZipBranch);
       });
