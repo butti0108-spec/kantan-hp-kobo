@@ -296,6 +296,10 @@ function setText(d, sel, text){ var el = d.querySelector(sel); if (el) el.textCo
 function show(d, sel, visible){ var el = d.querySelector(sel); if (el) el.style.display = visible ? '' : 'none'; }
 function apply(){
   var d = doc(); if (!d || !d.querySelector('.hero')) return;
+  /* anchor the hero image: top-aligned, no re-centering, so the photo never
+     slides when items below it are switched off; the hero just gets shorter */
+  var heroEl = d.querySelector('.hero');
+  if (heroEl){ heroEl.style.justifyContent = 'flex-start'; heroEl.style.minHeight = 'auto'; }
   var name = val('f-name');
   show(d, '.v-title', on('t-name'));
   var vt = d.querySelector('.v-title');
