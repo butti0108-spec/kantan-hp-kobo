@@ -21,7 +21,9 @@ h1{font-family:"Noto Serif JP",serif;font-size:clamp(23px,5vw,32px);letter-spaci
 .steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px;font-size:13px}
 .steps span{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 12px}
 .steps b{color:var(--blue-deep)}
-.lead{max-width:36em;margin:10px auto 0;color:var(--ink-dim);font-size:14px;text-align:center}
+.lead{max-width:640px;margin:16px auto 0;text-align:left}
+.lead .l1{font-size:16px;font-weight:700;color:var(--ink);line-height:1.8}
+.lead .l2{font-size:13.5px;color:var(--ink-dim);line-height:1.9;margin-top:8px}
 .cols{display:grid;gap:22px;margin-top:22px}
 @media(min-width:720px){.cols{grid-template-columns:1fr 1fr;align-items:start}.pv{position:sticky;top:14px}}
 form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px clamp(16px,3vw,26px)}
@@ -76,7 +78,10 @@ footer a{color:var(--blue-deep)}
   <h1>この型で作る</h1>
   <p><span class="proto">試作品です。送信しても実際には届かず、決済もできません</span></p>
   <div class="steps"><span><b>1</b> 色と内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
-  <p class="lead">まず色を選んでください。そのあとは、ページに出る順番のまま、上から順に埋めるだけです。入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに右のスイッチで「入れる／入れない」を選べます（切ると、その項目はページに出ません）。品目は好きなだけ増やせます（制限はありません）。</p>
+  <div class="lead">
+    <p class="l1">まず色を選んでください。<br>あとは、ページに出る順番のまま、上から埋めるだけです。</p>
+    <p class="l2">入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに右のスイッチで「入れる／入れない」を選べます。品目は好きなだけ増やせます。</p>
+  </div>
 </header>
 
 <div class="cols">
