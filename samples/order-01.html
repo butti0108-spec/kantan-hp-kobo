@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>この型で作る｜懐石 玄海の型（試作品）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fbf8f2;--ink:#2e2a24;--ink-dim:#8a7f6d;--blue:#0052B5;--blue-deep:#003d87;--line:#e4dac6;--card:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans JP",sans-serif;line-height:1.85;letter-spacing:.03em}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
+header{padding:26px 0 4px;text-align:center}
+header .brand{font-size:12px;letter-spacing:.3em;color:var(--ink-dim);font-weight:700}
+h1{font-family:"Noto Serif JP",serif;font-size:clamp(23px,5vw,32px);letter-spacing:.05em;margin-top:4px}
+.proto{display:inline-block;margin-top:8px;font-size:12px;background:#fdf3d8;border:1px solid #e5cf8a;border-radius:999px;padding:2px 12px}
+.steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px;font-size:13px}
+.steps span{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 12px}
+.steps b{color:var(--blue-deep)}
+.lead{max-width:36em;margin:10px auto 0;color:var(--ink-dim);font-size:14px;text-align:center}
+.cols{display:grid;gap:22px;margin-top:22px}
+@media(min-width:900px){.cols{grid-template-columns:1fr 1fr;align-items:start}.pv{position:sticky;top:14px}}
+form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px clamp(16px,3vw,26px)}
+fieldset{border:none;margin-bottom:20px}
+legend{font-weight:900;font-size:15.5px;margin-bottom:8px;color:var(--blue-deep)}
+label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px}
+label .req{color:#b3261e;font-weight:900}
+input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font-size:15px;font-family:inherit;background:#fff}
+textarea{resize:vertical}
+input[type=file]{font-size:13.5px;margin-top:2px}
+.hint{font-size:12px;color:var(--ink-dim)}
+.grid3{display:grid;gap:6px}
+.pv h2,.done h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.pvframe{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+iframe{width:100%;height:640px;border:0;display:block}
+.send{margin-top:6px}
+.send button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit}
+.send button:hover{background:var(--blue-deep)}
+.err{display:none;color:#b3261e;font-size:13.5px;margin-top:8px}
+.done{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
+.done ul{margin:8px 0 8px 1.2em;font-size:14px}
+.pay{display:inline-block;margin-top:10px;background:var(--blue);color:#fff;border-radius:10px;padding:12px 22px;font-weight:900;text-decoration:none}
+footer{margin:34px 0 30px;font-size:12.5px;color:var(--ink-dim);text-align:center}
+footer a{color:var(--blue-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="brand">アーチデザイン工房</p>
+  <h1>この型で作る</h1>
+  <p><span class="proto">試作品です。送信しても、実際にはまだ工房へ届きません</span></p>
+  <div class="steps"><span><b>1</b> 内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
+  <p class="lead">選んだ型（懐石 玄海）に入れる内容を、上から順に埋めてください。入れた内容は、右（下）のプレビューにその場で出ます。全部埋まったら、送信ボタンひとつで工房に届きます。</p>
+</header>
+
+<div class="cols">
+<form id="orderForm" novalidate>
+  <fieldset>
+    <legend>お店のこと</legend>
+    <label>お店の名前 <span class="req">必須</span></label>
+    <input type="text" id="f-name" value="懐石 玄海">
+    <label>キャッチコピー（改行できます）</label>
+    <textarea id="f-catch" rows="2">八席だけの、
+静かな懐石の店です。</textarea>
+    <label>特徴の一行</label>
+    <input type="text" id="f-facts" value="おまかせ一本 ・ 完全予約制 ・ 銀座">
+    <label>電話番号 <span class="req">必須</span></label>
+    <input type="text" id="f-tel" value="03-0000-0000">
+  </fieldset>
+
+  <fieldset>
+    <legend>写真</legend>
+    <label>写真A（最初に出る写真）</label>
+    <input type="file" id="f-photoA" accept="image/*">
+    <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p>
+    <label>写真B（途中の帯の写真）</label>
+    <input type="file" id="f-photoB" accept="image/*">
+  </fieldset>
+
+  <fieldset>
+    <legend>お品書き</legend>
+    <label>お品書きの説明</label>
+    <textarea id="f-note" rows="2">季節で変わります。苦手な食材は予約の時に教えてください。</textarea>
+    <label>品目1（名前／説明／料金）</label>
+    <div class="grid3">
+      <input type="text" id="f-c1n" value="昼のおまかせ">
+      <input type="text" id="f-c1d" value="全八品。軽めに、季節の走りを。">
+      <input type="text" id="f-c1p" value="12,000円">
+    </div>
+    <label>品目2（名前／説明／料金）</label>
+    <div class="grid3">
+      <input type="text" id="f-c2n" value="夜のおまかせ">
+      <input type="text" id="f-c2d" value="全十一品。この店の真ん中です。">
+      <input type="text" id="f-c2p" value="18,000円">
+    </div>
+    <label>品目3（名前／説明／料金）</label>
+    <div class="grid3">
+      <input type="text" id="f-c3n" value="特別のおまかせ">
+      <input type="text" id="f-c3d" value="旬の頂きを使う、月に数日だけの一本。">
+      <input type="text" id="f-c3p" value="25,000円">
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>店の案内</legend>
+    <label>場所（住所と最寄り）</label>
+    <input type="text" id="f-place" value="東京都中央区銀座 0-0-0 ・ 銀座駅から徒歩4分">
+    <label>営業時間</label>
+    <input type="text" id="f-hours" value="昼 12:00（一斉）/ 夜 18:00・20:30（二部制）・ 日曜定休">
+    <label>席数・その他</label>
+    <input type="text" id="f-seats" value="カウンター八席のみ">
+  </fieldset>
+
+  <div class="send">
+    <button type="submit">この内容で送信する</button>
+    <p class="err" id="err">お店の名前と電話番号を入れてください。</p>
+    <p class="hint" style="margin-top:8px">送信すると工房に内容が届き、制作が始まります。お支払い（10,000円）は送信後の画面から続けてできます。</p>
+  </div>
+</form>
+
+<div class="pv">
+  <h2>プレビュー（入力した内容がそのまま出ます）</h2>
+  <div class="pvframe"><iframe id="pv" src="01-kaiseki-genkai.html" title="プレビュー"></iframe></div>
+</div>
+</div>
+
+<div class="done" id="done">
+  <h2>送信しました</h2>
+  <p>この内容が工房に届きました（試作品のため、実際にはまだ届いていません）。工房が内容を確認して、この型の形でページを作ります。</p>
+  <p style="margin-top:10px"><b>送信内容の控え</b></p>
+  <ul id="summary"></ul>
+  <p>続けて、お支払いにお進みください。</p>
+  <a class="pay" href="https://buy.stripe.com/4gM6oHgpre1Wd2Sdza6EU00" target="_blank" rel="noopener">お支払い（10,000円）へ進む</a>
+</div>
+
+<footer>
+  <p><a href="index.html">見本を選ぶページへ戻る</a> ／ アーチデザイン工房</p>
+</footer>
+</div>
+
+<script>
+var pv = document.getElementById('pv');
+function doc(){ return pv.contentDocument; }
+function val(id){ return document.getElementById(id).value.trim(); }
+function setText(sel, text){ var d = doc(); if (!d) return; var el = d.querySelector(sel); if (el) el.textContent = text; }
+function apply(){
+  var d = doc(); if (!d || !d.querySelector('.hero')) return;
+  var name = val('f-name');
+  var vt = d.querySelector('.v-title');
+  if (vt && name){
+    if (name.length >= 2) vt.innerHTML = name.slice(0,1) + '<span class="gold">' + name.slice(1) + '</span>';
+    else vt.textContent = name;
+  }
+  var foot = d.querySelectorAll('footer p');
+  if (foot[0] && name) foot[0].textContent = name;
+  if (foot[1]) foot[1].textContent = val('f-place').split('・')[0];
+  var h1 = d.querySelector('.hero h1');
+  if (h1) h1.innerHTML = val('f-catch').split('\n').map(function(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }).join('<br>');
+  setText('.facts', val('f-facts'));
+  var tel = val('f-tel');
+  var telEl = d.querySelector('.tel');
+  if (telEl){ telEl.textContent = '予約の電話 ' + tel; telEl.setAttribute('href', 'tel:' + tel.replace(/-/g,'')); }
+  setText('.course .note', val('f-note'));
+  var rows = d.querySelectorAll('.course-row');
+  [['f-c1n','f-c1d','f-c1p'],['f-c2n','f-c2d','f-c2p'],['f-c3n','f-c3d','f-c3p']].forEach(function(ids, i){
+    if (!rows[i]) return;
+    var h = rows[i].querySelector('h3'); if (h) h.textContent = val(ids[0]);
+    var p = rows[i].querySelector('p:not(.price)'); if (p) p.textContent = val(ids[1]);
+    var pr = rows[i].querySelector('.price'); if (pr) pr.textContent = val(ids[2]);
+  });
+  var tds = d.querySelectorAll('.info td');
+  if (tds[0]) tds[0].textContent = val('f-place');
+  if (tds[1]) tds[1].textContent = val('f-hours');
+  if (tds[2]) tds[2].textContent = val('f-seats');
+  if (tds[3]) tds[3].textContent = tel;
+}
+pv.addEventListener('load', apply);
+document.querySelectorAll('#orderForm input[type=text], #orderForm textarea').forEach(function(el){
+  el.addEventListener('input', apply);
+});
+function photo(inputId, sel){
+  document.getElementById(inputId).addEventListener('change', function(){
+    var f = this.files && this.files[0]; if (!f) return;
+    var url = URL.createObjectURL(f);
+    var d = doc(); if (!d) return;
+    var img = d.querySelector(sel); if (img) img.src = url;
+  });
+}
+photo('f-photoA', 'img.dish');
+photo('f-photoB', '.band img');
+document.getElementById('orderForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var err = document.getElementById('err');
+  if (!val('f-name') || !val('f-tel')){ err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  var items = [
+    ['お店の名前', val('f-name')], ['キャッチコピー', val('f-catch').replace(/\n/g,' ')],
+    ['特徴の一行', val('f-facts')], ['電話番号', val('f-tel')],
+    ['品目', val('f-c1n') + ' ' + val('f-c1p') + '／' + val('f-c2n') + ' ' + val('f-c2p') + '／' + val('f-c3n') + ' ' + val('f-c3p')],
+    ['場所', val('f-place')], ['営業時間', val('f-hours')], ['席数・その他', val('f-seats')],
+    ['写真', 'A：' + (document.getElementById('f-photoA').files[0] ? '選択済み' : '見本のまま') + '／B：' + (document.getElementById('f-photoB').files[0] ? '選択済み' : '見本のまま')]
+  ];
+  document.getElementById('summary').innerHTML = items.map(function(it){
+    return '<li>' + it[0] + '：' + it[1].replace(/</g,'&lt;') + '</li>';
+  }).join('');
+  var done = document.getElementById('done');
+  done.style.display = 'block';
+  done.scrollIntoView({behavior:'smooth', block:'start'});
+});
+</script>
+</body>
+</html>
