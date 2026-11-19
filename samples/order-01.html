@@ -451,11 +451,27 @@ document.getElementById('tabPc').addEventListener('click', function(){
 window.addEventListener('resize', layoutPreview);
 
 /* spacer at the end of the preview document, so any section can be
-   scrolled to the very top of the preview frame (preview copy only) */
+   scrolled to the very top of the preview frame (preview copy only).
+   It carries a back-to-top button so the space reads as intentional;
+   the button returns BOTH the preview and the form to the top
+   (scroll positions only - entered content is never touched). */
 function sizeSpacer(d){
   d = d || doc(); if (!d || !d.body) return;
   var sp = d.getElementById('pvSpacer');
-  if (!sp){ sp = d.createElement('div'); sp.id = 'pvSpacer'; d.body.appendChild(sp); }
+  if (!sp){
+    sp = d.createElement('div'); sp.id = 'pvSpacer';
+    sp.style.cssText = 'display:flex;justify-content:center;align-items:flex-start;padding-top:34px;box-sizing:border-box';
+    var btn = d.createElement('button');
+    btn.id = 'pvTopBtn'; btn.type = 'button'; btn.textContent = '↑ 一番上に戻る';
+    btn.style.cssText = 'font-family:var(--serif);font-size:14px;letter-spacing:.18em;color:var(--gold);background:transparent;border:1px solid var(--gold-deep);border-radius:999px;padding:11px 26px;cursor:pointer';
+    btn.addEventListener('click', function(){
+      pv.contentWindow.scrollTo({top: 0, behavior: 'smooth'});
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      followCurrent = null;
+    });
+    sp.appendChild(btn);
+    d.body.appendChild(sp);
+  }
   sp.style.height = Math.round(pv.clientHeight * 0.62) + 'px';
 }
 
