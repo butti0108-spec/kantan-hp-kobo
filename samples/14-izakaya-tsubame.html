@@ -67,6 +67,7 @@ p{text-wrap:pretty}
 .info th{width:6.5em;font-family:var(--serif);font-weight:600;color:var(--kin);white-space:nowrap}
 footer{border-top:1px solid var(--line);padding:22px clamp(18px,5vw,64px);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-size:12.5px;letter-spacing:.12em;color:var(--paper-dim)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/*orphan-guard*/.ph{white-space:nowrap}h1,h2,h3{text-wrap:balance}p,li,dt,dd,td,th{text-wrap:pretty}
 </style>
 </head>
 <body>
@@ -89,7 +90,7 @@ footer{border-top:1px solid var(--line);padding:22px clamp(18px,5vw,64px);displa
 <section class="menu">
   <h2>お品書き</h2>
   <div class="mrow"><span class="name">もつ煮込み</span><span class="dots"></span><span class="price num">550円</span></div>
-  <div class="mrow"><span class="name">焼き鳥 各種</span><span class="desc">塩かタレか聞きます</span><span class="dots"></span><span class="price num">1本 180円から</span></div>
+  <div class="mrow"><span class="name">焼き鳥 各種</span><span class="desc"><span class="ph">塩かタレか</span><span class="ph">聞きます</span></span><span class="dots"></span><span class="price num">1本 180円から</span></div>
   <div class="mrow"><span class="name">その日の刺身</span><span class="desc">市場で見て決めます</span><span class="dots"></span><span class="price num">780円</span></div>
   <div class="mrow"><span class="name">生ビール</span><span class="dots"></span><span class="price num">550円</span></div>
   <div class="mrow"><span class="name">おまかせ盛り</span><span class="desc">2〜3人でつまめる量</span><span class="dots"></span><span class="price num">1,800円</span></div>
@@ -99,7 +100,7 @@ footer{border-top:1px solid var(--line);padding:22px clamp(18px,5vw,64px);displa
   <p class="note">宴会は小上がりで10名まで。飲み放題つきコースは4,500円から、2日前までに電話でご相談ください。混む日は、カウンターも予約で埋まります。</p>
   <table>
     <tr><th>営業時間</th><td class="num">17:00 - 23:30（料理の注文は22:45まで）</td></tr>
-    <tr><th>定休日</th><td>日曜と、月曜が祝日の週はその月曜</td></tr>
+    <tr><th>定休日</th><td><span class="ph">日曜と、</span><span class="ph">月曜が</span><span class="ph">祝日の週は</span><span class="ph">その月曜</span></td></tr>
     <tr><th>場所</th><td>横浜市金沢区 0-0-0 ・ 金沢文庫駅から徒歩3分</td></tr>
     <tr><th>電話</th><td class="num">045-000-0000</td></tr>
   </table>

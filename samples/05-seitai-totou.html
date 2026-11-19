@@ -72,6 +72,7 @@ section{padding:clamp(40px,6svh,60px) 0}
 .visit-table th{width:7em;font-weight:500;color:var(--accent);letter-spacing:.14em}
 footer{padding:24px 22px;text-align:center;font-size:12px;color:var(--ink-dim);letter-spacing:.16em}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/*orphan-guard*/.ph{white-space:nowrap}h1,h2,h3{text-wrap:balance}p,li,dt,dd,td,th{text-wrap:pretty}
 </style>
 </head>
 <body>
@@ -91,9 +92,9 @@ footer{padding:24px 22px;text-align:center;font-size:12px;color:var(--ink-dim);l
   <div class="col">
     <div class="sec-title"><h2>こんな方が来ています</h2><div class="rule"></div></div>
     <ul class="worry-list">
-      <li><span class="n">一</span><span>夕方になると肩と首が固まって、頭まで重い</span></li>
-      <li><span class="n">二</span><span>朝起きた時が、一番腰が重い</span></li>
-      <li><span class="n">三</span><span>揉んでもらうと楽になるが、数日で元に戻る</span></li>
+      <li><span class="n">一</span><span><span class="ph">夕方になると</span><span class="ph">肩と首が</span><span class="ph">固まって、</span><span class="ph">頭まで重い</span></span></li>
+      <li><span class="n">二</span><span><span class="ph">朝起きた時が、</span><span class="ph">一番</span><span class="ph">腰が重い</span></span></li>
+      <li><span class="n">三</span><span><span class="ph">揉んでもらうと</span><span class="ph">楽になるが、</span><span class="ph">数日で</span><span class="ph">元に戻る</span></span></li>
     </ul>
   </div>
 </section>
