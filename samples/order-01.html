@@ -26,17 +26,26 @@ h1{font-family:"Noto Serif JP",serif;font-size:clamp(23px,5vw,32px);letter-spaci
 @media(min-width:900px){.cols{grid-template-columns:1fr 1fr;align-items:start}.pv{position:sticky;top:14px}}
 form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px clamp(16px,3vw,26px)}
 fieldset{border:none;margin-bottom:22px}
-legend{font-weight:900;font-size:15.5px;margin-bottom:8px;color:var(--blue-deep)}
-label{display:block;font-size:13px;font-weight:700;margin:10px 0 4px}
-label .req{color:#b3261e;font-weight:900}
+legend{font-weight:900;font-size:15.5px;margin-bottom:10px;color:var(--blue-deep)}
+.unit{margin-bottom:14px}
+.unit-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.unit-head .nm{font-size:13.5px;font-weight:700}
+.unit-head .nm .req{color:#b3261e;font-weight:900}
+.unit-body{margin-top:5px}
+.shutter{display:none;background:#22201c;color:#f5efe2;border-radius:10px;padding:11px 14px;font-size:13.5px;text-align:center;letter-spacing:.06em;margin-top:5px}
+.switch{position:relative;display:inline-block;flex:none;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer}
+.track{display:block;width:58px;height:32px;border-radius:999px;background:#c9c2b2;transition:background .2s;position:relative;pointer-events:none}
+.track::after{content:'';position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch input:checked + .track{background:var(--blue)}
+.switch input:checked + .track::after{left:29px}
+.switch input:focus-visible + .track{outline:3px solid var(--blue);outline-offset:2px}
 input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font-size:15px;font-family:inherit;background:#fff}
 textarea{resize:vertical}
-input[type=file]{font-size:13.5px;margin-top:2px}
+input[type=file]{font-size:13.5px}
 .hint{font-size:12px;color:var(--ink-dim)}
-.tgl{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:700;margin:12px 0 2px;cursor:pointer}
-.tgl input{width:17px;height:17px;accent-color:var(--blue)}
-.off{opacity:.38}
 .rowbox{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin-top:10px}
+.rowbox label{display:block;font-size:13px;font-weight:700;margin:8px 0 4px}
 .rowbox .del{margin-top:8px;background:none;border:1px solid var(--line);border-radius:8px;padding:4px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;color:#b3261e}
 .addbtn{margin-top:10px;background:#eef3fa;border:1.5px solid var(--blue);color:var(--blue-deep);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
 .pv h2,.done h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
@@ -48,7 +57,7 @@ iframe{width:100%;height:640px;border:0;display:block}
 .err{display:none;color:#b3261e;font-size:13.5px;margin-top:8px}
 .done{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
 .done ul{margin:8px 0 8px 1.2em;font-size:14px}
-.pay{display:inline-block;margin-top:10px;background:var(--blue);color:#fff;border-radius:10px;padding:12px 22px;font-weight:900;text-decoration:none}
+.pay{display:inline-block;margin-top:10px;background:#9a917e;color:#fff;border-radius:10px;padding:12px 22px;font-weight:900}
 footer{margin:34px 0 30px;font-size:12.5px;color:var(--ink-dim);text-align:center}
 footer a{color:var(--blue-deep)}
 </style>
@@ -58,91 +67,136 @@ footer a{color:var(--blue-deep)}
 <header>
   <p class="brand">アーチデザイン工房</p>
   <h1>この型で作る</h1>
-  <p><span class="proto">試作品です。送信しても、実際にはまだ工房へ届きません</span></p>
+  <p><span class="proto">試作品です。送信しても実際には届かず、決済もできません</span></p>
   <div class="steps"><span><b>1</b> 内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
-  <p class="lead">選んだ型（懐石 玄海）に入れる内容を、上から順に埋めてください。入れた内容は、右（下）のプレビューにその場で出ます。いらない項目は外せます。品目は好きなだけ増やせます（制限はありません）。</p>
+  <p class="lead">選んだ型（懐石 玄海）に入れる内容を、上から順に埋めてください。入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに右のスイッチで「入れる／入れない」を選べます（切ると、その項目はページに出ません）。品目は好きなだけ増やせます（制限はありません）。</p>
 </header>
 
 <div class="cols">
 <form id="orderForm" novalidate>
   <fieldset>
     <legend>お店のこと</legend>
-    <label>お店の名前 <span class="req">必須</span></label>
-    <input type="text" id="f-name" value="懐石 玄海">
-    <label>キャッチコピー（改行できます）</label>
-    <textarea id="f-catch" rows="2">八席だけの、
-静かな懐石の店です。</textarea>
-    <label class="tgl"><input type="checkbox" id="t-facts" checked> 特徴の一行を入れる</label>
-    <div id="w-facts">
-      <input type="text" id="f-facts" value="おまかせ一本 ・ 完全予約制 ・ 銀座">
+
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お店の名前 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-name" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-name"><input type="text" id="f-name" value="懐石 玄海"></div>
+      <div class="shutter" id="s-name">この項目は使いません</div>
     </div>
-    <label>電話番号 <span class="req">必須</span></label>
-    <input type="text" id="f-tel" value="03-0000-0000">
+
+    <div class="unit">
+      <div class="unit-head"><span class="nm">キャッチコピー（改行できます）</span><label class="switch"><input type="checkbox" id="t-catch" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-catch"><textarea id="f-catch" rows="2">八席だけの、
+静かな懐石の店です。</textarea></div>
+      <div class="shutter" id="s-catch">この項目は使いません</div>
+    </div>
+
+    <div class="unit">
+      <div class="unit-head"><span class="nm">特徴の一行</span><label class="switch"><input type="checkbox" id="t-facts" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-facts"><input type="text" id="f-facts" value="おまかせ一本 ・ 完全予約制 ・ 銀座"></div>
+      <div class="shutter" id="s-facts">この項目は使いません</div>
+    </div>
+
+    <div class="unit">
+      <div class="unit-head"><span class="nm">電話番号 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-tel" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-tel"><input type="text" id="f-tel" value="03-0000-0000"></div>
+      <div class="shutter" id="s-tel">この項目は使いません</div>
+    </div>
   </fieldset>
 
   <fieldset>
     <legend>写真</legend>
-    <label>写真A（最初に出る写真）</label>
-    <input type="file" id="f-photoA" accept="image/*">
-    <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p>
-    <label class="tgl"><input type="checkbox" id="t-photoB" checked> 写真B（途中の帯の写真）を入れる</label>
-    <div id="w-photoB">
-      <input type="file" id="f-photoB" accept="image/*">
+    <div class="unit">
+      <div class="unit-head"><span class="nm">写真A（最初に出る写真）</span><label class="switch"><input type="checkbox" id="t-photoA" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-photoA">
+        <input type="file" id="f-photoA" accept="image/*">
+        <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p>
+      </div>
+      <div class="shutter" id="s-photoA">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">写真B（途中の帯の写真）</span><label class="switch"><input type="checkbox" id="t-photoB" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-photoB"><input type="file" id="f-photoB" accept="image/*"></div>
+      <div class="shutter" id="s-photoB">この項目は使いません</div>
     </div>
   </fieldset>
 
   <fieldset>
     <legend>お品書き</legend>
-    <label class="tgl"><input type="checkbox" id="t-note" checked> お品書きの説明を入れる</label>
-    <div id="w-note">
-      <textarea id="f-note" rows="2">季節で変わります。苦手な食材は予約の時に教えてください。</textarea>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お品書きの説明</span><label class="switch"><input type="checkbox" id="t-note" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-note"><textarea id="f-note" rows="2">季節で変わります。苦手な食材は予約の時に教えてください。</textarea></div>
+      <div class="shutter" id="s-note">この項目は使いません</div>
     </div>
-    <div id="courseRows"></div>
-    <button type="button" class="addbtn" id="addCourse">＋ 品目を追加する</button>
-    <p class="hint">品目は好きなだけ増やせます。長くなれば、ページもそのまま長くなります。</p>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">品目</span><label class="switch"><input type="checkbox" id="t-courses" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-courses">
+        <div id="courseRows"></div>
+        <button type="button" class="addbtn" id="addCourse">＋ 品目を追加する</button>
+        <p class="hint">品目は好きなだけ増やせます。長くなれば、ページもそのまま長くなります。</p>
+      </div>
+      <div class="shutter" id="s-courses">この項目は使いません</div>
+    </div>
   </fieldset>
 
   <fieldset>
     <legend>店の案内</legend>
-    <label>場所（住所と最寄り）</label>
-    <input type="text" id="f-place" value="東京都中央区銀座 0-0-0 ・ 銀座駅から徒歩4分">
-    <label class="tgl"><input type="checkbox" id="t-hours" checked> 営業時間を入れる</label>
-    <div id="w-hours">
-      <input type="text" id="f-hours" value="昼 12:00（一斉）/ 夜 18:00・20:30（二部制）・ 日曜定休">
+    <div class="unit">
+      <div class="unit-head"><span class="nm">場所（住所と最寄り）</span><label class="switch"><input type="checkbox" id="t-place" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-place"><input type="text" id="f-place" value="東京都中央区銀座 0-0-0 ・ 銀座駅から徒歩4分"></div>
+      <div class="shutter" id="s-place">この項目は使いません</div>
     </div>
-    <label class="tgl"><input type="checkbox" id="t-seats" checked> 席数・その他を入れる</label>
-    <div id="w-seats">
-      <input type="text" id="f-seats" value="カウンター八席のみ">
+    <div class="unit">
+      <div class="unit-head"><span class="nm">営業時間</span><label class="switch"><input type="checkbox" id="t-hours" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-hours"><input type="text" id="f-hours" value="昼 12:00（一斉）/ 夜 18:00・20:30（二部制）・ 日曜定休"></div>
+      <div class="shutter" id="s-hours">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">席数・その他</span><label class="switch"><input type="checkbox" id="t-seats" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-seats"><input type="text" id="f-seats" value="カウンター八席のみ"></div>
+      <div class="shutter" id="s-seats">この項目は使いません</div>
     </div>
   </fieldset>
 
   <fieldset>
     <legend>追加できる項目（どの型にも足せます）</legend>
-    <label class="tgl"><input type="checkbox" id="t-news"> お知らせを入れる</label>
-    <div id="w-news" class="off">
-      <label>お知らせの見出し</label>
-      <input type="text" id="f-newsT" value="年末年始の営業について">
-      <label>お知らせの本文</label>
-      <textarea id="f-newsB" rows="2">12月31日から1月3日まで休ませていただきます。</textarea>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お知らせ</span><label class="switch"><input type="checkbox" id="t-news"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-news">
+        <div class="rowbox" style="margin-top:4px">
+          <label>お知らせの見出し</label>
+          <input type="text" id="f-newsT" value="年末年始の営業について">
+          <label>お知らせの本文</label>
+          <textarea id="f-newsB" rows="2">12月31日から1月3日まで休ませていただきます。</textarea>
+        </div>
+      </div>
+      <div class="shutter" id="s-news">この項目は使いません</div>
     </div>
-    <label class="tgl"><input type="checkbox" id="t-faq"> よくある質問を入れる</label>
-    <div id="w-faq" class="off">
-      <div id="faqRows"></div>
-      <button type="button" class="addbtn" id="addFaq">＋ 質問を追加する</button>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">よくある質問</span><label class="switch"><input type="checkbox" id="t-faq"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-faq">
+        <div id="faqRows"></div>
+        <button type="button" class="addbtn" id="addFaq">＋ 質問を追加する</button>
+      </div>
+      <div class="shutter" id="s-faq">この項目は使いません</div>
     </div>
-    <label class="tgl"><input type="checkbox" id="t-link"> リンクを入れる</label>
-    <div id="w-link" class="off">
-      <label>リンクの文字</label>
-      <input type="text" id="f-linkT" value="Instagramはこちら">
-      <label>リンク先のアドレス</label>
-      <input type="text" id="f-linkU" value="https://www.instagram.com/">
+    <div class="unit">
+      <div class="unit-head"><span class="nm">リンク</span><label class="switch"><input type="checkbox" id="t-link"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-link">
+        <div class="rowbox" style="margin-top:4px">
+          <label>リンクの文字</label>
+          <input type="text" id="f-linkT" value="Instagramはこちら">
+          <label>リンク先のアドレス</label>
+          <input type="text" id="f-linkU" value="https://www.instagram.com/">
+        </div>
+      </div>
+      <div class="shutter" id="s-link">この項目は使いません</div>
     </div>
-    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。</p>
+    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。レイアウト自体の変更は、別途オプション（2万円から）で承ります。</p>
   </fieldset>
 
   <div class="send">
     <button type="submit">この内容で送信する</button>
-    <p class="err" id="err">お店の名前と電話番号を入れてください。</p>
+    <p class="err" id="err">「入れる」設定の名前と電話番号を入れてください。</p>
     <p class="hint" style="margin-top:8px">送信すると工房に内容が届き、制作が始まります。お支払い（10,000円）は送信後の画面から続けてできます。</p>
   </div>
 </form>
@@ -159,7 +213,8 @@ footer a{color:var(--blue-deep)}
   <p style="margin-top:10px"><b>送信内容の控え</b></p>
   <ul id="summary"></ul>
   <p>続けて、お支払いにお進みください。</p>
-  <a class="pay" href="https://buy.stripe.com/4gM6oHgpre1Wd2Sdza6EU00" target="_blank" rel="noopener">お支払い（10,000円）へ進む</a>
+  <span class="pay">お支払い（10,000円）へ進む</span>
+  <p class="hint" style="margin-top:8px">試作品では決済できません。本番では、このボタンからStripeの決済画面に進みます。</p>
 </div>
 
 <footer>
@@ -174,7 +229,7 @@ function val(id){ var el = document.getElementById(id); return el ? el.value.tri
 function on(id){ return document.getElementById(id).checked; }
 function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
-/* ---------- repeatable rows ---------- */
+/* ---------- data (declared before the switches, whose first sync calls apply()) ---------- */
 var courseData = [
   {n:'昼のおまかせ', d:'全八品。軽めに、季節の走りを。', p:'12,000円'},
   {n:'夜のおまかせ', d:'全十一品。この店の真ん中です。', p:'18,000円'},
@@ -183,6 +238,21 @@ var courseData = [
 var faqData = [
   {q:'予約は必要ですか', a:'完全予約制です。お電話でお願いします。'}
 ];
+
+/* ---------- switches + shutters ---------- */
+var UNITS = ['name','catch','facts','tel','photoA','photoB','note','courses','place','hours','seats','news','faq','link'];
+UNITS.forEach(function(u){
+  var t = document.getElementById('t-' + u);
+  var sync = function(){
+    document.getElementById('w-' + u).style.display = t.checked ? '' : 'none';
+    document.getElementById('s-' + u).style.display = t.checked ? 'none' : 'block';
+    apply();
+  };
+  t.addEventListener('change', sync);
+  sync();
+});
+
+/* ---------- repeatable rows ---------- */
 function buildRows(containerId, data, labels, keys){
   var box = document.getElementById(containerId);
   box.innerHTML = '';
@@ -221,60 +291,56 @@ document.getElementById('addFaq').addEventListener('click', function(){
   faqData.push({q:'', a:''}); buildFaqs(); apply();
 });
 
-/* ---------- toggles: grey out the wrapped fields ---------- */
-[['t-facts','w-facts'],['t-photoB','w-photoB'],['t-note','w-note'],['t-hours','w-hours'],['t-seats','w-seats'],['t-news','w-news'],['t-faq','w-faq'],['t-link','w-link']].forEach(function(pair){
-  var t = document.getElementById(pair[0]), w = document.getElementById(pair[1]);
-  var sync = function(){ w.classList.toggle('off', !t.checked); apply(); };
-  t.addEventListener('change', sync); sync();
-});
-
 /* ---------- preview ---------- */
 function setText(d, sel, text){ var el = d.querySelector(sel); if (el) el.textContent = text; }
 function show(d, sel, visible){ var el = d.querySelector(sel); if (el) el.style.display = visible ? '' : 'none'; }
 function apply(){
   var d = doc(); if (!d || !d.querySelector('.hero')) return;
   var name = val('f-name');
+  show(d, '.v-title', on('t-name'));
   var vt = d.querySelector('.v-title');
   if (vt && name){
     if (name.length >= 2) vt.innerHTML = esc(name.slice(0,1)) + '<span class="gold">' + esc(name.slice(1)) + '</span>';
     else vt.textContent = name;
   }
   var foot = d.querySelectorAll('footer p');
-  if (foot[0] && name) foot[0].textContent = name;
-  if (foot[1]) foot[1].textContent = val('f-place').split('・')[0];
+  if (foot[0]){ foot[0].style.display = on('t-name') ? '' : 'none'; if (name) foot[0].textContent = name; }
+  if (foot[1]){ foot[1].style.display = on('t-place') ? '' : 'none'; foot[1].textContent = val('f-place').split('・')[0]; }
+  show(d, '.hero h1', on('t-catch'));
   var h1 = d.querySelector('.hero h1');
   if (h1) h1.innerHTML = val('f-catch').split('\n').map(esc).join('<br>');
   show(d, '.facts', on('t-facts')); setText(d, '.facts', val('f-facts'));
   var tel = val('f-tel');
+  show(d, '.tel', on('t-tel'));
   var telEl = d.querySelector('.tel');
   if (telEl){ telEl.textContent = '予約の電話 ' + tel; telEl.setAttribute('href', 'tel:' + tel.replace(/-/g,'')); }
+  show(d, 'img.dish', on('t-photoA'));
   show(d, '.band', on('t-photoB'));
   show(d, '.course .note', on('t-note')); setText(d, '.course .note', val('f-note'));
-  /* courses: rebuild rows in the sample's own structure */
   var sec = d.querySelector('.course');
   if (sec){
     sec.querySelectorAll('.course-row').forEach(function(r){ r.remove(); });
-    courseData.forEach(function(c){
-      var div = d.createElement('div');
-      div.className = 'course-row';
-      div.innerHTML = '<h3></h3><p></p><p class="price"></p>';
-      div.querySelector('h3').textContent = c.n;
-      div.querySelector('p').textContent = c.d;
-      div.querySelector('.price').textContent = c.p;
-      sec.appendChild(div);
-    });
+    if (on('t-courses')){
+      courseData.forEach(function(c){
+        var div = d.createElement('div');
+        div.className = 'course-row';
+        div.innerHTML = '<h3></h3><p></p><p class="price"></p>';
+        div.querySelector('h3').textContent = c.n;
+        div.querySelector('p').textContent = c.d;
+        div.querySelector('.price').textContent = c.p;
+        sec.appendChild(div);
+      });
+    }
   }
-  /* info rows */
   var trs = d.querySelectorAll('.info tr');
   trs.forEach(function(tr){
     var th = tr.querySelector('th'); if (!th) return;
     var td = tr.querySelector('td');
-    if (th.textContent === '場所' && td) td.textContent = val('f-place');
+    if (th.textContent === '場所'){ tr.style.display = on('t-place') ? '' : 'none'; if (td) td.textContent = val('f-place'); }
     if (th.textContent === '営業'){ tr.style.display = on('t-hours') ? '' : 'none'; if (td) td.textContent = val('f-hours'); }
     if (th.textContent === '席'){ tr.style.display = on('t-seats') ? '' : 'none'; if (td) td.textContent = val('f-seats'); }
-    if (th.textContent === '電話' && td) td.textContent = tel;
+    if (th.textContent === '電話'){ tr.style.display = on('t-tel') ? '' : 'none'; if (td) td.textContent = tel; }
   });
-  /* generic extra items, in the sample's own design */
   var old = d.getElementById('extraSec'); if (old) old.remove();
   var parts = '';
   if (on('t-news')) parts += '<h2>' + esc(val('f-newsT')) + '</h2><p>' + esc(val('f-newsB')) + '</p>';
@@ -307,25 +373,25 @@ function photo(inputId, sel){
 photo('f-photoA', 'img.dish');
 photo('f-photoB', '.band img');
 
-/* ---------- submit ---------- */
+/* ---------- submit (prototype: nothing is sent anywhere) ---------- */
 document.getElementById('orderForm').addEventListener('submit', function(e){
   e.preventDefault();
   var err = document.getElementById('err');
-  if (!val('f-name') || !val('f-tel')){ err.style.display = 'block'; return; }
+  if ((on('t-name') && !val('f-name')) || (on('t-tel') && !val('f-tel'))){ err.style.display = 'block'; return; }
   err.style.display = 'none';
-  var items = [
-    ['お店の名前', val('f-name')], ['キャッチコピー', val('f-catch').replace(/\n/g,' ')],
-    ['電話番号', val('f-tel')]
-  ];
+  var items = [];
+  if (on('t-name')) items.push(['お店の名前', val('f-name')]);
+  if (on('t-catch')) items.push(['キャッチコピー', val('f-catch').replace(/\n/g,' ')]);
   if (on('t-facts')) items.push(['特徴の一行', val('f-facts')]);
-  items.push(['品目（' + courseData.length + '件）', courseData.map(function(c){ return c.n + ' ' + c.p; }).join('／')]);
-  items.push(['場所', val('f-place')]);
+  if (on('t-tel')) items.push(['電話番号', val('f-tel')]);
+  if (on('t-courses')) items.push(['品目（' + courseData.length + '件）', courseData.map(function(c){ return c.n + ' ' + c.p; }).join('／')]);
+  if (on('t-place')) items.push(['場所', val('f-place')]);
   if (on('t-hours')) items.push(['営業時間', val('f-hours')]);
   if (on('t-seats')) items.push(['席数・その他', val('f-seats')]);
   if (on('t-news')) items.push(['お知らせ', val('f-newsT')]);
   if (on('t-faq')) items.push(['よくある質問', faqData.length + '件']);
   if (on('t-link')) items.push(['リンク', val('f-linkT')]);
-  items.push(['写真', 'A：' + (document.getElementById('f-photoA').files[0] ? '選択済み' : '見本のまま') + '／B：' + (on('t-photoB') ? (document.getElementById('f-photoB').files[0] ? '選択済み' : '見本のまま') : '入れない')]);
+  items.push(['写真', 'A：' + (on('t-photoA') ? (document.getElementById('f-photoA').files[0] ? '選択済み' : '見本のまま') : '入れない') + '／B：' + (on('t-photoB') ? (document.getElementById('f-photoB').files[0] ? '選択済み' : '見本のまま') : '入れない')]);
   document.getElementById('summary').innerHTML = items.map(function(it){
     return '<li>' + esc(it[0]) + '：' + esc(it[1]) + '</li>';
   }).join('');
