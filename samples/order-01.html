@@ -75,44 +75,15 @@ footer a{color:var(--blue-deep)}
   <p class="brand">アーチデザイン工房</p>
   <h1>この型で作る</h1>
   <p><span class="proto">試作品です。送信しても実際には届かず、決済もできません</span></p>
-  <div class="steps"><span><b>1</b> 内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
-  <p class="lead">選んだ型（懐石 玄海）に入れる内容を、上から順に埋めてください。入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに右のスイッチで「入れる／入れない」を選べます（切ると、その項目はページに出ません）。品目は好きなだけ増やせます（制限はありません）。</p>
+  <div class="steps"><span><b>1</b> 色と内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
+  <p class="lead">まず色を選んでください。そのあとは、ページに出る順番のまま、上から順に埋めるだけです。入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに右のスイッチで「入れる／入れない」を選べます（切ると、その項目はページに出ません）。品目は好きなだけ増やせます（制限はありません）。</p>
 </header>
 
 <div class="cols">
 <form id="orderForm" novalidate>
   <fieldset>
-    <legend>お店のこと</legend>
-
-    <div class="unit">
-      <div class="unit-head"><span class="nm">お店の名前 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-name" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-name"><input type="text" id="f-name" value="懐石 玄海"></div>
-      <div class="shutter" id="s-name">この項目は使いません</div>
-    </div>
-
-    <div class="unit">
-      <div class="unit-head"><span class="nm">キャッチコピー（改行できます）</span><label class="switch"><input type="checkbox" id="t-catch" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-catch"><textarea id="f-catch" rows="2">八席だけの、
-静かな懐石の店です。</textarea></div>
-      <div class="shutter" id="s-catch">この項目は使いません</div>
-    </div>
-
-    <div class="unit">
-      <div class="unit-head"><span class="nm">特徴の一行</span><label class="switch"><input type="checkbox" id="t-facts" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-facts"><input type="text" id="f-facts" value="おまかせ一本 ・ 完全予約制 ・ 銀座"></div>
-      <div class="shutter" id="s-facts">この項目は使いません</div>
-    </div>
-
-    <div class="unit">
-      <div class="unit-head"><span class="nm">電話番号 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-tel" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-tel"><input type="text" id="f-tel" value="03-0000-0000"></div>
-      <div class="shutter" id="s-tel">この項目は使いません</div>
-    </div>
-  </fieldset>
-
-  <fieldset>
     <legend>色パターン</legend>
-    <p class="hint">この型に合う色の組み合わせを用意しています。押すとプレビューの色が変わります。</p>
+    <p class="hint">まず色を選んでください。押すとプレビューの色が変わります。</p>
     <button type="button" class="patbtn sel" data-pat="sumi"><span class="dots"><span class="dot" style="background:#131417"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ece7db"></span></span>墨と金（見本の色）</button>
     <button type="button" class="patbtn" data-pat="ai"><span class="dots"><span class="dot" style="background:#1c2b4d"></span><span class="dot" style="background:#bfc9d8"></span><span class="dot" style="background:#e9ecf2"></span></span>藍と銀</button>
     <button type="button" class="patbtn" data-pat="midori"><span class="dots"><span class="dot" style="background:#1d4030"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ecf0e2"></span></span>緑と金</button>
@@ -122,8 +93,9 @@ footer a{color:var(--blue-deep)}
   </fieldset>
 
   <fieldset>
-    <legend>写真</legend>
-    <div class="unit">
+    <legend>ページの最初</legend>
+
+        <div class="unit">
       <div class="unit-head"><span class="nm">写真A（最初に出る写真）</span><label class="switch"><input type="checkbox" id="t-photoA" checked><span class="track"></span></label></div>
       <div class="unit-body" id="w-photoA">
         <input type="file" id="f-photoA" accept="image/*">
@@ -131,10 +103,30 @@ footer a{color:var(--blue-deep)}
       </div>
       <div class="shutter" id="s-photoA">この項目は使いません</div>
     </div>
-    <div class="unit">
-      <div class="unit-head"><span class="nm">写真B（途中の帯の写真）</span><label class="switch"><input type="checkbox" id="t-photoB" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-photoB"><input type="file" id="f-photoB" accept="image/*"></div>
-      <div class="shutter" id="s-photoB">この項目は使いません</div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">お店の名前 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-name" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-name"><input type="text" id="f-name" value="懐石 玄海"></div>
+      <div class="shutter" id="s-name">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">キャッチコピー（改行できます）</span><label class="switch"><input type="checkbox" id="t-catch" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-catch"><textarea id="f-catch" rows="2">八席だけの、
+静かな懐石の店です。</textarea></div>
+      <div class="shutter" id="s-catch">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">特徴の一行</span><label class="switch"><input type="checkbox" id="t-facts" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-facts"><input type="text" id="f-facts" value="おまかせ一本 ・ 完全予約制 ・ 銀座"></div>
+      <div class="shutter" id="s-facts">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">電話番号 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-tel" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-tel"><input type="text" id="f-tel" value="03-0000-0000"></div>
+      <div class="shutter" id="s-tel">この項目は使いません</div>
     </div>
   </fieldset>
 
@@ -153,6 +145,16 @@ footer a{color:var(--blue-deep)}
         <p class="hint">品目は好きなだけ増やせます。長くなれば、ページもそのまま長くなります。</p>
       </div>
       <div class="shutter" id="s-courses">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>途中の写真</legend>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">写真B（途中の帯の写真）</span><label class="switch"><input type="checkbox" id="t-photoB" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-photoB"><input type="file" id="f-photoB" accept="image/*"></div>
+      <div class="shutter" id="s-photoB">この項目は使いません</div>
     </div>
   </fieldset>
 
@@ -217,7 +219,7 @@ footer a{color:var(--blue-deep)}
     <p class="err" id="err">「入れる」設定の名前と電話番号を入れてください。</p>
     <p class="hint" style="margin-top:8px">送信すると工房に内容が届き、制作が始まります。お支払い（10,000円）は送信後の画面から続けてできます。</p>
   </div>
-</form>
+
 
 <div class="pv">
   <h2>プレビュー（入力した内容がそのまま出ます）</h2>
