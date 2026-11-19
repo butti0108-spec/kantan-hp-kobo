@@ -53,8 +53,11 @@ input[type=file]{font-size:13.5px}
 .patbtn .dot{width:20px;height:20px;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
 .patbtn.sel{border-color:var(--blue);background:#eef3fa}
 .pv h2,.done h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.pvtabs{display:flex;gap:8px;margin-bottom:8px}
+.pvtab{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.pvtab.sel{background:var(--blue);border-color:var(--blue);color:#fff}
 .pvframe{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
-iframe{width:100%;height:640px;border:0;display:block}
+iframe{width:100%;height:640px;border:0;display:block;transform-origin:top left}
 .send{margin-top:6px}
 .send button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit}
 .send button:hover{background:var(--blue-deep)}
@@ -218,7 +221,12 @@ footer a{color:var(--blue-deep)}
 
 <div class="pv">
   <h2>プレビュー（入力した内容がそのまま出ます）</h2>
-  <div class="pvframe"><iframe id="pv" src="01-kaiseki-genkai.html" title="プレビュー"></iframe></div>
+  <div class="pvtabs">
+    <button type="button" class="pvtab sel" id="tabPhone">スマホ表示</button>
+    <button type="button" class="pvtab" id="tabPc">パソコン表示</button>
+  </div>
+  <div class="pvframe" id="pvframe"><iframe id="pv" src="01-kaiseki-genkai.html" title="プレビュー"></iframe></div>
+  <p class="hint" style="margin-top:6px">パソコン表示は、広い画面での見え方を縮小して表示しています。</p>
 </div>
 </div>
 
@@ -401,7 +409,37 @@ function apply(){
     info.parentNode.insertBefore(s2, info);
   }
 }
-pv.addEventListener('load', function(){ buildCourses(); buildFaqs(); apply(); });
+/* ---------- preview device tabs ---------- */
+var pvMode = 'phone';
+function layoutPreview(){
+  var frame = document.getElementById('pvframe');
+  var w = frame.clientWidth;
+  if (pvMode === 'pc'){
+    var s = w / 1280;
+    pv.style.width = '1280px';
+    pv.style.height = '860px';
+    pv.style.transform = 'scale(' + s + ')';
+    frame.style.height = (860 * s) + 'px';
+  } else {
+    pv.style.width = '100%';
+    pv.style.height = '640px';
+    pv.style.transform = '';
+    frame.style.height = '';
+  }
+}
+document.getElementById('tabPhone').addEventListener('click', function(){
+  pvMode = 'phone';
+  this.classList.add('sel'); document.getElementById('tabPc').classList.remove('sel');
+  layoutPreview();
+});
+document.getElementById('tabPc').addEventListener('click', function(){
+  pvMode = 'pc';
+  this.classList.add('sel'); document.getElementById('tabPhone').classList.remove('sel');
+  layoutPreview();
+});
+window.addEventListener('resize', layoutPreview);
+
+pv.addEventListener('load', function(){ buildCourses(); buildFaqs(); apply(); layoutPreview(); });
 document.querySelectorAll('#orderForm input[type=text], #orderForm textarea').forEach(function(el){
   el.addEventListener('input', apply);
 });
