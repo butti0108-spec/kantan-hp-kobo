@@ -111,9 +111,9 @@ footer a{color:var(--blue-deep)}
     <legend>色パターン</legend>
     <p class="hint">この型に合う色の組み合わせを用意しています。押すとプレビューの色が変わります。</p>
     <button type="button" class="patbtn sel" data-pat="sumi"><span class="dots"><span class="dot" style="background:#131417"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ece7db"></span></span>墨と金（見本の色）</button>
-    <button type="button" class="patbtn" data-pat="ai"><span class="dots"><span class="dot" style="background:#101623"></span><span class="dot" style="background:#b9c2cf"></span><span class="dot" style="background:#e8e9ec"></span></span>藍と銀</button>
-    <button type="button" class="patbtn" data-pat="midori"><span class="dots"><span class="dot" style="background:#101a15"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#e9ead9"></span></span>深緑と金</button>
-    <button type="button" class="patbtn" data-pat="shu"><span class="dots"><span class="dot" style="background:#161112"></span><span class="dot" style="background:#cf5a36"></span><span class="dot" style="background:#efe6da"></span></span>黒と朱</button>
+    <button type="button" class="patbtn" data-pat="ai"><span class="dots"><span class="dot" style="background:#1c2b4d"></span><span class="dot" style="background:#bfc9d8"></span><span class="dot" style="background:#e9ecf2"></span></span>藍と銀</button>
+    <button type="button" class="patbtn" data-pat="midori"><span class="dots"><span class="dot" style="background:#1d4030"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ecf0e2"></span></span>緑と金</button>
+    <button type="button" class="patbtn" data-pat="enji"><span class="dots"><span class="dot" style="background:#472228"></span><span class="dot" style="background:#d9a45c"></span><span class="dot" style="background:#f2e7dd"></span></span>臙脂と金</button>
     <button type="button" class="patbtn" data-pat="shiro"><span class="dots"><span class="dot" style="background:#f8f6f1"></span><span class="dot" style="background:#0052B5"></span><span class="dot" style="background:#26241f"></span></span>白と藍</button>
     <p class="hint">色パターンは全ての型で共通です。業種や写真に関係なく、好きなものを選べます。</p>
   </fieldset>
@@ -257,12 +257,12 @@ var faqData = [
 /* ---------- color patterns ---------- */
 var PATTERNS = {
   sumi: null,
-  ai:    {'--ink':'#101623','--ink-2':'#182238','--paper':'#e8e9ec','--paper-dim':'#9aa3b5','--gold':'#b9c2cf','--gold-deep':'#8b96a8'},
-  midori:{'--ink':'#101a15','--ink-2':'#182620','--paper':'#e9ead9','--paper-dim':'#a3ab97','--gold':'#c8a45c','--gold-deep':'#9a7c3f'},
-  shu:   {'--ink':'#161112','--ink-2':'#211719','--paper':'#efe6da','--paper-dim':'#b09a8d','--gold':'#cf5a36','--gold-deep':'#a03e22'},
+  ai:    {'--ink':'#1c2b4d','--ink-2':'#24365e','--paper':'#e9ecf2','--paper-dim':'#a3aec4','--gold':'#bfc9d8','--gold-deep':'#93a1b5'},
+  midori:{'--ink':'#1d4030','--ink-2':'#27503c','--paper':'#ecf0e2','--paper-dim':'#a7b8a2','--gold':'#c8a45c','--gold-deep':'#9a7c3f'},
+  enji:  {'--ink':'#472228','--ink-2':'#552a31','--paper':'#f2e7dd','--paper-dim':'#c2a49b','--gold':'#d9a45c','--gold-deep':'#b07f3f'},
   shiro: {'--ink':'#f8f6f1','--ink-2':'#ffffff','--paper':'#26241f','--paper-dim':'#75705f','--gold':'#0052B5','--gold-deep':'#003d87'}
 };
-var PAT_NAMES = {sumi:'墨と金（見本の色）', ai:'藍と銀', midori:'深緑と金', shu:'黒と朱', shiro:'白と藍'};
+var PAT_NAMES = {sumi:'墨と金（見本の色）', ai:'藍と銀', midori:'緑と金', enji:'臙脂と金', shiro:'白と藍'};
 var curPattern = 'sumi';
 document.querySelectorAll('.patbtn').forEach(function(btn){
   btn.addEventListener('click', function(){
