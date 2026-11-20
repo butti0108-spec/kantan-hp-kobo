@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>この型で作る｜ランドリー日和の型（試作品）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fbf8f2;--ink:#2e2a24;--ink-dim:#8a7f6d;--blue:#0052B5;--blue-deep:#003d87;--line:#e4dac6;--card:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans JP",sans-serif;line-height:1.85;letter-spacing:.03em}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
+header{padding:26px 0 4px;text-align:center}
+header .brand{font-size:12px;letter-spacing:.3em;color:var(--ink-dim);font-weight:700}
+h1{font-family:"Noto Serif JP",serif;font-size:clamp(23px,5vw,32px);letter-spacing:.05em;margin-top:4px}
+.proto{display:inline-block;margin-top:8px;font-size:12px;background:#fdf3d8;border:1px solid #e5cf8a;border-radius:999px;padding:2px 12px}
+.steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px;font-size:13px}
+.steps span{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 12px}
+.steps b{color:var(--blue-deep)}
+.lead{max-width:640px;margin:16px auto 0;text-align:left}
+.lead .l1{font-size:16px;font-weight:700;color:var(--ink);line-height:1.8}
+.lead .l2{font-size:13.5px;color:var(--ink-dim);line-height:1.9;margin-top:8px}
+.cols{display:grid;gap:22px;margin-top:22px}
+@media(min-width:720px){.cols{grid-template-columns:1fr 1fr;align-items:start}.pv{position:sticky;top:14px}}
+form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px clamp(16px,3vw,26px)}
+fieldset{border:none;margin-bottom:22px}
+legend{font-weight:900;font-size:15.5px;margin-bottom:10px;color:var(--blue-deep)}
+.unit{margin-bottom:14px}
+.unit-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.unit-head .nm{font-size:13.5px;font-weight:700}
+.unit-head .nm .req{color:#b3261e;font-weight:900}
+.unit-body{margin-top:5px}
+.shutter{display:none;background:#22201c;color:#f5efe2;border-radius:10px;padding:11px 14px;font-size:13.5px;text-align:center;letter-spacing:.06em;margin-top:5px}
+.switch{position:relative;display:inline-block;flex:none;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer}
+.track{display:block;width:58px;height:32px;border-radius:999px;background:#c9c2b2;transition:background .2s;position:relative;pointer-events:none}
+.track::after{content:'';position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch input:checked + .track{background:var(--blue)}
+.switch input:checked + .track::after{left:29px}
+.switch input:focus-visible + .track{outline:3px solid var(--blue);outline-offset:2px}
+input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font-size:15px;font-family:inherit;background:#fff}
+textarea{resize:vertical}
+input[type=file]{font-size:13.5px}
+.hint{font-size:12px;color:var(--ink-dim)}
+.rowbox{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin-top:10px}
+.rowbox label{display:block;font-size:13px;font-weight:700;margin:8px 0 4px}
+.rowbox .del{margin-top:8px;background:none;border:1px solid var(--line);border-radius:8px;padding:4px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;color:#b3261e}
+.addbtn{margin-top:10px;background:#eef3fa;border:1.5px solid var(--blue);color:var(--blue-deep);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.patbtn{display:flex;align-items:center;gap:10px;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;text-align:left}
+.patbtn .dots{display:flex;gap:4px}
+.patbtn .dot{width:20px;height:20px;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
+.patbtn.sel{border-color:var(--blue);background:#eef3fa}
+.pv h2,.done h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.pvtabs{display:flex;gap:8px;margin-bottom:8px}
+.pvtab{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.pvtab.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.pvframe{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+iframe{width:100%;height:640px;border:0;display:block;transform-origin:top left}
+.send{margin-top:6px}
+.send button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit}
+.send button:hover{background:var(--blue-deep)}
+.err{display:none;color:#b3261e;font-size:13.5px;margin-top:8px}
+.done{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
+.done ul{margin:8px 0 8px 1.2em;font-size:14px}
+.pay{display:inline-block;margin-top:10px;background:#9a917e;color:#fff;border-radius:10px;padding:12px 22px;font-weight:900}
+.confirm,.paid{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
+.confirm h2,.paid h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.confirm ul{margin:8px 0 8px 1.2em;font-size:14px}
+.receipt{background:#fdf3d8;border:1px solid #e5cf8a;border-radius:10px;padding:12px 16px;margin:12px 0;text-align:center}
+.receipt .rnum{font-size:26px;font-weight:900;letter-spacing:.08em;margin:2px 0}
+.terms{border:1px solid var(--line);border-radius:10px;background:#fff;height:180px;overflow-y:auto;padding:12px 16px;font-size:13px;line-height:1.9;margin-top:8px;white-space:pre-line}
+.agree{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14.5px;font-weight:700}
+.agree input{width:20px;height:20px;flex:none}
+.photonote{margin-top:16px;border:1.5px solid #b3261e;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700}
+#payBtn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit;margin-top:10px}
+#payBtn:disabled{background:#9a917e;cursor:not-allowed}
+#payBtn:hover:not(:disabled){background:var(--blue-deep)}
+.backbtn{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:11px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px}
+.sendlink{display:inline-block;margin-top:12px;background:var(--blue);color:#fff;border-radius:10px;padding:13px 26px;font-weight:900;text-decoration:none}
+footer{margin:34px 0 30px;font-size:12.5px;color:var(--ink-dim);text-align:center}
+footer a{color:var(--blue-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="brand">アーチデザイン工房</p>
+  <h1>この型で作る</h1>
+  <p><span class="proto">試作品です。送信しても実際には届かず、決済もできません</span></p>
+  <div class="steps"><span><b>1</b> 色と内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
+  <div class="lead">
+    <p class="l1">まず色を選んでください。<br>あとは、ページに出る順番のまま、上から埋めるだけです。</p>
+    <p class="l2">入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに右のスイッチで「入れる／入れない」を選べます。品目は好きなだけ増やせます。</p>
+  </div>
+</header>
+
+<div class="cols">
+<form id="orderForm" novalidate>
+  <fieldset>
+    <legend>色パターン</legend>
+    <p class="hint">まず色を選んでください。押すとプレビューの色が変わります。</p>
+    <button type="button" class="patbtn sel" data-pat="orig"><span class="dots"><span class="dot" style="background:#f7f8f8"></span><span class="dot" style="background:#1f8a94"></span><span class="dot" style="background:#31383d"></span></span>見本の色（見本の色）</button>
+    <button type="button" class="patbtn" data-pat="ai"><span class="dots"><span class="dot" style="background:#1c2b4d"></span><span class="dot" style="background:#bfc9d8"></span><span class="dot" style="background:#e9ecf2"></span></span>藍と銀</button>
+    <button type="button" class="patbtn" data-pat="midori"><span class="dots"><span class="dot" style="background:#1d4030"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ecf0e2"></span></span>緑と金</button>
+    <button type="button" class="patbtn" data-pat="enji"><span class="dots"><span class="dot" style="background:#472228"></span><span class="dot" style="background:#d9a45c"></span><span class="dot" style="background:#f2e7dd"></span></span>臙脂と金</button>
+    <button type="button" class="patbtn" data-pat="sumi"><span class="dots"><span class="dot" style="background:#26241f"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ece7db"></span></span>墨と金</button>
+    <p class="hint">色パターンは全ての型で共通です。業種や写真に関係なく、好きなものを選べます。</p>
+  </fieldset>
+
+  <fieldset id="fs-hero">
+    <legend>ページの最初</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お店の名前 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-name" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-name"><input type="text" id="f-name" value="ランドリー日和"></div>
+      <div class="shutter" id="s-name">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">キャッチコピー（改行できます）</span><label class="switch"><input type="checkbox" id="t-catch" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-catch"><textarea id="f-catch" rows="2">布団も、カーテンも、
+洗って乾かして60分。</textarea></div>
+      <div class="shutter" id="s-catch">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">紹介文</span><label class="switch"><input type="checkbox" id="t-lead" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-lead"><textarea id="f-lead" rows="3">洗剤は自動で入ります。持ってくるのは洗濯物と小銭（両替機とキャッシュレス対応）だけ。</textarea></div>
+      <div class="shutter" id="s-lead">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">電話番号 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-tel" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-tel"><input type="text" id="f-tel" value="045-000-0000"></div>
+      <div class="shutter" id="s-tel">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-list">
+    <legend>機械と料金</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">品目</span><label class="switch"><input type="checkbox" id="t-items" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-items">
+        <div id="itemRows"></div>
+        <button type="button" class="addbtn" id="addItem">＋ 品目を追加する</button>
+        <p class="hint">品目は好きなだけ増やせます。長くなれば、ページもそのまま長くなります。</p>
+      </div>
+      <div class="shutter" id="s-items">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-sub">
+    <legend>使い方</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">使い方（まとめて）</span><label class="switch"><input type="checkbox" id="t-sub" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-sub"><p class="hint">この部分は、まとめて入れる／入れないを選べます。</p></div>
+      <div class="shutter" id="s-sub">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-photo">
+    <legend>写真</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">写真</span><label class="switch"><input type="checkbox" id="t-photo" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-photo"><input type="file" id="f-photo" accept="image/*">
+        <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p>
+        <p class="hint">写真の切り取りや位置の調整は行いません。プレビューで表示された通りの形で公開します。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。</p></div>
+      <div class="shutter" id="s-photo">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-info">
+    <legend>店の案内</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">場所</span><label class="switch"><input type="checkbox" id="t-info0" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-info0"><input type="text" id="f-info0" value="横浜市戸塚区 0-0-0 ・ 戸塚駅から徒歩9分"></div>
+      <div class="shutter" id="s-info0">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">営業時間</span><label class="switch"><input type="checkbox" id="t-info1" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-info1"><input type="text" id="f-info1" value="24時間 ・ スタッフは9:00 - 17:00にいます"></div>
+      <div class="shutter" id="s-info1">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">駐車場</span><label class="switch"><input type="checkbox" id="t-info2" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-info2"><input type="text" id="f-info2" value="店の前に4台"></div>
+      <div class="shutter" id="s-info2">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-extra">
+    <legend>追加できる項目（どの型にも足せます）</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お知らせ</span><label class="switch"><input type="checkbox" id="t-news"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-news"><div class="rowbox" style="margin-top:4px"><label>お知らせの見出し</label><input type="text" id="f-newsT" value="お知らせ"><label>お知らせの本文</label><textarea id="f-newsB" rows="2">詳しくはお電話でお問い合わせください。</textarea></div></div>
+      <div class="shutter" id="s-news">この項目は使いません</div>
+    </div>
+
+    <div class="unit">
+      <div class="unit-head"><span class="nm">よくある質問</span><label class="switch"><input type="checkbox" id="t-faq"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-faq">
+        <div id="faqRows"></div>
+        <button type="button" class="addbtn" id="addFaq">＋ 質問を追加する</button>
+      </div>
+      <div class="shutter" id="s-faq">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">リンク</span><label class="switch"><input type="checkbox" id="t-link"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-link"><div class="rowbox" style="margin-top:4px"><label>リンクの文字</label><input type="text" id="f-linkT" value="Instagramはこちら"><label>リンク先のアドレス</label><input type="text" id="f-linkU" value="https://www.instagram.com/"></div></div>
+      <div class="shutter" id="s-link">この項目は使いません</div>
+    </div>
+
+    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。レイアウト自体の変更は、別途オプション（2万円から）で承ります。</p>
+  </fieldset>
+
+  <div class="send">
+    <button type="submit">入力内容を確定する</button>
+    <p class="err" id="err">「入れる」設定の名前と電話番号を入れてください。</p>
+    <p class="hint" style="margin-top:8px">確定すると確認画面が出ます。内容と規約を確認してから、お支払いに進みます。お支払いの後、ご案内に沿って入力内容をお送りください。</p>
+  </div>
+
+
+</form>
+
+<div class="pv">
+  <h2>プレビュー（入力した内容がそのまま出ます）</h2>
+  <div class="pvtabs">
+    <button type="button" class="pvtab sel" id="tabPhone">スマホ表示</button>
+    <button type="button" class="pvtab" id="tabPc">パソコン表示</button>
+  </div>
+  <div class="pvframe" id="pvframe"><iframe id="pv" src="48-laundry-hiyori.html" title="プレビュー"></iframe></div>
+  <p class="hint" style="margin-top:6px">パソコン表示は、広い画面での見え方を縮小して表示しています。</p>
+</div>
+</div>
+
+<div class="confirm" id="confirmView">
+  <h2>内容の確認</h2>
+  <p>この内容で制作します。よくご確認ください。</p>
+  <div class="receipt">
+    <p>受付番号（決済の控え）</p>
+    <p class="rnum" id="receiptNum"></p>
+    <p class="hint">この番号をメモしてください。お支払いの確認や、内容を送る時に使います。</p>
+  </div>
+  <p style="margin-top:10px"><b>入力内容</b></p>
+  <ul id="confirmSummary"></ul>
+  <p style="margin-top:14px"><b>ご利用規約</b></p>
+  <div class="terms" id="termsBox">ご利用規約
+1. 本サービスは、あらかじめ用意した型（デザイン）に、お客様の文章と写真を差し込んで作る、1ページのホームページ制作サービスです。レイアウト（ページの構成）の変更は、別途オプション（2万円から）で承ります。
+2. 料金は10,000円（税込）です。お支払いの確認が取れてから、制作を開始します。
+3. 写真について：写真の切り取りや位置の調整は、工房では行っておりません。プレビューで表示された通りの形で公開いたします。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。
+4. 納品は、完成したページのURLをお知らせする形で行います。
+5. 完成URLのお知らせから1ヶ月以内は、修正を2回まで無料で承ります。それ以降の修正は、1回3,000円です。
+6. 制作開始後のお客様都合による解約は、返金できません。
+7. サーバーや外部サービス（Google、Stripe等）の障害・仕様変更によって生じた影響は、当工房の責任範囲外とさせていただきます。
+8. ご入力いただいた文章・写真の権利は、お客様に帰属します。第三者の権利を侵害する内容や、法令に触れる内容はお受けできません。
+9. お支払いの後は、送信案内ページから入力内容をお送りください。送信をもって、制作の受け付けが完了します。</div>
+  <p class="hint">規約を一番下まで読むと、チェックできるようになります。</p>
+  <label class="agree"><input type="checkbox" id="agreeCheck" disabled> 規約を読み、内容に同意します</label>
+  <p class="photonote">写真の切り取りや位置の調整は行いません。プレビュー通りに公開します</p>
+  <button type="button" id="payBtn" disabled>お支払いへ進む（10,000円）</button>
+  <button type="button" class="backbtn" id="backBtn">戻って直す</button>
+</div>
+
+<div class="paid" id="paidView">
+  <h2>お支払いが完了しました</h2>
+  <p class="hint">試作品のため、実際の決済は行われていません。本番では、この画面の前にStripeの決済画面でお支払いいただきます。</p>
+  <p style="margin-top:8px">ご案内メールをお送りします。メールに記載のリンク先（送信案内ページ）から、入力いただいた内容と写真をお送りください。このまま送信案内ページへ進むこともできます。</p>
+  <p style="margin-top:8px">受付番号：<b id="paidNum"></b></p>
+  <a class="sendlink" href="send.html">送信案内ページへ</a>
+</div>
+
+<footer>
+  <p><a href="index.html">見本を選ぶページへ戻る</a> ／ アーチデザイン工房</p>
+</footer>
+</div>
+
+<script>
+var CFG = {"nameSel": ".logo", "catchSel": "h1", "leadSel": "section.lead p", "factsSel": null, "initName": "ランドリー日和", "initCatch": "布団も、カーテンも、\n洗って乾かして60分。", "initLead": "洗剤は自動で入ります。持ってくるのは洗濯物と小銭（両替機とキャッシュレス対応）だけ。", "containerSel": "section.spec tbody", "containerIdx": 0, "rowSel": "tr", "groupSel": null, "fields": [{"k": "n", "sel": "td", "kind": "ns"}, {"k": "x", "sel": ".num", "kind": "t"}, {"k": "p", "sel": ".pr", "kind": "t"}], "infoSecSel": "section.info", "infoTextSel": null, "listNoteSel": null, "subSel": "section.steps", "subIdx": 0, "roles": {"bg": ["--paper"], "ink": ["--ink"], "dim": ["--ink-dim"], "line": ["--line"], "accent": ["--turq"], "deep": ["--turq-deep"], "band": ["--gray"]}, "patterns": {"orig": null, "ai": {"bg": "#1c2b4d", "ink": "#e9ecf2", "dim": "#a3aec4", "line": "#35466a", "accent": "#bfc9d8", "deep": "#93a1b5", "bg2": "#26365c", "band": "#131f38", "accentbg": "#51648c"}, "midori": {"bg": "#1d4030", "ink": "#ecf0e2", "dim": "#a7b8a2", "line": "#33523f", "accent": "#c8a45c", "deep": "#bb9753", "bg2": "#26503c", "band": "#132a1f", "accentbg": "#7d5f27"}, "enji": {"bg": "#472228", "ink": "#f2e7dd", "dim": "#c2a49b", "line": "#5f343b", "accent": "#d9a45c", "deep": "#ba8a48", "bg2": "#55292f", "band": "#33161b", "accentbg": "#9c6a30"}, "sumi": {"bg": "#26241f", "ink": "#ece7db", "dim": "#a49c8a", "line": "#454035", "accent": "#c8a45c", "deep": "#a58748", "bg2": "#322f28", "band": "#12100c", "accentbg": "#8a6a2f"}}, "patNames": {"orig": "見本の色", "ai": "藍と銀", "midori": "緑と金", "enji": "臙脂と金", "sumi": "墨と金"}, "fixes": [".spec table{background:{bg2} !important}", ".steps li{background:{bg2} !important}"], "accentVar": "--turq", "follow": [["fs-hero", "section.lead"], ["fs-list", "section.spec"], ["fs-sub", "section.steps"], ["fs-photo", "img"], ["fs-info", "section.info"], ["fs-extra", "#extraSec"]], "listLegend": "機械と料金", "infoLabels": ["場所", "営業時間", "駐車場"], "sample": "48-laundry-hiyori.html", "subLabel": "使い方"};
+var listData = [{"n": "洗濯乾燥機（大）", "d": "布団はシングル2枚まで", "x": "27kg", "p": "1,300円"}, {"n": "洗濯乾燥機（中）", "d": "1週間分の普段着の目安", "x": "17kg", "p": "1,000円"}, {"n": "乾燥機だけ", "d": "家の洗濯機で洗った物の仕上げに", "x": "14kg", "p": "100円／8分"}, {"n": "スニーカーランドリー", "d": "上履きも洗えます", "x": "2足", "p": "400円"}];
+var faqData = [{"q": "予約は必要ですか", "a": "お電話でお気軽にどうぞ。"}];
+var FIELD_KEYS = ["n", "d", "x", "p"];
+var FIELD_LABELS = {"n": "機械の名前", "d": "補足（小さい文字）", "x": "洗える量", "p": "料金"};
+var pv = document.getElementById('pv');
+function doc(){ return pv.contentDocument; }
+function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function on(id){ var el = document.getElementById(id); return el ? el.checked : false; }
+function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+/* ---------- color patterns ---------- */
+var curPattern = 'orig';
+document.querySelectorAll('.patbtn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    curPattern = btn.getAttribute('data-pat');
+    document.querySelectorAll('.patbtn').forEach(function(b){ b.classList.toggle('sel', b === btn); });
+    apply();
+  });
+});
+
+/* ---------- switches + shutters (all units, discovered from the DOM) ---------- */
+document.querySelectorAll('.switch input[id^="t-"]').forEach(function(t){
+  var u = t.id.slice(2);
+  var sync = function(){
+    var w = document.getElementById('w-' + u), s = document.getElementById('s-' + u);
+    if (w) w.style.display = t.checked ? '' : 'none';
+    if (s) s.style.display = t.checked ? 'none' : 'block';
+    apply();
+  };
+  t.addEventListener('change', sync);
+  sync();
+});
+
+/* ---------- repeatable rows in the form ---------- */
+function buildRows(containerId, data, labels, keys){
+  var box = document.getElementById(containerId);
+  box.innerHTML = '';
+  data.forEach(function(row, i){
+    var div = document.createElement('div');
+    div.className = 'rowbox';
+    var html = '';
+    labels.forEach(function(lb, j){
+      html += '<label>' + lb + '</label><input type="text" data-i="' + i + '" data-k="' + keys[j] + '" value="' + esc(row[keys[j]]) + '">';
+    });
+    html += '<button type="button" class="del" data-del="' + i + '">この項目を削除する</button>';
+    div.innerHTML = html;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      data[+inp.getAttribute('data-i')][inp.getAttribute('data-k')] = inp.value;
+      apply();
+    });
+  });
+  box.querySelectorAll('[data-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if (data.length <= 1) return;
+      data.splice(+btn.getAttribute('data-del'), 1);
+      buildRows(containerId, data, labels, keys);
+      apply();
+    });
+  });
+}
+var LIST_LABELS = FIELD_KEYS.map(function(k){ return FIELD_LABELS[k]; });
+function buildItems(){ buildRows('itemRows', listData, LIST_LABELS, FIELD_KEYS); }
+function buildFaqs(){ buildRows('faqRows', faqData, ['質問','答え'], ['q','a']); }
+document.getElementById('addItem').addEventListener('click', function(){
+  var row = {}; FIELD_KEYS.forEach(function(k){ row[k] = ''; });
+  listData.push(row); buildItems(); apply();
+});
+document.getElementById('addFaq').addEventListener('click', function(){
+  faqData.push({q:'', a:''}); buildFaqs(); apply();
+});
+
+/* ---------- preview ---------- */
+function setText(d, sel, text){ var el = d.querySelector(sel); if (el) el.textContent = text; }
+function showEl(el, visible){ if (el) el.style.display = visible ? '' : 'none'; }
+function show(d, sel, visible){ showEl(d.querySelector(sel), visible); }
+function qf(row, f){
+  if (f.sel === 'p'){
+    var ps = row.querySelectorAll('p');
+    for (var i = 0; i < ps.length; i++){
+      if (!ps[i].classList.contains('price') && !ps[i].classList.contains('from')) return ps[i];
+    }
+    return null;
+  }
+  return row.querySelector(f.sel);
+}
+function setRowField(rowEl, f, row){
+  if (f.kind === 'ownText'){
+    var doneOt = false;
+    for (var oi = 0; oi < rowEl.childNodes.length; oi++){
+      var ond = rowEl.childNodes[oi];
+      if (ond.nodeType === 3 && ond.textContent.trim()){ ond.textContent = row[f.k]; doneOt = true; break; }
+    }
+    if (!doneOt) rowEl.insertBefore(rowEl.ownerDocument.createTextNode(row[f.k]), rowEl.firstChild);
+    return;
+  }
+  var el = qf(rowEl, f); if (!el) return;
+  if (f.kind === 'ns'){
+    el.innerHTML = esc(row[f.k]) + (row.d ? '<small>' + esc(row.d) + '</small>' : '');
+  } else if (f.kind === 'liName' || f.kind === 'mt'){
+    var done = false;
+    for (var i = 0; i < el.childNodes.length; i++){
+      var nd = el.childNodes[i];
+      if (nd.nodeType === 3 && nd.textContent.trim()){ nd.textContent = row[f.k]; done = true; break; }
+    }
+    if (!done) el.insertBefore(el.ownerDocument.createTextNode(row[f.k]), el.firstChild);
+  } else {
+    el.textContent = row[f.k] || '';
+    if (f.k === 'p') el.style.display = row[f.k] ? '' : 'none';
+  }
+}
+var rowTpl = null;
+var photoURL = null;
+/* grouped rows (CFG.groupSel): a row element ("shell") may hold several
+   independent text groups (e.g. 28: one row with two .tx panels). Items
+   are the groups; shells keep their non-group children (photos etc.)
+   and are filled in order, up to each shell's original group count.
+   Extra items overflow into clones of the last shell. */
+var groupState = null;
+function renderListGrouped(d){
+  var conts = d.querySelectorAll(CFG.containerSel);
+  var cont = conts[CFG.containerIdx || 0]; if (!cont) return;
+  var liveShells = [];
+  cont.querySelectorAll(CFG.rowSel).forEach(function(r){ if (!r.closest('thead')) liveShells.push(r); });
+  if (!rowTpl && liveShells.length) rowTpl = liveShells[0].cloneNode(true);
+  if (!groupState && liveShells.length){
+    var defs = liveShells.map(function(sh){
+      var skel = sh.cloneNode(true);
+      var cap = 0, idx = -1, gtpl = null;
+      Array.prototype.slice.call(sh.children).forEach(function(c, i){
+        if (c.matches(CFG.groupSel)){ cap++; if (idx < 0) idx = i; }
+      });
+      Array.prototype.slice.call(skel.children).forEach(function(c){
+        if (c.matches(CFG.groupSel)) c.remove();
+      });
+      var g0 = sh.querySelector(CFG.groupSel);
+      if (g0) gtpl = g0.cloneNode(true);
+      return {skel: skel, cap: Math.max(cap, 1), idx: idx < 0 ? skel.children.length : idx, gtpl: gtpl};
+    });
+    var firstG = null;
+    defs.forEach(function(df){ if (!firstG && df.gtpl) firstG = df.gtpl; });
+    groupState = {defs: defs, gtpl: firstG};
+  }
+  var shellParent = liveShells.length ? liveShells[0].parentNode : cont;
+  var anchor = liveShells.length ? liveShells[liveShells.length - 1].nextSibling : null;
+  if (anchor && anchor.parentNode !== shellParent) anchor = null;
+  liveShells.forEach(function(s){ s.remove(); });
+  if (!on('t-items') || !groupState || !groupState.gtpl) return;
+  function buildShell(def, assigned){
+    var sh = def.skel.cloneNode(true);
+    assigned.forEach(function(row, k){
+      var g = groupState.gtpl.cloneNode(true);
+      CFG.fields.forEach(function(f){ setRowField(g, f, row); });
+      var ref = sh.children[Math.min(def.idx + k, sh.children.length)] || null;
+      sh.insertBefore(g, ref);
+    });
+    return sh;
+  }
+  var items = listData.slice();
+  for (var di = 0; di < groupState.defs.length && items.length; di++){
+    var take = items.splice(0, groupState.defs[di].cap);
+    if (take.length) shellParent.insertBefore(buildShell(groupState.defs[di], take), anchor);
+  }
+  var lastDef = groupState.defs[groupState.defs.length - 1];
+  while (items.length){
+    var take2 = items.splice(0, lastDef.cap);
+    shellParent.insertBefore(buildShell(lastDef, take2), anchor);
+  }
+}
+function renderList(d){
+  if (CFG.groupSel){ renderListGrouped(d); return; }
+  var conts = d.querySelectorAll(CFG.containerSel);
+  var cont = conts[CFG.containerIdx || 0]; if (!cont) return;
+  var liveRows = [];
+  cont.querySelectorAll(CFG.rowSel).forEach(function(r){ if (!r.closest('thead')) liveRows.push(r); });
+  if (!rowTpl && liveRows.length) rowTpl = liveRows[0].cloneNode(true);
+  var rowParent = liveRows.length ? liveRows[0].parentNode : cont;
+  var anchor = liveRows.length ? liveRows[liveRows.length - 1].nextSibling : null;
+  if (anchor && anchor.parentNode !== rowParent) anchor = null;
+  liveRows.forEach(function(r){ r.remove(); });
+  if (on('t-items') && rowTpl){
+    listData.forEach(function(row){
+      var el = rowTpl.cloneNode(true);
+      CFG.fields.forEach(function(f){ setRowField(el, f, row); });
+      if (anchor) rowParent.insertBefore(el, anchor); else rowParent.appendChild(el);
+    });
+  }
+}
+function apply(){
+  var d = doc(); if (!d || !d.body || !d.querySelector('h1')) return;
+  sizeSpacer(d);
+  /* the workshop decide band belongs to the standalone sample page only;
+     it must never appear inside the order preview (already ordering) */
+  var kd = d.getElementById('koboDecide');
+  if (kd) kd.style.display = 'none';
+  /* color pattern */
+  var rootEl = d.documentElement;
+  var pat = CFG.patterns[curPattern];
+  Object.keys(CFG.roles).forEach(function(role){
+    var vs = CFG.roles[role]; if (!vs || !vs.length) return;
+    vs.forEach(function(v){ rootEl.style.setProperty(v, pat ? (pat[role] || '') : ''); });
+  });
+  /* per-sample pattern fixes: dual-use bands / fixed-color elements whose
+     colors cannot follow the pattern through vars alone (non-orig only) */
+  var fixEl = d.getElementById('pvFix');
+  if (CFG.fixes && CFG.fixes.length){
+    if (!fixEl){ fixEl = d.createElement('style'); fixEl.id = 'pvFix'; d.head.appendChild(fixEl); }
+    fixEl.textContent = pat ? CFG.fixes.map(function(f){
+      return f.replace(/\{(\w+)\}/g, function(m, k){ return pat[k] || m; });
+    }).join('\n') : '';
+  } else if (fixEl){ fixEl.textContent = ''; }
+  /* name (only rewritten once the user actually edits it, so the
+     sample's styled logo/name stays untouched until then) */
+  var name = val('f-name');
+  var nameEl = d.querySelector(CFG.nameSel);
+  showEl(nameEl, on('t-name'));
+  if (nameEl && name && name !== CFG.initName) nameEl.textContent = name;
+  var foot = d.querySelectorAll('footer p');
+  if (foot[0]){ foot[0].style.display = on('t-name') ? '' : 'none'; if (name) foot[0].textContent = name; }
+  /* catch copy */
+  var catchEl = d.querySelector(CFG.catchSel);
+  showEl(catchEl, on('t-catch'));
+  var catchVal = val('f-catch');
+  if (catchEl && catchVal !== CFG.initCatch) catchEl.innerHTML = catchVal.split('\n').map(esc).join('<br>');
+  /* lead */
+  if (CFG.leadSel){
+    var leadEl = d.querySelector(CFG.leadSel);
+    showEl(leadEl, on('t-lead'));
+    var leadVal = val('f-lead');
+    if (leadEl && leadVal !== CFG.initLead) leadEl.textContent = leadVal;
+  }
+  /* facts */
+  if (CFG.factsSel){ show(d, CFG.factsSel, on('t-facts')); setText(d, CFG.factsSel, val('f-facts')); }
+  /* tel: every tel link + the info table's phone row */
+  var tel = val('f-tel');
+  var digits = tel.replace(/[^0-9]/g, '');
+  d.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+    a.setAttribute('href', 'tel:' + digits);
+    if (/[0-9]/.test(a.textContent)) a.textContent = a.textContent.replace(/[0-9][0-9\-]+/, tel);
+    a.style.display = on('t-tel') ? '' : 'none';
+  });
+  /* section note */
+  if (CFG.listNoteSel){ show(d, CFG.listNoteSel, on('t-listnote')); setText(d, CFG.listNoteSel, val('f-listnote')); }
+  /* sub section (whole-section toggle) */
+  if (CFG.subSel){
+    var subs = d.querySelectorAll(CFG.subSel);
+    showEl(subs[CFG.subIdx || 0], on('t-sub'));
+  }
+  /* list */
+  renderList(d);
+  /* photo: applied AFTER renderList, to every img in the preview.
+     A photo that lives inside a repeatable row is duplicated by row
+     cloning, so all copies follow the one photo toggle / replacement
+     (the form has a single photo field). */
+  d.querySelectorAll('img').forEach(function(im){
+    var wrap = im.closest('.photo') || im.closest('.ph') || im.closest('.hero-photo') || im;
+    showEl(wrap, on('t-photo'));
+    if (photoURL) im.src = photoURL;
+  });
+  /* info */
+  if (CFG.infoTextSel){
+    var it = d.querySelector(CFG.infoTextSel);
+    showEl(it, on('t-infotext'));
+    if (it) it.textContent = val('f-infotext');
+  } else {
+    var itbl = d.querySelector(CFG.infoSecSel + ' table');
+    if (itbl){
+      itbl.querySelectorAll('tr').forEach(function(tr){
+        var th = tr.querySelector('th'), td = tr.querySelector('td');
+        if (!th || !td) return;
+        var label = th.textContent.trim();
+        if (label === '電話'){
+          tr.style.display = on('t-tel') ? '' : 'none';
+          td.textContent = tel;
+          return;
+        }
+        var idx = CFG.infoLabels.indexOf(label);
+        if (idx >= 0){
+          tr.style.display = on('t-info' + idx) ? '' : 'none';
+          td.textContent = val('f-info' + idx);
+        }
+      });
+    }
+  }
+  /* extra section (news / faq / link), styled with the list section's class */
+  var old = d.getElementById('extraSec'); if (old) old.remove();
+  var parts = '';
+  if (on('t-news')) parts += '<h2>' + esc(val('f-newsT')) + '</h2><p>' + esc(val('f-newsB')) + '</p>';
+  if (on('t-faq')) parts += '<h2>よくある質問</h2><div id="extraFaqRows"></div>';
+  if (on('t-link')) parts += '<p style="margin-top:14px"><a href="' + esc(val('f-linkU')) + '" target="_blank" rel="noopener">' + esc(val('f-linkT')) + '</a></p>';
+  if (parts){
+    var s2 = d.createElement('section');
+    var listSec = d.querySelector(CFG.follow.filter(function(p){ return p[0] === 'fs-list'; })[0][1]);
+    s2.className = listSec ? listSec.className : '';
+    s2.id = 'extraSec';
+    s2.innerHTML = parts;
+    if (on('t-faq') && rowTpl){
+      var holder = s2.querySelector('#extraFaqRows');
+      faqData.forEach(function(f){
+        var el = rowTpl.cloneNode(true);
+        CFG.fields.forEach(function(fd){
+          var v = fd.k === 'n' ? f.q : (fd.k === 'd' ? f.a : '');
+          var rr = {}; rr[fd.k] = v; rr.d = f.a;
+          setRowField(el, fd, rr);
+        });
+        holder.appendChild(el);
+      });
+    }
+    var info = d.querySelector(CFG.infoSecSel);
+    if (info) info.parentNode.insertBefore(s2, info);
+  }
+}
+/* ---------- preview device tabs ---------- */
+var pvMode = 'phone';
+function layoutPreview(){
+  var frame = document.getElementById('pvframe');
+  var w = frame.clientWidth;
+  if (pvMode === 'pc'){
+    var s = w / 1280;
+    pv.style.width = '1280px';
+    pv.style.height = '860px';
+    pv.style.transform = 'scale(' + s + ')';
+    frame.style.height = (860 * s) + 'px';
+  } else {
+    pv.style.width = '100%';
+    pv.style.height = '640px';
+    pv.style.transform = '';
+    frame.style.height = '';
+  }
+  sizeSpacer();
+}
+document.getElementById('tabPhone').addEventListener('click', function(){
+  pvMode = 'phone';
+  this.classList.add('sel'); document.getElementById('tabPc').classList.remove('sel');
+  layoutPreview();
+});
+document.getElementById('tabPc').addEventListener('click', function(){
+  pvMode = 'pc';
+  this.classList.add('sel'); document.getElementById('tabPhone').classList.remove('sel');
+  layoutPreview();
+});
+window.addEventListener('resize', layoutPreview);
+
+/* spacer at the end of the preview document, so any section can be
+   scrolled to the very top of the preview frame (preview copy only).
+   It carries a back-to-top button so the space reads as intentional;
+   the button returns BOTH the preview and the form to the top
+   (scroll positions only - entered content is never touched). */
+function sizeSpacer(d){
+  d = d || doc(); if (!d || !d.body) return;
+  var sp = d.getElementById('pvSpacer');
+  if (!sp){
+    sp = d.createElement('div'); sp.id = 'pvSpacer';
+    sp.style.cssText = 'display:flex;justify-content:center;align-items:flex-start;padding-top:34px;box-sizing:border-box';
+    var btn = d.createElement('button');
+    btn.id = 'pvTopBtn'; btn.type = 'button'; btn.textContent = '↑ 一番上に戻る';
+    btn.style.cssText = 'font-family:inherit;font-size:14px;letter-spacing:.18em;color:var(' + CFG.accentVar + ');background:transparent;border:1px solid var(' + CFG.accentVar + ');border-radius:999px;padding:11px 26px;cursor:pointer';
+    btn.addEventListener('click', function(){
+      pv.contentWindow.scrollTo({top: 0, behavior: 'smooth'});
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      followCurrent = null;
+    });
+    sp.appendChild(btn);
+    d.body.appendChild(sp);
+  }
+  sp.style.height = Math.round(pv.clientHeight * 0.62) + 'px';
+}
+
+/* ---------- section follow: left scroll -> preview aligns its section to the top ---------- */
+var SECTION_MAP = CFG.follow;
+var followCurrent = null, followTimer = null;
+function previewScrollTo(sel){
+  var d = pv.contentDocument; if (!d) return;
+  var el = d.querySelector(sel); if (!el) return;
+  var w = pv.contentWindow;
+  var y = el.getBoundingClientRect().top + w.scrollY;
+  w.scrollTo({top: Math.max(0, y - 2), behavior: 'smooth'});
+}
+function followCheck(){
+  var cur = SECTION_MAP[0][0];
+  SECTION_MAP.forEach(function(pair){
+    var fs = document.getElementById(pair[0]);
+    if (fs && fs.getBoundingClientRect().top <= 90) cur = pair[0];
+  });
+  if (cur !== followCurrent){
+    followCurrent = cur;
+    for (var i = 0; i < SECTION_MAP.length; i++){
+      if (SECTION_MAP[i][0] === cur){ previewScrollTo(SECTION_MAP[i][1]); break; }
+    }
+  }
+}
+window.addEventListener('scroll', function(){
+  if (followTimer) return;
+  followTimer = setTimeout(function(){ followTimer = null; followCheck(); }, 120);
+}, {passive: true});
+
+pv.addEventListener('load', function(){ buildItems(); buildFaqs(); apply(); layoutPreview(); });
+document.querySelectorAll('#orderForm input[type=text], #orderForm textarea').forEach(function(el){
+  el.addEventListener('input', apply);
+});
+var photoInput = document.getElementById('f-photo');
+if (photoInput){
+  photoInput.addEventListener('change', function(){
+    var f = this.files && this.files[0]; if (!f) return;
+    photoURL = URL.createObjectURL(f);
+    var d = doc(); if (!d) return;
+    d.querySelectorAll('img').forEach(function(im){ im.src = photoURL; });
+  });
+}
+
+/* ---------- order flow: 確定 -> 確認画面 -> 保存 -> 決済 ----------
+   本番の決済: STRIPE_LINK にStripe支払いリンクを設定すると、お支払いボタンで
+   受付番号を client_reference_id として渡して決済画面へ進む。
+   試作品ではリンク未設定のため、保存の後にモック決済ページ (mock-pay.html) へ進み、
+   完了するとこのページへ戻って決済完了画面を表示する。 */
+var STRIPE_LINK = '';
+var receiptNum = null;
+var summaryPairs = [];
+function genReceiptNum(){
+  var d = new Date();
+  var ymd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  return 'R' + ymd + '-' + String(Math.floor(1000 + Math.random() * 9000));
+}
+function idbOpen(){
+  return new Promise(function(res, rej){
+    var rq = indexedDB.open('koboOrderDB', 1);
+    rq.onupgradeneeded = function(){ rq.result.createObjectStore('photos', {keyPath: 'key'}); };
+    rq.onsuccess = function(){ res(rq.result); };
+    rq.onerror = function(){ rej(rq.error); };
+  });
+}
+function idbPut(rec){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var tx = db.transaction('photos', 'readwrite');
+      tx.objectStore('photos').put(rec);
+      tx.oncomplete = function(){ res(); };
+      tx.onerror = function(){ rej(tx.error); };
+    });
+  });
+}
+function buildSummary(){
+  var items = [];
+  items.push(['色パターン', CFG.patNames[curPattern]]);
+  if (on('t-name')) items.push(['お店の名前', val('f-name')]);
+  if (on('t-catch')) items.push(['キャッチコピー', val('f-catch')]);
+  if (CFG.leadSel && on('t-lead')) items.push(['紹介文', val('f-lead')]);
+  if (CFG.factsSel && on('t-facts')) items.push(['特徴の一行', val('f-facts')]);
+  if (on('t-tel')) items.push(['電話番号', val('f-tel')]);
+  if (CFG.listNoteSel && on('t-listnote')) items.push([CFG.listLegend + 'の説明', val('f-listnote')]);
+  if (on('t-items')) listData.forEach(function(r, i){
+    items.push([CFG.listLegend + ' ' + (i + 1), FIELD_KEYS.map(function(k){ return r[k]; }).filter(function(x){ return x; }).join('／')]);
+  });
+  if (CFG.subSel) items.push([CFG.subLabel, on('t-sub') ? '入れる' : '入れない']);
+  if (CFG.infoTextSel){ if (on('t-infotext')) items.push(['案内', val('f-infotext')]); }
+  else CFG.infoLabels.forEach(function(lb, i){
+    if (on('t-info' + i)) items.push([lb, val('f-info' + i)]);
+  });
+  if (on('t-news')){ items.push(['お知らせの見出し', val('f-newsT')]); items.push(['お知らせの本文', val('f-newsB')]); }
+  if (on('t-faq')) faqData.forEach(function(f, i){ items.push(['よくある質問 ' + (i + 1), '質問：' + f.q + '／答え：' + f.a]); });
+  if (on('t-link')) items.push(['リンク', val('f-linkT') + '（' + val('f-linkU') + '）']);
+  items.push(['写真', on('t-photo') ? (photoInput && photoInput.files[0] ? '選択済み' : '見本のまま') : '入れない']);
+  return items;
+}
+function collectPhotoRecs(){
+  var recs = [];
+  if (on('t-photo') && photoInput && photoInput.files && photoInput.files[0]){
+    var f = photoInput.files[0];
+    recs.push({key: receiptNum + '|0', num: receiptNum, slot: '写真', name: f.name, type: f.type, blob: f});
+  }
+  return recs;
+}
+function saveOrder(){
+  var data = {
+    num: receiptNum,
+    ts: new Date().toISOString(),
+    sample: CFG.sample,
+    shop: CFG.initName,
+    patternName: CFG.patNames[curPattern],
+    summary: summaryPairs
+  };
+  try { localStorage.setItem('koboOrderV1', JSON.stringify(data)); } catch(e){}
+  return Promise.all(collectPhotoRecs().map(idbPut)).catch(function(){});
+}
+var termsBox = document.getElementById('termsBox');
+var agreeCheck = document.getElementById('agreeCheck');
+var payBtn = document.getElementById('payBtn');
+function termsCheck(){
+  if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 10) agreeCheck.disabled = false;
+}
+termsBox.addEventListener('scroll', termsCheck);
+agreeCheck.addEventListener('change', function(){ payBtn.disabled = !agreeCheck.checked; });
+document.getElementById('backBtn').addEventListener('click', function(){
+  document.getElementById('confirmView').style.display = 'none';
+  document.getElementById('orderForm').scrollIntoView({behavior: 'smooth', block: 'start'});
+});
+payBtn.addEventListener('click', function(){
+  saveOrder().then(function(){
+    if (STRIPE_LINK){
+      location.href = STRIPE_LINK + '?client_reference_id=' + encodeURIComponent(receiptNum);
+      return;
+    }
+    location.href = 'mock-pay.html?num=' + encodeURIComponent(receiptNum) + '&from=' + encodeURIComponent(location.pathname.split('/').pop());
+  });
+});
+
+/* モック決済の完了後に戻ってきたら、決済完了画面を表示する */
+(function(){
+  var paid = new URLSearchParams(location.search).get('paid');
+  if (!paid) return;
+  document.getElementById('paidNum').textContent = paid;
+  var paidv = document.getElementById('paidView');
+  paidv.style.display = 'block';
+  paidv.scrollIntoView({behavior: 'smooth', block: 'start'});
+})();
+
+document.getElementById('orderForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var err = document.getElementById('err');
+  if ((on('t-name') && !val('f-name')) || (on('t-tel') && !val('f-tel'))){ err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  summaryPairs = buildSummary();
+  if (!receiptNum) receiptNum = genReceiptNum();
+  document.getElementById('receiptNum').textContent = receiptNum;
+  document.getElementById('confirmSummary').innerHTML = summaryPairs.map(function(it){
+    return '<li>' + esc(it[0]) + '：' + esc(it[1]).replace(/\n/g, '<br>') + '</li>';
+  }).join('');
+  agreeCheck.checked = false;
+  agreeCheck.disabled = true;
+  payBtn.disabled = true;
+  termsBox.scrollTop = 0;
+  var cv = document.getElementById('confirmView');
+  cv.style.display = 'block';
+  cv.scrollIntoView({behavior: 'smooth', block: 'start'});
+  setTimeout(termsCheck, 60);
+});
+</script>
+</body>
+</html>

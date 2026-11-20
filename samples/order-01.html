@@ -67,6 +67,20 @@ iframe{width:100%;height:640px;border:0;display:block;transform-origin:top left}
 .done{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
 .done ul{margin:8px 0 8px 1.2em;font-size:14px}
 .pay{display:inline-block;margin-top:10px;background:#9a917e;color:#fff;border-radius:10px;padding:12px 22px;font-weight:900}
+.confirm,.paid{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
+.confirm h2,.paid h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.confirm ul{margin:8px 0 8px 1.2em;font-size:14px}
+.receipt{background:#fdf3d8;border:1px solid #e5cf8a;border-radius:10px;padding:12px 16px;margin:12px 0;text-align:center}
+.receipt .rnum{font-size:26px;font-weight:900;letter-spacing:.08em;margin:2px 0}
+.terms{border:1px solid var(--line);border-radius:10px;background:#fff;height:180px;overflow-y:auto;padding:12px 16px;font-size:13px;line-height:1.9;margin-top:8px;white-space:pre-line}
+.agree{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14.5px;font-weight:700}
+.agree input{width:20px;height:20px;flex:none}
+.photonote{margin-top:16px;border:1.5px solid #b3261e;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700}
+#payBtn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit;margin-top:10px}
+#payBtn:disabled{background:#9a917e;cursor:not-allowed}
+#payBtn:hover:not(:disabled){background:var(--blue-deep)}
+.backbtn{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:11px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px}
+.sendlink{display:inline-block;margin-top:12px;background:var(--blue);color:#fff;border-radius:10px;padding:13px 26px;font-weight:900;text-decoration:none}
 footer{margin:34px 0 30px;font-size:12.5px;color:var(--ink-dim);text-align:center}
 footer a{color:var(--blue-deep)}
 </style>
@@ -105,6 +119,7 @@ footer a{color:var(--blue-deep)}
       <div class="unit-body" id="w-photoA">
         <input type="file" id="f-photoA" accept="image/*">
         <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p>
+        <p class="hint">写真の切り取りや位置の調整は行いません。プレビューで表示された通りの形で公開します。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。</p>
       </div>
       <div class="shutter" id="s-photoA">この項目は使いません</div>
     </div>
@@ -220,9 +235,9 @@ footer a{color:var(--blue-deep)}
   </fieldset>
 
   <div class="send">
-    <button type="submit">この内容で送信する</button>
+    <button type="submit">入力内容を確定する</button>
     <p class="err" id="err">「入れる」設定の名前と電話番号を入れてください。</p>
-    <p class="hint" style="margin-top:8px">送信すると工房に内容が届き、制作が始まります。お支払い（10,000円）は送信後の画面から続けてできます。</p>
+    <p class="hint" style="margin-top:8px">確定すると確認画面が出ます。内容と規約を確認してから、お支払いに進みます。お支払いの後、ご案内に沿って入力内容をお送りください。</p>
   </div>
 
 
@@ -239,14 +254,40 @@ footer a{color:var(--blue-deep)}
 </div>
 </div>
 
-<div class="done" id="done">
-  <h2>送信しました</h2>
-  <p>この内容が工房に届きました（試作品のため、実際にはまだ届いていません）。工房が内容を確認して、この型の形でページを作ります。</p>
-  <p style="margin-top:10px"><b>送信内容の控え</b></p>
-  <ul id="summary"></ul>
-  <p>続けて、お支払いにお進みください。</p>
-  <span class="pay">お支払い（10,000円）へ進む</span>
-  <p class="hint" style="margin-top:8px">試作品では決済できません。本番では、このボタンからStripeの決済画面に進みます。</p>
+<div class="confirm" id="confirmView">
+  <h2>内容の確認</h2>
+  <p>この内容で制作します。よくご確認ください。</p>
+  <div class="receipt">
+    <p>受付番号（決済の控え）</p>
+    <p class="rnum" id="receiptNum"></p>
+    <p class="hint">この番号をメモしてください。お支払いの確認や、内容を送る時に使います。</p>
+  </div>
+  <p style="margin-top:10px"><b>入力内容</b></p>
+  <ul id="confirmSummary"></ul>
+  <p style="margin-top:14px"><b>ご利用規約</b></p>
+  <div class="terms" id="termsBox">ご利用規約
+1. 本サービスは、あらかじめ用意した型（デザイン）に、お客様の文章と写真を差し込んで作る、1ページのホームページ制作サービスです。レイアウト（ページの構成）の変更は、別途オプション（2万円から）で承ります。
+2. 料金は10,000円（税込）です。お支払いの確認が取れてから、制作を開始します。
+3. 写真について：写真の切り取りや位置の調整は、工房では行っておりません。プレビューで表示された通りの形で公開いたします。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。
+4. 納品は、完成したページのURLをお知らせする形で行います。
+5. 完成URLのお知らせから1ヶ月以内は、修正を2回まで無料で承ります。それ以降の修正は、1回3,000円です。
+6. 制作開始後のお客様都合による解約は、返金できません。
+7. サーバーや外部サービス（Google、Stripe等）の障害・仕様変更によって生じた影響は、当工房の責任範囲外とさせていただきます。
+8. ご入力いただいた文章・写真の権利は、お客様に帰属します。第三者の権利を侵害する内容や、法令に触れる内容はお受けできません。
+9. お支払いの後は、送信案内ページから入力内容をお送りください。送信をもって、制作の受け付けが完了します。</div>
+  <p class="hint">規約を一番下まで読むと、チェックできるようになります。</p>
+  <label class="agree"><input type="checkbox" id="agreeCheck" disabled> 規約を読み、内容に同意します</label>
+  <p class="photonote">写真の切り取りや位置の調整は行いません。プレビュー通りに公開します</p>
+  <button type="button" id="payBtn" disabled>お支払いへ進む（10,000円）</button>
+  <button type="button" class="backbtn" id="backBtn">戻って直す</button>
+</div>
+
+<div class="paid" id="paidView">
+  <h2>お支払いが完了しました</h2>
+  <p class="hint">試作品のため、実際の決済は行われていません。本番では、この画面の前にStripeの決済画面でお支払いいただきます。</p>
+  <p style="margin-top:8px">ご案内メールをお送りします。メールに記載のリンク先（送信案内ページ）から、入力いただいた内容と写真をお送りください。このまま送信案内ページへ進むこともできます。</p>
+  <p style="margin-top:8px">受付番号：<b id="paidNum"></b></p>
+  <a class="sendlink" href="send.html">送信案内ページへ</a>
 </div>
 
 <footer>
@@ -528,7 +569,92 @@ function photo(inputId, sel){
 photo('f-photoA', 'img.dish');
 photo('f-photoB', '.band img');
 
-/* ---------- submit (prototype: nothing is sent anywhere) ---------- */
+/* ---------- order flow: 確定 -> 確認画面 -> 保存 -> 決済 ----------
+   本番の決済: STRIPE_LINK にStripe支払いリンクを設定すると、お支払いボタンで
+   受付番号を client_reference_id として渡して決済画面へ進む。
+   試作品ではリンク未設定のため、保存の後にモック決済ページ (mock-pay.html) へ進み、
+   完了するとこのページへ戻って決済完了画面を表示する。 */
+var STRIPE_LINK = '';
+var receiptNum = null;
+var summaryPairs = [];
+function genReceiptNum(){
+  var d = new Date();
+  var ymd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  return 'R' + ymd + '-' + String(Math.floor(1000 + Math.random() * 9000));
+}
+function idbOpen(){
+  return new Promise(function(res, rej){
+    var rq = indexedDB.open('koboOrderDB', 1);
+    rq.onupgradeneeded = function(){ rq.result.createObjectStore('photos', {keyPath: 'key'}); };
+    rq.onsuccess = function(){ res(rq.result); };
+    rq.onerror = function(){ rej(rq.error); };
+  });
+}
+function idbPut(rec){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var tx = db.transaction('photos', 'readwrite');
+      tx.objectStore('photos').put(rec);
+      tx.oncomplete = function(){ res(); };
+      tx.onerror = function(){ rej(tx.error); };
+    });
+  });
+}
+function collectPhotoRecs(){
+  var recs = [];
+  [['f-photoA', 't-photoA', '写真A（最初に出る写真）'], ['f-photoB', 't-photoB', '写真B（途中の帯の写真）']].forEach(function(cfg, i){
+    var inp = document.getElementById(cfg[0]);
+    if (on(cfg[1]) && inp && inp.files && inp.files[0]){
+      var f = inp.files[0];
+      recs.push({key: receiptNum + '|' + i, num: receiptNum, slot: cfg[2], name: f.name, type: f.type, blob: f});
+    }
+  });
+  return recs;
+}
+function saveOrder(){
+  var data = {
+    num: receiptNum,
+    ts: new Date().toISOString(),
+    sample: '01-kaiseki-genkai.html',
+    shop: val('f-name'),
+    patternName: PAT_NAMES[curPattern],
+    summary: summaryPairs
+  };
+  try { localStorage.setItem('koboOrderV1', JSON.stringify(data)); } catch(e){}
+  return Promise.all(collectPhotoRecs().map(idbPut)).catch(function(){});
+}
+var termsBox = document.getElementById('termsBox');
+var agreeCheck = document.getElementById('agreeCheck');
+var payBtn = document.getElementById('payBtn');
+function termsCheck(){
+  if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 10) agreeCheck.disabled = false;
+}
+termsBox.addEventListener('scroll', termsCheck);
+agreeCheck.addEventListener('change', function(){ payBtn.disabled = !agreeCheck.checked; });
+document.getElementById('backBtn').addEventListener('click', function(){
+  document.getElementById('confirmView').style.display = 'none';
+  document.getElementById('orderForm').scrollIntoView({behavior: 'smooth', block: 'start'});
+});
+payBtn.addEventListener('click', function(){
+  saveOrder().then(function(){
+    if (STRIPE_LINK){
+      location.href = STRIPE_LINK + '?client_reference_id=' + encodeURIComponent(receiptNum);
+      return;
+    }
+    location.href = 'mock-pay.html?num=' + encodeURIComponent(receiptNum) + '&from=' + encodeURIComponent(location.pathname.split('/').pop());
+  });
+});
+
+/* モック決済の完了後に戻ってきたら、決済完了画面を表示する */
+(function(){
+  var paid = new URLSearchParams(location.search).get('paid');
+  if (!paid) return;
+  document.getElementById('paidNum').textContent = paid;
+  var paidv = document.getElementById('paidView');
+  paidv.style.display = 'block';
+  paidv.scrollIntoView({behavior: 'smooth', block: 'start'});
+})();
+
 document.getElementById('orderForm').addEventListener('submit', function(e){
   e.preventDefault();
   var err = document.getElementById('err');
@@ -548,12 +674,20 @@ document.getElementById('orderForm').addEventListener('submit', function(e){
   if (on('t-faq')) items.push(['よくある質問', faqData.length + '件']);
   if (on('t-link')) items.push(['リンク', val('f-linkT')]);
   items.push(['写真', 'A：' + (on('t-photoA') ? (document.getElementById('f-photoA').files[0] ? '選択済み' : '見本のまま') : '入れない') + '／B：' + (on('t-photoB') ? (document.getElementById('f-photoB').files[0] ? '選択済み' : '見本のまま') : '入れない')]);
-  document.getElementById('summary').innerHTML = items.map(function(it){
-    return '<li>' + esc(it[0]) + '：' + esc(it[1]) + '</li>';
+  summaryPairs = items;
+  if (!receiptNum) receiptNum = genReceiptNum();
+  document.getElementById('receiptNum').textContent = receiptNum;
+  document.getElementById('confirmSummary').innerHTML = items.map(function(it){
+    return '<li>' + esc(it[0]) + '：' + esc(it[1]).replace(/\n/g, '<br>') + '</li>';
   }).join('');
-  var done = document.getElementById('done');
-  done.style.display = 'block';
-  done.scrollIntoView({behavior:'smooth', block:'start'});
+  agreeCheck.checked = false;
+  agreeCheck.disabled = true;
+  payBtn.disabled = true;
+  termsBox.scrollTop = 0;
+  var cv = document.getElementById('confirmView');
+  cv.style.display = 'block';
+  cv.scrollIntoView({behavior: 'smooth', block: 'start'});
+  setTimeout(termsCheck, 60);
 });
 </script>
 </body>

@@ -67,6 +67,20 @@ iframe{width:100%;height:640px;border:0;display:block;transform-origin:top left}
 .done{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
 .done ul{margin:8px 0 8px 1.2em;font-size:14px}
 .pay{display:inline-block;margin-top:10px;background:#9a917e;color:#fff;border-radius:10px;padding:12px 22px;font-weight:900}
+.confirm,.paid{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
+.confirm h2,.paid h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.confirm ul{margin:8px 0 8px 1.2em;font-size:14px}
+.receipt{background:#fdf3d8;border:1px solid #e5cf8a;border-radius:10px;padding:12px 16px;margin:12px 0;text-align:center}
+.receipt .rnum{font-size:26px;font-weight:900;letter-spacing:.08em;margin:2px 0}
+.terms{border:1px solid var(--line);border-radius:10px;background:#fff;height:180px;overflow-y:auto;padding:12px 16px;font-size:13px;line-height:1.9;margin-top:8px;white-space:pre-line}
+.agree{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14.5px;font-weight:700}
+.agree input{width:20px;height:20px;flex:none}
+.photonote{margin-top:16px;border:1.5px solid #b3261e;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700}
+#payBtn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit;margin-top:10px}
+#payBtn:disabled{background:#9a917e;cursor:not-allowed}
+#payBtn:hover:not(:disabled){background:var(--blue-deep)}
+.backbtn{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:11px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px}
+.sendlink{display:inline-block;margin-top:12px;background:var(--blue);color:#fff;border-radius:10px;padding:13px 26px;font-weight:900;text-decoration:none}
 footer{margin:34px 0 30px;font-size:12.5px;color:var(--ink-dim);text-align:center}
 footer a{color:var(--blue-deep)}
 </style>
@@ -127,7 +141,8 @@ footer a{color:var(--blue-deep)}
     <div class="unit">
       <div class="unit-head"><span class="nm">写真</span><label class="switch"><input type="checkbox" id="t-photo" checked><span class="track"></span></label></div>
       <div class="unit-body" id="w-photo"><input type="file" id="f-photo" accept="image/*">
-        <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p></div>
+        <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p>
+        <p class="hint">写真の切り取りや位置の調整は行いません。プレビューで表示された通りの形で公開します。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。</p></div>
       <div class="shutter" id="s-photo">この項目は使いません</div>
     </div>
   </fieldset>
@@ -190,9 +205,9 @@ footer a{color:var(--blue-deep)}
   </fieldset>
 
   <div class="send">
-    <button type="submit">この内容で送信する</button>
+    <button type="submit">入力内容を確定する</button>
     <p class="err" id="err">「入れる」設定の名前と電話番号を入れてください。</p>
-    <p class="hint" style="margin-top:8px">送信すると工房に内容が届き、制作が始まります。お支払い（10,000円）は送信後の画面から続けてできます。</p>
+    <p class="hint" style="margin-top:8px">確定すると確認画面が出ます。内容と規約を確認してから、お支払いに進みます。お支払いの後、ご案内に沿って入力内容をお送りください。</p>
   </div>
 
 
@@ -209,14 +224,40 @@ footer a{color:var(--blue-deep)}
 </div>
 </div>
 
-<div class="done" id="done">
-  <h2>送信しました</h2>
-  <p>この内容が工房に届きました（試作品のため、実際にはまだ届いていません）。工房が内容を確認して、この型の形でページを作ります。</p>
-  <p style="margin-top:10px"><b>送信内容の控え</b></p>
-  <ul id="summary"></ul>
-  <p>続けて、お支払いにお進みください。</p>
-  <span class="pay">お支払い（10,000円）へ進む</span>
-  <p class="hint" style="margin-top:8px">試作品では決済できません。本番では、このボタンからStripeの決済画面に進みます。</p>
+<div class="confirm" id="confirmView">
+  <h2>内容の確認</h2>
+  <p>この内容で制作します。よくご確認ください。</p>
+  <div class="receipt">
+    <p>受付番号（決済の控え）</p>
+    <p class="rnum" id="receiptNum"></p>
+    <p class="hint">この番号をメモしてください。お支払いの確認や、内容を送る時に使います。</p>
+  </div>
+  <p style="margin-top:10px"><b>入力内容</b></p>
+  <ul id="confirmSummary"></ul>
+  <p style="margin-top:14px"><b>ご利用規約</b></p>
+  <div class="terms" id="termsBox">ご利用規約
+1. 本サービスは、あらかじめ用意した型（デザイン）に、お客様の文章と写真を差し込んで作る、1ページのホームページ制作サービスです。レイアウト（ページの構成）の変更は、別途オプション（2万円から）で承ります。
+2. 料金は10,000円（税込）です。お支払いの確認が取れてから、制作を開始します。
+3. 写真について：写真の切り取りや位置の調整は、工房では行っておりません。プレビューで表示された通りの形で公開いたします。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。
+4. 納品は、完成したページのURLをお知らせする形で行います。
+5. 完成URLのお知らせから1ヶ月以内は、修正を2回まで無料で承ります。それ以降の修正は、1回3,000円です。
+6. 制作開始後のお客様都合による解約は、返金できません。
+7. サーバーや外部サービス（Google、Stripe等）の障害・仕様変更によって生じた影響は、当工房の責任範囲外とさせていただきます。
+8. ご入力いただいた文章・写真の権利は、お客様に帰属します。第三者の権利を侵害する内容や、法令に触れる内容はお受けできません。
+9. お支払いの後は、送信案内ページから入力内容をお送りください。送信をもって、制作の受け付けが完了します。</div>
+  <p class="hint">規約を一番下まで読むと、チェックできるようになります。</p>
+  <label class="agree"><input type="checkbox" id="agreeCheck" disabled> 規約を読み、内容に同意します</label>
+  <p class="photonote">写真の切り取りや位置の調整は行いません。プレビュー通りに公開します</p>
+  <button type="button" id="payBtn" disabled>お支払いへ進む（10,000円）</button>
+  <button type="button" class="backbtn" id="backBtn">戻って直す</button>
+</div>
+
+<div class="paid" id="paidView">
+  <h2>お支払いが完了しました</h2>
+  <p class="hint">試作品のため、実際の決済は行われていません。本番では、この画面の前にStripeの決済画面でお支払いいただきます。</p>
+  <p style="margin-top:8px">ご案内メールをお送りします。メールに記載のリンク先（送信案内ページ）から、入力いただいた内容と写真をお送りください。このまま送信案内ページへ進むこともできます。</p>
+  <p style="margin-top:8px">受付番号：<b id="paidNum"></b></p>
+  <a class="sendlink" href="send.html">送信案内ページへ</a>
 </div>
 
 <footer>
@@ -225,7 +266,7 @@ footer a{color:var(--blue-deep)}
 </div>
 
 <script>
-var CFG = {"nameSel": ".logo", "catchSel": "h1", "leadSel": ".hero p", "factsSel": null, "initName": "酒場 つばめ", "initCatch": "仕事帰りに、\n一杯だけ寄れる店。", "initLead": "カウンター8席と小上がりだけの小さな店です。名物のもつ煮は、開店の時から継ぎ足しの鍋で煮込んでいます。", "containerSel": "section.menu", "containerIdx": 0, "rowSel": ".mrow", "fields": [{"k": "n", "sel": ".name", "kind": "t"}, {"k": "d", "sel": ".desc", "kind": "t"}, {"k": "p", "sel": ".price", "kind": "t"}], "infoSecSel": "section.info", "infoTextSel": null, "listNoteSel": null, "subSel": null, "subIdx": 0, "roles": {"bg": ["--bg"], "ink": ["--paper"], "dim": ["--paper-dim"], "line": ["--line"], "accent": ["--aka"], "deep": ["--kin"], "bg2": ["--bg2"]}, "patterns": {"orig": null, "ai": {"bg": "#1c2b4d", "ink": "#e9ecf2", "dim": "#a3aec4", "line": "#35466a", "accent": "#bfc9d8", "deep": "#93a1b5", "bg2": "#26365c", "band": "#131f38", "accentbg": "#51648c"}, "midori": {"bg": "#1d4030", "ink": "#ecf0e2", "dim": "#a7b8a2", "line": "#33523f", "accent": "#c8a45c", "deep": "#bb9753", "bg2": "#26503c", "band": "#132a1f", "accentbg": "#7d5f27"}, "enji": {"bg": "#472228", "ink": "#f2e7dd", "dim": "#c2a49b", "line": "#5f343b", "accent": "#d9a45c", "deep": "#ba8a48", "bg2": "#55292f", "band": "#33161b", "accentbg": "#9c6a30"}, "shiro": {"bg": "#f8f6f1", "ink": "#26241f", "dim": "#75705f", "line": "#ddd6c4", "accent": "#0052B5", "deep": "#003d87", "bg2": "#efeade", "band": "#003d87", "accentbg": "#0052B5"}}, "patNames": {"orig": "墨と金（見本の色）", "ai": "藍と銀", "midori": "緑と金", "enji": "臙脂と金", "shiro": "白と藍"}, "fixes": [".hero .cta{background:{accentbg} !important}"], "accentVar": "--aka", "follow": [["fs-hero", ".hero"], ["fs-photo", "img"], ["fs-list", "section.menu"], ["fs-info", "section.info"], ["fs-extra", "#extraSec"]], "listLegend": "お品書き", "infoLabels": ["営業時間", "定休日", "場所"]};
+var CFG = {"nameSel": ".logo", "catchSel": "h1", "leadSel": ".hero p", "factsSel": null, "initName": "酒場 つばめ", "initCatch": "仕事帰りに、\n一杯だけ寄れる店。", "initLead": "カウンター8席と小上がりだけの小さな店です。名物のもつ煮は、開店の時から継ぎ足しの鍋で煮込んでいます。", "containerSel": "section.menu", "containerIdx": 0, "rowSel": ".mrow", "groupSel": null, "fields": [{"k": "n", "sel": ".name", "kind": "t"}, {"k": "d", "sel": ".desc", "kind": "t"}, {"k": "p", "sel": ".price", "kind": "t"}], "infoSecSel": "section.info", "infoTextSel": null, "listNoteSel": null, "subSel": null, "subIdx": 0, "roles": {"bg": ["--bg"], "ink": ["--paper"], "dim": ["--paper-dim"], "line": ["--line"], "accent": ["--aka"], "deep": ["--kin"], "bg2": ["--bg2"]}, "patterns": {"orig": null, "ai": {"bg": "#1c2b4d", "ink": "#e9ecf2", "dim": "#a3aec4", "line": "#35466a", "accent": "#bfc9d8", "deep": "#93a1b5", "bg2": "#26365c", "band": "#131f38", "accentbg": "#51648c"}, "midori": {"bg": "#1d4030", "ink": "#ecf0e2", "dim": "#a7b8a2", "line": "#33523f", "accent": "#c8a45c", "deep": "#bb9753", "bg2": "#26503c", "band": "#132a1f", "accentbg": "#7d5f27"}, "enji": {"bg": "#472228", "ink": "#f2e7dd", "dim": "#c2a49b", "line": "#5f343b", "accent": "#d9a45c", "deep": "#ba8a48", "bg2": "#55292f", "band": "#33161b", "accentbg": "#9c6a30"}, "shiro": {"bg": "#f8f6f1", "ink": "#26241f", "dim": "#75705f", "line": "#ddd6c4", "accent": "#0052B5", "deep": "#003d87", "bg2": "#efeade", "band": "#003d87", "accentbg": "#0052B5"}}, "patNames": {"orig": "墨と金（見本の色）", "ai": "藍と銀", "midori": "緑と金", "enji": "臙脂と金", "shiro": "白と藍"}, "fixes": [".hero .cta{background:{accentbg} !important}"], "accentVar": "--aka", "follow": [["fs-hero", ".hero"], ["fs-photo", "img"], ["fs-list", "section.menu"], ["fs-info", "section.info"], ["fs-extra", "#extraSec"]], "listLegend": "お品書き", "infoLabels": ["営業時間", "定休日", "場所"], "sample": "14-izakaya-tsubame.html", "subLabel": ""};
 var listData = [{"n": "もつ煮込み", "d": "", "p": "550円"}, {"n": "焼き鳥 各種", "d": "塩かタレか聞きます", "p": "1本 180円から"}, {"n": "その日の刺身", "d": "市場で見て決めます", "p": "780円"}, {"n": "生ビール", "d": "", "p": "550円"}, {"n": "おまかせ盛り", "d": "2〜3人でつまめる量", "p": "1,800円"}];
 var faqData = [{"q": "予約は必要ですか", "a": "お電話でお気軽にどうぞ。"}];
 var FIELD_KEYS = ["n", "d", "p"];
@@ -315,10 +356,19 @@ function qf(row, f){
   return row.querySelector(f.sel);
 }
 function setRowField(rowEl, f, row){
+  if (f.kind === 'ownText'){
+    var doneOt = false;
+    for (var oi = 0; oi < rowEl.childNodes.length; oi++){
+      var ond = rowEl.childNodes[oi];
+      if (ond.nodeType === 3 && ond.textContent.trim()){ ond.textContent = row[f.k]; doneOt = true; break; }
+    }
+    if (!doneOt) rowEl.insertBefore(rowEl.ownerDocument.createTextNode(row[f.k]), rowEl.firstChild);
+    return;
+  }
   var el = qf(rowEl, f); if (!el) return;
   if (f.kind === 'ns'){
     el.innerHTML = esc(row[f.k]) + (row.d ? '<small>' + esc(row.d) + '</small>' : '');
-  } else if (f.kind === 'liName'){
+  } else if (f.kind === 'liName' || f.kind === 'mt'){
     var done = false;
     for (var i = 0; i < el.childNodes.length; i++){
       var nd = el.childNodes[i];
@@ -331,19 +381,79 @@ function setRowField(rowEl, f, row){
   }
 }
 var rowTpl = null;
-function renderList(d){
+var photoURL = null;
+/* grouped rows (CFG.groupSel): a row element ("shell") may hold several
+   independent text groups (e.g. 28: one row with two .tx panels). Items
+   are the groups; shells keep their non-group children (photos etc.)
+   and are filled in order, up to each shell's original group count.
+   Extra items overflow into clones of the last shell. */
+var groupState = null;
+function renderListGrouped(d){
   var conts = d.querySelectorAll(CFG.containerSel);
   var cont = conts[CFG.containerIdx || 0]; if (!cont) return;
-  if (!rowTpl){
-    var firstRow = cont.querySelector(CFG.rowSel);
-    if (firstRow) rowTpl = firstRow.cloneNode(true);
+  var liveShells = [];
+  cont.querySelectorAll(CFG.rowSel).forEach(function(r){ if (!r.closest('thead')) liveShells.push(r); });
+  if (!rowTpl && liveShells.length) rowTpl = liveShells[0].cloneNode(true);
+  if (!groupState && liveShells.length){
+    var defs = liveShells.map(function(sh){
+      var skel = sh.cloneNode(true);
+      var cap = 0, idx = -1, gtpl = null;
+      Array.prototype.slice.call(sh.children).forEach(function(c, i){
+        if (c.matches(CFG.groupSel)){ cap++; if (idx < 0) idx = i; }
+      });
+      Array.prototype.slice.call(skel.children).forEach(function(c){
+        if (c.matches(CFG.groupSel)) c.remove();
+      });
+      var g0 = sh.querySelector(CFG.groupSel);
+      if (g0) gtpl = g0.cloneNode(true);
+      return {skel: skel, cap: Math.max(cap, 1), idx: idx < 0 ? skel.children.length : idx, gtpl: gtpl};
+    });
+    var firstG = null;
+    defs.forEach(function(df){ if (!firstG && df.gtpl) firstG = df.gtpl; });
+    groupState = {defs: defs, gtpl: firstG};
   }
-  cont.querySelectorAll(CFG.rowSel).forEach(function(r){ r.remove(); });
+  var shellParent = liveShells.length ? liveShells[0].parentNode : cont;
+  var anchor = liveShells.length ? liveShells[liveShells.length - 1].nextSibling : null;
+  if (anchor && anchor.parentNode !== shellParent) anchor = null;
+  liveShells.forEach(function(s){ s.remove(); });
+  if (!on('t-items') || !groupState || !groupState.gtpl) return;
+  function buildShell(def, assigned){
+    var sh = def.skel.cloneNode(true);
+    assigned.forEach(function(row, k){
+      var g = groupState.gtpl.cloneNode(true);
+      CFG.fields.forEach(function(f){ setRowField(g, f, row); });
+      var ref = sh.children[Math.min(def.idx + k, sh.children.length)] || null;
+      sh.insertBefore(g, ref);
+    });
+    return sh;
+  }
+  var items = listData.slice();
+  for (var di = 0; di < groupState.defs.length && items.length; di++){
+    var take = items.splice(0, groupState.defs[di].cap);
+    if (take.length) shellParent.insertBefore(buildShell(groupState.defs[di], take), anchor);
+  }
+  var lastDef = groupState.defs[groupState.defs.length - 1];
+  while (items.length){
+    var take2 = items.splice(0, lastDef.cap);
+    shellParent.insertBefore(buildShell(lastDef, take2), anchor);
+  }
+}
+function renderList(d){
+  if (CFG.groupSel){ renderListGrouped(d); return; }
+  var conts = d.querySelectorAll(CFG.containerSel);
+  var cont = conts[CFG.containerIdx || 0]; if (!cont) return;
+  var liveRows = [];
+  cont.querySelectorAll(CFG.rowSel).forEach(function(r){ if (!r.closest('thead')) liveRows.push(r); });
+  if (!rowTpl && liveRows.length) rowTpl = liveRows[0].cloneNode(true);
+  var rowParent = liveRows.length ? liveRows[0].parentNode : cont;
+  var anchor = liveRows.length ? liveRows[liveRows.length - 1].nextSibling : null;
+  if (anchor && anchor.parentNode !== rowParent) anchor = null;
+  liveRows.forEach(function(r){ r.remove(); });
   if (on('t-items') && rowTpl){
     listData.forEach(function(row){
       var el = rowTpl.cloneNode(true);
       CFG.fields.forEach(function(f){ setRowField(el, f, row); });
-      cont.appendChild(el);
+      if (anchor) rowParent.insertBefore(el, anchor); else rowParent.appendChild(el);
     });
   }
 }
@@ -400,12 +510,6 @@ function apply(){
     if (/[0-9]/.test(a.textContent)) a.textContent = a.textContent.replace(/[0-9][0-9\-]+/, tel);
     a.style.display = on('t-tel') ? '' : 'none';
   });
-  /* photo: hide the dedicated photo block if there is one, else the img */
-  var img = d.querySelector('img');
-  if (img){
-    var wrap = img.closest('.photo') || img.closest('.hero-photo') || img;
-    showEl(wrap, on('t-photo'));
-  }
   /* section note */
   if (CFG.listNoteSel){ show(d, CFG.listNoteSel, on('t-listnote')); setText(d, CFG.listNoteSel, val('f-listnote')); }
   /* sub section (whole-section toggle) */
@@ -415,6 +519,15 @@ function apply(){
   }
   /* list */
   renderList(d);
+  /* photo: applied AFTER renderList, to every img in the preview.
+     A photo that lives inside a repeatable row is duplicated by row
+     cloning, so all copies follow the one photo toggle / replacement
+     (the form has a single photo field). */
+  d.querySelectorAll('img').forEach(function(im){
+    var wrap = im.closest('.photo') || im.closest('.ph') || im.closest('.hero-photo') || im;
+    showEl(wrap, on('t-photo'));
+    if (photoURL) im.src = photoURL;
+  });
   /* info */
   if (CFG.infoTextSel){
     var it = d.querySelector(CFG.infoTextSel);
@@ -560,37 +673,137 @@ var photoInput = document.getElementById('f-photo');
 if (photoInput){
   photoInput.addEventListener('change', function(){
     var f = this.files && this.files[0]; if (!f) return;
-    var url = URL.createObjectURL(f);
+    photoURL = URL.createObjectURL(f);
     var d = doc(); if (!d) return;
-    var img = d.querySelector('img'); if (img) img.src = url;
+    d.querySelectorAll('img').forEach(function(im){ im.src = photoURL; });
   });
 }
 
-/* ---------- submit (prototype: nothing is sent anywhere) ---------- */
+/* ---------- order flow: 確定 -> 確認画面 -> 保存 -> 決済 ----------
+   本番の決済: STRIPE_LINK にStripe支払いリンクを設定すると、お支払いボタンで
+   受付番号を client_reference_id として渡して決済画面へ進む。
+   試作品ではリンク未設定のため、保存の後にモック決済ページ (mock-pay.html) へ進み、
+   完了するとこのページへ戻って決済完了画面を表示する。 */
+var STRIPE_LINK = '';
+var receiptNum = null;
+var summaryPairs = [];
+function genReceiptNum(){
+  var d = new Date();
+  var ymd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  return 'R' + ymd + '-' + String(Math.floor(1000 + Math.random() * 9000));
+}
+function idbOpen(){
+  return new Promise(function(res, rej){
+    var rq = indexedDB.open('koboOrderDB', 1);
+    rq.onupgradeneeded = function(){ rq.result.createObjectStore('photos', {keyPath: 'key'}); };
+    rq.onsuccess = function(){ res(rq.result); };
+    rq.onerror = function(){ rej(rq.error); };
+  });
+}
+function idbPut(rec){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var tx = db.transaction('photos', 'readwrite');
+      tx.objectStore('photos').put(rec);
+      tx.oncomplete = function(){ res(); };
+      tx.onerror = function(){ rej(tx.error); };
+    });
+  });
+}
+function buildSummary(){
+  var items = [];
+  items.push(['色パターン', CFG.patNames[curPattern]]);
+  if (on('t-name')) items.push(['お店の名前', val('f-name')]);
+  if (on('t-catch')) items.push(['キャッチコピー', val('f-catch')]);
+  if (CFG.leadSel && on('t-lead')) items.push(['紹介文', val('f-lead')]);
+  if (CFG.factsSel && on('t-facts')) items.push(['特徴の一行', val('f-facts')]);
+  if (on('t-tel')) items.push(['電話番号', val('f-tel')]);
+  if (CFG.listNoteSel && on('t-listnote')) items.push([CFG.listLegend + 'の説明', val('f-listnote')]);
+  if (on('t-items')) listData.forEach(function(r, i){
+    items.push([CFG.listLegend + ' ' + (i + 1), FIELD_KEYS.map(function(k){ return r[k]; }).filter(function(x){ return x; }).join('／')]);
+  });
+  if (CFG.subSel) items.push([CFG.subLabel, on('t-sub') ? '入れる' : '入れない']);
+  if (CFG.infoTextSel){ if (on('t-infotext')) items.push(['案内', val('f-infotext')]); }
+  else CFG.infoLabels.forEach(function(lb, i){
+    if (on('t-info' + i)) items.push([lb, val('f-info' + i)]);
+  });
+  if (on('t-news')){ items.push(['お知らせの見出し', val('f-newsT')]); items.push(['お知らせの本文', val('f-newsB')]); }
+  if (on('t-faq')) faqData.forEach(function(f, i){ items.push(['よくある質問 ' + (i + 1), '質問：' + f.q + '／答え：' + f.a]); });
+  if (on('t-link')) items.push(['リンク', val('f-linkT') + '（' + val('f-linkU') + '）']);
+  items.push(['写真', on('t-photo') ? (photoInput && photoInput.files[0] ? '選択済み' : '見本のまま') : '入れない']);
+  return items;
+}
+function collectPhotoRecs(){
+  var recs = [];
+  if (on('t-photo') && photoInput && photoInput.files && photoInput.files[0]){
+    var f = photoInput.files[0];
+    recs.push({key: receiptNum + '|0', num: receiptNum, slot: '写真', name: f.name, type: f.type, blob: f});
+  }
+  return recs;
+}
+function saveOrder(){
+  var data = {
+    num: receiptNum,
+    ts: new Date().toISOString(),
+    sample: CFG.sample,
+    shop: CFG.initName,
+    patternName: CFG.patNames[curPattern],
+    summary: summaryPairs
+  };
+  try { localStorage.setItem('koboOrderV1', JSON.stringify(data)); } catch(e){}
+  return Promise.all(collectPhotoRecs().map(idbPut)).catch(function(){});
+}
+var termsBox = document.getElementById('termsBox');
+var agreeCheck = document.getElementById('agreeCheck');
+var payBtn = document.getElementById('payBtn');
+function termsCheck(){
+  if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 10) agreeCheck.disabled = false;
+}
+termsBox.addEventListener('scroll', termsCheck);
+agreeCheck.addEventListener('change', function(){ payBtn.disabled = !agreeCheck.checked; });
+document.getElementById('backBtn').addEventListener('click', function(){
+  document.getElementById('confirmView').style.display = 'none';
+  document.getElementById('orderForm').scrollIntoView({behavior: 'smooth', block: 'start'});
+});
+payBtn.addEventListener('click', function(){
+  saveOrder().then(function(){
+    if (STRIPE_LINK){
+      location.href = STRIPE_LINK + '?client_reference_id=' + encodeURIComponent(receiptNum);
+      return;
+    }
+    location.href = 'mock-pay.html?num=' + encodeURIComponent(receiptNum) + '&from=' + encodeURIComponent(location.pathname.split('/').pop());
+  });
+});
+
+/* モック決済の完了後に戻ってきたら、決済完了画面を表示する */
+(function(){
+  var paid = new URLSearchParams(location.search).get('paid');
+  if (!paid) return;
+  document.getElementById('paidNum').textContent = paid;
+  var paidv = document.getElementById('paidView');
+  paidv.style.display = 'block';
+  paidv.scrollIntoView({behavior: 'smooth', block: 'start'});
+})();
+
 document.getElementById('orderForm').addEventListener('submit', function(e){
   e.preventDefault();
   var err = document.getElementById('err');
   if ((on('t-name') && !val('f-name')) || (on('t-tel') && !val('f-tel'))){ err.style.display = 'block'; return; }
   err.style.display = 'none';
-  var items = [];
-  items.push(['色パターン', CFG.patNames[curPattern]]);
-  if (on('t-name')) items.push(['お店の名前', val('f-name')]);
-  if (on('t-catch')) items.push(['キャッチコピー', val('f-catch').replace(/\n/g,' ')]);
-  if (on('t-tel')) items.push(['電話番号', val('f-tel')]);
-  if (on('t-items')) items.push([CFG.listLegend + '（' + listData.length + '件）', listData.map(function(r){ return r.n; }).join('／')]);
-  CFG.infoLabels.forEach(function(lb, i){
-    if (on('t-info' + i)) items.push([lb, val('f-info' + i)]);
-  });
-  if (on('t-news')) items.push(['お知らせ', val('f-newsT')]);
-  if (on('t-faq')) items.push(['よくある質問', faqData.length + '件']);
-  if (on('t-link')) items.push(['リンク', val('f-linkT')]);
-  items.push(['写真', on('t-photo') ? (photoInput && photoInput.files[0] ? '選択済み' : '見本のまま') : '入れない']);
-  document.getElementById('summary').innerHTML = items.map(function(it){
-    return '<li>' + esc(it[0]) + '：' + esc(it[1]) + '</li>';
+  summaryPairs = buildSummary();
+  if (!receiptNum) receiptNum = genReceiptNum();
+  document.getElementById('receiptNum').textContent = receiptNum;
+  document.getElementById('confirmSummary').innerHTML = summaryPairs.map(function(it){
+    return '<li>' + esc(it[0]) + '：' + esc(it[1]).replace(/\n/g, '<br>') + '</li>';
   }).join('');
-  var done = document.getElementById('done');
-  done.style.display = 'block';
-  done.scrollIntoView({behavior:'smooth', block:'start'});
+  agreeCheck.checked = false;
+  agreeCheck.disabled = true;
+  payBtn.disabled = true;
+  termsBox.scrollTop = 0;
+  var cv = document.getElementById('confirmView');
+  cv.style.display = 'block';
+  cv.scrollIntoView({behavior: 'smooth', block: 'start'});
+  setTimeout(termsCheck, 60);
 });
 </script>
 </body>

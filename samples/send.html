@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>送信案内ページ｜アーチデザイン工房</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#26241f; --ink-2:#4a463d; --paper:#f4f1ea; --card:#fbf9f4; --line:#ddd5c3;
+  --blue:#0052B5; --blue-deep:#003d87;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Noto Sans JP",sans-serif;background:var(--paper);color:var(--ink);line-height:1.8;font-size:15.5px}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px 64px}
+header{padding:26px 0 6px}
+header .shop{font-family:"Noto Serif JP",serif;font-size:15px;letter-spacing:.14em;color:var(--blue);font-weight:700}
+h1{font-family:"Noto Serif JP",serif;font-size:clamp(22px,4.6vw,30px);margin-top:6px}
+.proto{display:inline-block;background:#fdf3d8;border:1px solid #e5cf8a;border-radius:999px;padding:2px 12px;font-size:12.5px;font-weight:700;margin-top:8px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px clamp(16px,3vw,26px);margin-top:18px}
+.box h2{font-family:"Noto Serif JP",serif;font-size:18px;margin-bottom:8px}
+.notice{border:1.5px solid #b3261e;border-radius:10px;padding:12px 16px;margin-top:16px;font-weight:700;background:#fff}
+.receipt{background:#fdf3d8;border:1px solid #e5cf8a;border-radius:10px;padding:12px 16px;margin:12px 0;text-align:center}
+.receipt .rnum{font-size:26px;font-weight:900;letter-spacing:.08em;margin:2px 0}
+#orderBox ul{margin:8px 0 4px 1.2em;font-size:14px}
+.thumbs{display:flex;flex-wrap:wrap;gap:12px;margin-top:10px}
+.thumb{text-align:center;font-size:12.5px;color:var(--ink-2)}
+.thumb img{width:150px;height:110px;object-fit:cover;border-radius:8px;border:1px solid var(--line);display:block}
+label.fl{display:block;font-size:13px;font-weight:700;margin-top:12px}
+input[type=text],input[type=email]{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15.5px;font-family:inherit;background:#fff;margin-top:4px}
+.btn{display:inline-block;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:14px 26px;font-size:16px;font-weight:900;cursor:pointer;font-family:inherit;margin-top:14px;text-decoration:none}
+.btn:hover{background:var(--blue-deep)}
+.btn.sub{background:#fff;color:var(--ink);border:1.5px solid var(--line)}
+.btn:disabled{background:#9a917e;cursor:not-allowed}
+.hint{font-size:13px;color:var(--ink-2)}
+.err{display:none;color:#b3261e;font-size:13.5px;font-weight:700;margin-top:8px}
+#pdfDone{display:none;margin-top:14px;border:1px solid var(--line);border-radius:10px;padding:12px 16px;background:#fff}
+footer{margin-top:34px;font-size:13px;color:var(--ink-2);text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="shop">アーチデザイン工房</p>
+  <h1>送信案内ページ</h1>
+  <p>お支払いありがとうございました。このページから、ご入力いただいた内容と写真を工房へお送りください。送り方は2つあります。やりやすい方で大丈夫です。</p>
+  <p><span class="proto">試作品です。実際の送信はまだ行われません</span></p>
+</header>
+
+<div class="notice">このリンクは、情報をご入力いただいた時と同じスマホ（同じブラウザ）で開いてください。別の端末で開くと、入力した内容が表示されません。</div>
+
+<div class="box" id="orderBox" style="display:none">
+  <h2>お送りいただく内容</h2>
+  <div class="receipt">
+    <p>受付番号</p>
+    <p class="rnum" id="dispNum"></p>
+  </div>
+  <ul id="dispSummary"></ul>
+  <div class="thumbs" id="photoThumbs"></div>
+  <p class="hint" style="margin-top:10px">内容が違う場合は、注文ページに戻って入力し直し、確定からやり直してください。送信は何度でもやり直せます（受付番号が同じなら、工房では同じご注文として1件にまとめます）。</p>
+</div>
+
+<div class="box" id="noDataBox" style="display:none">
+  <h2>入力した内容が見つかりません</h2>
+  <p>この端末・このブラウザには、ご入力いただいた内容が保存されていませんでした。入力した時と同じスマホ・同じブラウザで、このページを開いてください。</p>
+  <p style="margin-top:8px">それでも表示されない場合は、受付番号（決済の控えに表示された番号）を公式LINEでお伝えください。工房で決済を確認して、送信のご案内を送り直します。</p>
+  <a class="btn" href="https://line.me/R/ti/p/@799qinao" target="_blank" rel="noopener">公式LINEを開く</a>
+</div>
+
+<div class="box" id="routeA">
+  <h2>送り方 A：Google連携で送る（かんたんです）</h2>
+  <p>ボタンを押すとGoogleの画面が開きます。お使いのGoogleアカウントでログイン（連携）して、送信ボタンを押すだけで、入力した内容と写真がそのまま工房に届きます。入力し直す必要はありません。</p>
+  <button type="button" class="btn" id="googleBtn">Google連携して送信する</button>
+  <p class="err" id="protoA">試作品のため、このボタンはまだ接続していません。本番では、ここからGoogleフォームが開きます。</p>
+</div>
+
+<div class="box" id="routeB">
+  <h2>送り方 B：ファイルを送る</h2>
+  <p>Googleアカウントが使えない方は、こちらからファイルを作って、公式LINEでお送りください。ファイルには、受付番号と入力内容の一覧、写真（登録した通りの画質）が入ります。</p>
+  <label class="fl" for="f-custName">お名前</label>
+  <input type="text" id="f-custName" autocomplete="name">
+  <label class="fl" for="f-custMail">メールアドレス（決済の時と同じもの）</label>
+  <input type="email" id="f-custMail" autocomplete="email">
+  <p class="err" id="errB">お名前とメールアドレスを入れてください。</p>
+  <br>
+  <button type="button" class="btn" id="makePdfBtn">ファイルを作成する</button>
+  <div id="pdfDone">
+    <p><b>ファイルができました。</b></p>
+    <p style="margin-top:6px"><a href="#" id="dlPdf">ファイルをダウンロードする</a></p>
+    <p style="margin-top:8px">送り方：下のボタンから公式LINEを開いて、トークにファイルを添付して送信してください。お使いの端末で「共有」が使える場合は、「LINEで送る」ボタンから直接送れます。</p>
+    <button type="button" class="btn" id="shareBtn" style="display:none">LINEで送る（共有）</button>
+    <a class="btn sub" href="https://line.me/R/ti/p/@799qinao" target="_blank" rel="noopener">公式LINEを開く</a>
+  </div>
+</div>
+
+<footer>
+  <p>アーチデザイン工房</p>
+</footer>
+</div>
+
+<script>
+/* 本番では、GoogleフォームのURLを設定する（連携→送信ボタンだけで届く経路） */
+var GOOGLE_FORM_URL = '';
+
+var order = null;
+var photoRecs = [];   /* {slot, name, type, blob} */
+
+function esc(s){ return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+
+function idbOpen(){
+  return new Promise(function(res, rej){
+    var rq = indexedDB.open('koboOrderDB', 1);
+    rq.onupgradeneeded = function(){ rq.result.createObjectStore('photos', {keyPath: 'key'}); };
+    rq.onsuccess = function(){ res(rq.result); };
+    rq.onerror = function(){ rej(rq.error); };
+  });
+}
+function idbAll(){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var rq = db.transaction('photos', 'readonly').objectStore('photos').getAll();
+      rq.onsuccess = function(){ res(rq.result || []); };
+      rq.onerror = function(){ rej(rq.error); };
+    });
+  }).catch(function(){ return []; });
+}
+
+/* ---------- load saved order ---------- */
+(function(){
+  try {
+    var raw = localStorage.getItem('koboOrderV1');
+    if (raw) order = JSON.parse(raw);
+  } catch(e){}
+  if (!order || !order.num){
+    document.getElementById('noDataBox').style.display = 'block';
+    return;
+  }
+  document.getElementById('orderBox').style.display = 'block';
+  document.getElementById('dispNum').textContent = order.num;
+  document.getElementById('dispSummary').innerHTML = (order.summary || []).map(function(it){
+    return '<li>' + esc(it[0]) + '：' + esc(it[1]).replace(/\n/g, '<br>') + '</li>';
+  }).join('');
+  idbAll().then(function(all){
+    photoRecs = all.filter(function(r){ return r.num === order.num; });
+    photoRecs.sort(function(a, b){ return a.key < b.key ? -1 : 1; });
+    var box = document.getElementById('photoThumbs');
+    photoRecs.forEach(function(r){
+      var div = document.createElement('div');
+      div.className = 'thumb';
+      var img = document.createElement('img');
+      img.src = URL.createObjectURL(r.blob);
+      img.alt = r.slot;
+      var cap = document.createElement('div');
+      cap.textContent = r.slot;
+      div.appendChild(img); div.appendChild(cap);
+      box.appendChild(div);
+    });
+  });
+})();
+
+/* ---------- route A ---------- */
+document.getElementById('googleBtn').addEventListener('click', function(){
+  if (GOOGLE_FORM_URL){ window.open(GOOGLE_FORM_URL, '_blank', 'noopener'); return; }
+  document.getElementById('protoA').style.display = 'block';
+});
+
+/* ---------- PDF builder (no external libraries) ----------
+   Text pages are drawn on canvas and embedded as JPEG images, so no
+   Japanese font embedding is needed. JPEG photos are embedded as their
+   original bytes (DCTDecode) = the registered quality, untouched.
+   Other formats go through pixels -> FlateDecode (lossless). */
+var PAGE_W = 595.28, PAGE_H = 841.89;
+
+function PdfBuilder(){
+  this.parts = []; this.len = 0; this.offsets = {}; this.next = 1;
+}
+PdfBuilder.prototype.add = function(data){
+  var b = typeof data === 'string' ? new TextEncoder().encode(data) : data;
+  this.parts.push(b); this.len += b.length;
+};
+PdfBuilder.prototype.alloc = function(){ return this.next++; };
+PdfBuilder.prototype.beginObj = function(num){
+  this.offsets[num] = this.len;
+  this.add(num + ' 0 obj\n');
+};
+PdfBuilder.prototype.endObj = function(){ this.add('\nendobj\n'); };
+PdfBuilder.prototype.imageObj = function(img){
+  var num = this.alloc();
+  this.beginObj(num);
+  if (img.kind === 'jpeg'){
+    this.add('<< /Type /XObject /Subtype /Image /Width ' + img.w + ' /Height ' + img.h +
+      ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + img.bytes.length + ' >>\nstream\n');
+    this.add(img.bytes);
+    this.add('\nendstream');
+  } else {
+    this.add('<< /Type /XObject /Subtype /Image /Width ' + img.w + ' /Height ' + img.h +
+      ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /FlateDecode /Length ' + img.bytes.length + ' >>\nstream\n');
+    this.add(img.bytes);
+    this.add('\nendstream');
+  }
+  this.endObj();
+  return num;
+};
+PdfBuilder.prototype.build = function(pages){
+  this.add(new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34, 0x0A, 0x25, 0xE2, 0xE3, 0xCF, 0xD3, 0x0A]));
+  var catalogNum = this.alloc();
+  var pagesNum = this.alloc();
+  var pageNums = [];
+  pages.forEach(function(pg){
+    var content = '';
+    var xobjs = [];
+    pg.placements.forEach(function(pl, i){
+      var imgNum = this.imageObj(pl.img);
+      var name = 'Im' + i;
+      xobjs.push('/' + name + ' ' + imgNum + ' 0 R');
+      content += 'q ' + pl.w.toFixed(2) + ' 0 0 ' + pl.h.toFixed(2) + ' ' + pl.x.toFixed(2) + ' ' + pl.y.toFixed(2) + ' cm /' + name + ' Do Q\n';
+    }, this);
+    var pageNum = this.alloc();
+    var contentNum = this.alloc();
+    pageNums.push(pageNum);
+    this.beginObj(pageNum);
+    this.add('<< /Type /Page /Parent ' + pagesNum + ' 0 R /MediaBox [0 0 ' + PAGE_W + ' ' + PAGE_H + '] /Resources << /XObject << ' + xobjs.join(' ') + ' >> >> /Contents ' + contentNum + ' 0 R >>');
+    this.endObj();
+    this.beginObj(contentNum);
+    var cb = new TextEncoder().encode(content);
+    this.add('<< /Length ' + cb.length + ' >>\nstream\n');
+    this.add(cb);
+    this.add('\nendstream');
+    this.endObj();
+  }, this);
+  this.beginObj(pagesNum);
+  this.add('<< /Type /Pages /Kids [' + pageNums.map(function(n){ return n + ' 0 R'; }).join(' ') + '] /Count ' + pageNums.length + ' >>');
+  this.endObj();
+  this.beginObj(catalogNum);
+  this.add('<< /Type /Catalog /Pages ' + pagesNum + ' 0 R >>');
+  this.endObj();
+  var xrefPos = this.len;
+  var maxObj = this.next - 1;
+  var xref = 'xref\n0 ' + (maxObj + 1) + '\n0000000000 65535 f \n';
+  for (var i = 1; i <= maxObj; i++){
+    xref += String(this.offsets[i]).padStart(10, '0') + ' 00000 n \n';
+  }
+  this.add(xref);
+  this.add('trailer\n<< /Size ' + (maxObj + 1) + ' /Root ' + catalogNum + ' 0 R >>\nstartxref\n' + xrefPos + '\n%%EOF');
+  var total = new Uint8Array(this.len);
+  var pos = 0;
+  this.parts.forEach(function(p){ total.set(p, pos); pos += p.length; });
+  return new Blob([total], {type: 'application/pdf'});
+};
+
+function canvasJpeg(canvas, q){
+  return new Promise(function(res){
+    canvas.toBlob(function(b){
+      b.arrayBuffer().then(function(ab){ res({kind: 'jpeg', w: canvas.width, h: canvas.height, bytes: new Uint8Array(ab)}); });
+    }, 'image/jpeg', q || 0.92);
+  });
+}
+
+async function photoImage(rec){
+  var bmp = await createImageBitmap(rec.blob);
+  var w = bmp.width, h = bmp.height;
+  if (rec.type === 'image/jpeg'){
+    var ab = await rec.blob.arrayBuffer();
+    return {kind: 'jpeg', w: w, h: h, bytes: new Uint8Array(ab)};
+  }
+  /* lossless pixel path for PNG / WebP / others */
+  var cv = document.createElement('canvas');
+  cv.width = w; cv.height = h;
+  var ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(bmp, 0, 0);
+  if (typeof CompressionStream === 'undefined'){
+    return await canvasJpeg(cv, 0.95);
+  }
+  var data = ctx.getImageData(0, 0, w, h).data;
+  var rgb = new Uint8Array(w * h * 3);
+  for (var i = 0, j = 0; i < data.length; i += 4){ rgb[j++] = data[i]; rgb[j++] = data[i + 1]; rgb[j++] = data[i + 2]; }
+  var cs = new CompressionStream('deflate');
+  var stream = new Blob([rgb]).stream().pipeThrough(cs);
+  var deflated = new Uint8Array(await new Response(stream).arrayBuffer());
+  return {kind: 'flate', w: w, h: h, bytes: deflated};
+}
+
+function textPages(order, custName, custMail){
+  var W = 1240, H = 1754, M = 64;
+  var pages = [];
+  var cv, ctx, y;
+  function newPage(){
+    cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+    ctx = cv.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#26241f'; ctx.textBaseline = 'top';
+    y = 84;
+  }
+  function ensure(space){
+    if (y + space > H - 84){ pages.push(cv); newPage(); }
+  }
+  function wrap(text, font, maxW){
+    ctx.font = font;
+    var out = [], cur = '';
+    String(text == null ? '' : text).split('\n').forEach(function(seg){
+      cur = '';
+      for (var i = 0; i < seg.length; i++){
+        var t = cur + seg[i];
+        if (ctx.measureText(t).width > maxW && cur){ out.push(cur); cur = seg[i]; }
+        else cur = t;
+      }
+      out.push(cur);
+    });
+    return out;
+  }
+  function line(text, opt){
+    var size = opt.size || 30, bold = opt.bold, indent = opt.indent || 0, gap = opt.gap == null ? 16 : opt.gap;
+    var font = (bold ? '700 ' : '400 ') + size + 'px "Noto Sans JP", sans-serif';
+    var lines = wrap(text, font, W - M * 2 - indent);
+    lines.forEach(function(ln){
+      ensure(size * 1.55);
+      ctx.font = font; ctx.fillStyle = '#26241f';
+      ctx.fillText(ln, M + indent, y);
+      y += size * 1.55;
+    });
+    y += gap;
+  }
+  newPage();
+  line('アーチデザイン工房', {size: 30, bold: true, gap: 4});
+  line('1万円ページ ご注文内容', {size: 44, bold: true, gap: 26});
+  line('受付番号：' + order.num, {size: 38, bold: true, gap: 10});
+  line('お名前：' + custName, {size: 32, gap: 6});
+  line('メールアドレス：' + custMail, {size: 32, gap: 22});
+  ctx.fillStyle = '#0052B5'; ctx.fillRect(M, y, W - M * 2, 4); y += 30;
+  line('入力内容', {size: 34, bold: true, gap: 18});
+  (order.summary || []).forEach(function(it){
+    line(it[0], {size: 29, bold: true, gap: 2});
+    line(it[1], {size: 29, indent: 26, gap: 16});
+  });
+  pages.push(cv);
+  return Promise.all(pages.map(function(c){ return canvasJpeg(c, 0.92); }));
+}
+
+async function buildPdf(){
+  var imgs = await textPages(order, val('f-custName'), val('f-custMail'));
+  var pages = imgs.map(function(img){
+    return {placements: [{img: img, x: 0, y: 0, w: PAGE_W, h: PAGE_H}]};
+  });
+  for (var i = 0; i < photoRecs.length; i++){
+    var rec = photoRecs[i];
+    var cap = document.createElement('canvas');
+    cap.width = 1240; cap.height = 120;
+    var cctx = cap.getContext('2d');
+    cctx.fillStyle = '#ffffff'; cctx.fillRect(0, 0, 1240, 120);
+    cctx.fillStyle = '#26241f'; cctx.font = '700 44px "Noto Sans JP", sans-serif'; cctx.textBaseline = 'middle';
+    cctx.fillText('写真：' + rec.slot, 40, 62);
+    var capImg = await canvasJpeg(cap, 0.92);
+    var pimg = await photoImage(rec);
+    var capH = PAGE_W * 120 / 1240;
+    var availW = PAGE_W - 72, availH = PAGE_H - capH - 24 - 36;
+    var s = Math.min(availW / pimg.w, availH / pimg.h);
+    var w = pimg.w * s, h = pimg.h * s;
+    var x = (PAGE_W - w) / 2, yTop = PAGE_H - capH - 12;
+    pages.push({placements: [
+      {img: capImg, x: 0, y: PAGE_H - capH, w: PAGE_W, h: capH},
+      {img: pimg, x: x, y: yTop - h, w: w, h: h}
+    ]});
+  }
+  return new PdfBuilder().build(pages);
+}
+
+function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+
+var pdfFile = null;
+document.getElementById('makePdfBtn').addEventListener('click', async function(){
+  var err = document.getElementById('errB');
+  if (!order){ err.textContent = '入力した内容が見つかっていません。上のご案内をご確認ください。'; err.style.display = 'block'; return; }
+  if (!val('f-custName') || !val('f-custMail')){ err.textContent = 'お名前とメールアドレスを入れてください。'; err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  var btn = this;
+  btn.disabled = true; btn.textContent = '作成しています…';
+  try {
+    var blob = await buildPdf();
+    pdfFile = new File([blob], '注文内容_' + order.num + '.pdf', {type: 'application/pdf'});
+    var url = URL.createObjectURL(blob);
+    var dl = document.getElementById('dlPdf');
+    dl.href = url;
+    dl.setAttribute('download', pdfFile.name);
+    document.getElementById('pdfDone').style.display = 'block';
+    var shareBtn = document.getElementById('shareBtn');
+    if (navigator.canShare && navigator.canShare({files: [pdfFile]})){
+      shareBtn.style.display = 'inline-block';
+    }
+    document.getElementById('pdfDone').scrollIntoView({behavior: 'smooth', block: 'center'});
+  } catch(e){
+    err.textContent = 'ファイルの作成に失敗しました。もう一度お試しください。';
+    err.style.display = 'block';
+  }
+  btn.disabled = false; btn.textContent = 'ファイルを作成する';
+});
+document.getElementById('shareBtn').addEventListener('click', function(){
+  if (pdfFile && navigator.share){
+    navigator.share({files: [pdfFile], title: '注文内容 ' + order.num}).catch(function(){});
+  }
+});
+</script>
+</body>
+</html>
