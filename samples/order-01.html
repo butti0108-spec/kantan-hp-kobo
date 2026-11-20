@@ -351,6 +351,10 @@ function apply(){
   var heroEl = d.querySelector('.hero');
   if (heroEl){ heroEl.style.justifyContent = 'flex-start'; heroEl.style.minHeight = 'auto'; }
   sizeSpacer(d);
+  /* the workshop decide band belongs to the standalone sample page only;
+     it must never appear inside the order preview (already ordering) */
+  var kd = d.getElementById('koboDecide');
+  if (kd) kd.style.display = 'none';
   /* color pattern: set (or clear) the palette variables on the sample root */
   var rootEl = d.documentElement;
   var pat = PATTERNS[curPattern];

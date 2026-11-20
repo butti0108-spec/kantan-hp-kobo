@@ -353,6 +353,10 @@ function renderList(d){
 function apply(){
   var d = doc(); if (!d || !d.body || !d.querySelector('h1')) return;
   sizeSpacer(d);
+  /* the workshop decide band belongs to the standalone sample page only;
+     it must never appear inside the order preview (already ordering) */
+  var kd = d.getElementById('koboDecide');
+  if (kd) kd.style.display = 'none';
   /* color pattern */
   var rootEl = d.documentElement;
   var pat = CFG.patterns[curPattern];
