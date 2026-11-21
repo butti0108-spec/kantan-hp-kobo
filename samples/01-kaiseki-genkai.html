@@ -67,6 +67,8 @@ footer{padding:0 clamp(20px,6vw,72px) 30px;display:flex;justify-content:space-be
 </style>
 </head>
 <body>
+<div id="koboColorBar" style="margin:0;padding:14px 16px 16px;background:#eef3fa;border-bottom:3px solid #0052b5;text-align:center;font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif"><p style="margin:0 0 10px;font-size:13px;line-height:1.7;color:#33506e;letter-spacing:.06em">この型の色は、ここで選べます（選ぶと見本の色が変わります）</p><div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button type="button" data-pat="sumi" style="display:inline-flex;align-items:center;gap:8px;background:#ffffff;border:1.5px solid #b9c8dc;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;color:#22303f"><span style="display:inline-flex;gap:3px"><span style="width:14px;height:14px;border-radius:50%;background:#131417;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#c8a45c;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#ece7db;border:1px solid rgba(0,0,0,.18)"></span></span>墨と金（見本の色）</button><button type="button" data-pat="ai" style="display:inline-flex;align-items:center;gap:8px;background:#ffffff;border:1.5px solid #b9c8dc;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;color:#22303f"><span style="display:inline-flex;gap:3px"><span style="width:14px;height:14px;border-radius:50%;background:#1c2b4d;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#bfc9d8;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#e9ecf2;border:1px solid rgba(0,0,0,.18)"></span></span>藍と銀</button><button type="button" data-pat="midori" style="display:inline-flex;align-items:center;gap:8px;background:#ffffff;border:1.5px solid #b9c8dc;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;color:#22303f"><span style="display:inline-flex;gap:3px"><span style="width:14px;height:14px;border-radius:50%;background:#1d4030;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#c8a45c;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#ecf0e2;border:1px solid rgba(0,0,0,.18)"></span></span>緑と金</button><button type="button" data-pat="enji" style="display:inline-flex;align-items:center;gap:8px;background:#ffffff;border:1.5px solid #b9c8dc;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;color:#22303f"><span style="display:inline-flex;gap:3px"><span style="width:14px;height:14px;border-radius:50%;background:#472228;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#d9a45c;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#f2e7dd;border:1px solid rgba(0,0,0,.18)"></span></span>臙脂と金</button><button type="button" data-pat="shiro" style="display:inline-flex;align-items:center;gap:8px;background:#ffffff;border:1.5px solid #b9c8dc;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;color:#22303f"><span style="display:inline-flex;gap:3px"><span style="width:14px;height:14px;border-radius:50%;background:#f8f6f1;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#0052B5;border:1px solid rgba(0,0,0,.18)"></span><span style="width:14px;height:14px;border-radius:50%;background:#26241f;border:1px solid rgba(0,0,0,.18)"></span></span>白と藍</button></div></div>
+
 
 <header class="hero">
   <p class="v-title">玄<span class="gold">海</span></p>
@@ -117,5 +119,38 @@ footer{padding:0 clamp(20px,6vw,72px) 30px;display:flex;justify-content:space-be
 
 
 <div id="koboDecide" style="margin:0;padding:38px 16px 46px;background:#eef3fa;border-top:3px solid #0052b5;text-align:center;font-family:'Hiragino Kaku Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif"><p style="margin:0 0 16px;font-size:13px;line-height:1.8;color:#33506e;letter-spacing:.06em">この見本の型でホームページを作る場合は、こちらから</p><a href="order-01.html" style="display:inline-block;background:#0052b5;color:#ffffff;font-size:17px;font-weight:700;line-height:1.4;letter-spacing:.14em;text-decoration:none;padding:16px 56px;border-radius:999px">これで決める</a><p style="margin:16px 0 0;font-size:12px;line-height:1.8;color:#33506e;letter-spacing:.14em">アーチデザイン工房</p></div>
+
+<script>
+(function(){
+  var D = {"sid": "01", "mode": "vars", "origPid": "sumi", "vars": ["--ink", "--ink-2", "--paper", "--paper-dim", "--gold", "--gold-deep"], "patterns": {"sumi": null, "ai": {"--ink": "#1c2b4d", "--ink-2": "#24365e", "--paper": "#e9ecf2", "--paper-dim": "#a3aec4", "--gold": "#bfc9d8", "--gold-deep": "#93a1b5"}, "midori": {"--ink": "#1d4030", "--ink-2": "#27503c", "--paper": "#ecf0e2", "--paper-dim": "#a7b8a2", "--gold": "#c8a45c", "--gold-deep": "#9a7c3f"}, "enji": {"--ink": "#472228", "--ink-2": "#552a31", "--paper": "#f2e7dd", "--paper-dim": "#c2a49b", "--gold": "#d9a45c", "--gold-deep": "#b07f3f"}, "shiro": {"--ink": "#f8f6f1", "--ink-2": "#ffffff", "--paper": "#26241f", "--paper-dim": "#75705f", "--gold": "#0052B5", "--gold-deep": "#003d87"}}, "fixes": []};
+  var cur = D.origPid;
+  var bar = document.getElementById('koboColorBar');
+  if (!bar) return;
+  function applyBar(){
+    var rootEl = document.documentElement;
+    var pat = cur === D.origPid ? null : D.patterns[cur];
+    var fx = document.getElementById('koboColorFix');
+    if (!fx){ fx = document.createElement('style'); fx.id = 'koboColorFix'; document.head.appendChild(fx); }
+    if (D.mode === 'vars'){
+      D.vars.forEach(function(v){ rootEl.style.setProperty(v, pat ? (pat[v] || '') : ''); });
+      fx.textContent = '';
+    } else {
+      Object.keys(D.roles).forEach(function(role){
+        (D.roles[role] || []).forEach(function(v){ rootEl.style.setProperty(v, pat ? (pat[role] || '') : ''); });
+      });
+      fx.textContent = pat ? (D.fixes || []).map(function(f){ return f.replace(/\{(\w+)\}/g, function(m, k){ return pat[k] || m; }); }).join('\n') : '';
+    }
+    var link = document.querySelector('#koboDecide a');
+    if (link) link.setAttribute('href', 'order-' + D.sid + '.html' + (cur === D.origPid ? '' : '?pat=' + cur));
+    bar.querySelectorAll('button').forEach(function(b){
+      b.style.outline = b.getAttribute('data-pat') === cur ? '3px solid #0052B5' : 'none';
+      b.style.outlineOffset = '2px';
+    });
+  }
+  bar.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){ cur = b.getAttribute('data-pat'); applyBar(); });
+  });
+})();
+</script>
 </body>
 </html>
