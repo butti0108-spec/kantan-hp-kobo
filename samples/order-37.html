@@ -50,6 +50,11 @@ input[type=file]{font-size:13.5px}
 .rowbox label{display:block;font-size:13px;font-weight:700;margin:8px 0 4px}
 .rowbox .del{margin-top:8px;background:none;border:1px solid var(--line);border-radius:8px;padding:4px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;color:#b3261e}
 .addbtn{margin-top:10px;background:#eef3fa;border:1.5px solid var(--blue);color:var(--blue-deep);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+select{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14.5px;font-family:inherit;background:#fff;width:100%}
+.frhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.frhead .t{font-weight:700;font-size:14px}
+.frtools{display:flex;gap:6px}
+.frtools button{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit}
 .patbtn{display:flex;align-items:center;gap:10px;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;text-align:left}
 .patbtn .dots{display:flex;gap:4px}
 .patbtn .dot{width:20px;height:20px;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
@@ -119,6 +124,11 @@ footer a{color:var(--blue-deep)}
       <div class="shutter" id="s-name">この項目は使いません</div>
     </div>
     <div class="unit">
+      <div class="unit-head"><span class="nm">電話番号 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-tel" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-tel"><input type="text" id="f-tel" value="045-000-0000"></div>
+      <div class="shutter" id="s-tel">この項目は使いません</div>
+    </div>
+    <div class="unit">
       <div class="unit-head"><span class="nm">キャッチコピー（改行できます）</span><label class="switch"><input type="checkbox" id="t-catch" checked><span class="track"></span></label></div>
       <div class="unit-body" id="w-catch"><textarea id="f-catch" rows="2">レシピは、作った人の手で
 覚えるものです。</textarea></div>
@@ -128,11 +138,6 @@ footer a{color:var(--blue-deep)}
       <div class="unit-head"><span class="nm">紹介文</span><label class="switch"><input type="checkbox" id="t-lead" checked><span class="track"></span></label></div>
       <div class="unit-body" id="w-lead"><textarea id="f-lead" rows="3">キッチン・ハレは、1回完結の料理教室です。入会金なし、その月の献立から好きな回だけ選べます。</textarea></div>
       <div class="shutter" id="s-lead">この項目は使いません</div>
-    </div>
-    <div class="unit">
-      <div class="unit-head"><span class="nm">電話番号 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-tel" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-tel"><input type="text" id="f-tel" value="045-000-0000"></div>
-      <div class="shutter" id="s-tel">この項目は使いません</div>
     </div>
   </fieldset>
 
@@ -186,6 +191,13 @@ footer a{color:var(--blue-deep)}
       <div class="unit-body" id="w-info2"><input type="text" id="f-info2" value="エプロンだけ。道具と材料は教室にあります"></div>
       <div class="shutter" id="s-info2">この項目は使いません</div>
     </div>
+  </fieldset>
+
+  <fieldset id="fs-frames">
+    <legend>追加の写真枠</legend>
+    <p class="hint">写真だけの枠を、好きな場所に追加できます。枠1つに写真は1〜4枚まで。文章の並びは変わりません。枠は上下のボタンで動かせます。</p>
+    <div id="frameRows"></div>
+    <button type="button" class="addbtn" id="addFrame">＋ 写真の枠を追加する</button>
   </fieldset>
 
   <fieldset id="fs-extra">
@@ -275,8 +287,12 @@ footer a{color:var(--blue-deep)}
 </div>
 
 <script>
-var CFG = {"nameSel": ".logo", "catchSel": "h1", "leadSel": "header.hero p", "factsSel": null, "initName": "料理教室 キッチン・ハレ", "initCatch": "レシピは、作った人の手で\n覚えるものです。", "initLead": "キッチン・ハレは、1回完結の料理教室です。入会金なし、その月の献立から好きな回だけ選べます。", "containerSel": "section.lesson table", "containerIdx": 0, "rowSel": "tr", "groupSel": null, "fields": [{"k": "n", "sel": "th", "kind": "ns"}, {"k": "p", "sel": "td", "kind": "t"}], "infoSecSel": "section.info", "infoTextSel": null, "listNoteSel": null, "subSel": "section.flow", "subIdx": 0, "roles": {"bg": ["--paper"], "ink": ["--ink"], "dim": ["--ink-dim"], "line": ["--line"], "accent": ["--olive"], "deep": ["--olive-deep"]}, "patterns": {"orig": null, "ai": {"bg": "#1c2b4d", "ink": "#e9ecf2", "dim": "#a3aec4", "line": "#35466a", "accent": "#bfc9d8", "deep": "#93a1b5", "bg2": "#26365c", "band": "#131f38", "accentbg": "#51648c"}, "midori": {"bg": "#1d4030", "ink": "#ecf0e2", "dim": "#a7b8a2", "line": "#33523f", "accent": "#c8a45c", "deep": "#bb9753", "bg2": "#26503c", "band": "#132a1f", "accentbg": "#7d5f27"}, "enji": {"bg": "#472228", "ink": "#f2e7dd", "dim": "#c2a49b", "line": "#5f343b", "accent": "#d9a45c", "deep": "#ba8a48", "bg2": "#55292f", "band": "#33161b", "accentbg": "#9c6a30"}, "sumi": {"bg": "#26241f", "ink": "#ece7db", "dim": "#a49c8a", "line": "#454035", "accent": "#c8a45c", "deep": "#a58748", "bg2": "#322f28", "band": "#12100c", "accentbg": "#8a6a2f"}}, "patNames": {"orig": "見本の色", "ai": "藍と銀", "midori": "緑と金", "enji": "臙脂と金", "sumi": "墨と金"}, "fixes": [".flow .n{background:{accentbg} !important}", "a.cta{background:{accentbg} !important}"], "accentVar": "--olive", "follow": [["fs-hero", "header.hero"], ["fs-photo", "img"], ["fs-sub", "section.flow"], ["fs-list", "section.lesson"], ["fs-info", "section.info"], ["fs-extra", "#extraSec"]], "listLegend": "今月のレッスン", "infoLabels": ["場所", "開催日", "持ち物"], "sample": "37-cooking-hare.html", "subLabel": "レッスンの流れ"};
+var CFG = {"nameSel": ".logo", "catchSel": "h1", "leadSel": "header.hero p", "factsSel": null, "initName": "料理教室 キッチン・ハレ", "initCatch": "レシピは、作った人の手で\n覚えるものです。", "initLead": "キッチン・ハレは、1回完結の料理教室です。入会金なし、その月の献立から好きな回だけ選べます。", "containerSel": "section.lesson table", "containerIdx": 0, "rowSel": "tr", "groupSel": null, "fields": [{"k": "n", "sel": "th", "kind": "ns"}, {"k": "p", "sel": "td", "kind": "t"}], "infoSecSel": "section.info", "infoTextSel": null, "listNoteSel": null, "subSel": "section.flow", "subIdx": 0, "roles": {"bg": ["--paper"], "ink": ["--ink"], "dim": ["--ink-dim"], "line": ["--line"], "accent": ["--olive"], "deep": ["--olive-deep"]}, "patterns": {"orig": null, "ai": {"bg": "#1c2b4d", "ink": "#e9ecf2", "dim": "#a3aec4", "line": "#35466a", "accent": "#bfc9d8", "deep": "#93a1b5", "bg2": "#26365c", "band": "#131f38", "accentbg": "#51648c"}, "midori": {"bg": "#1d4030", "ink": "#ecf0e2", "dim": "#a7b8a2", "line": "#33523f", "accent": "#c8a45c", "deep": "#bb9753", "bg2": "#26503c", "band": "#132a1f", "accentbg": "#7d5f27"}, "enji": {"bg": "#472228", "ink": "#f2e7dd", "dim": "#c2a49b", "line": "#5f343b", "accent": "#d9a45c", "deep": "#ba8a48", "bg2": "#55292f", "band": "#33161b", "accentbg": "#9c6a30"}, "sumi": {"bg": "#26241f", "ink": "#ece7db", "dim": "#a49c8a", "line": "#454035", "accent": "#c8a45c", "deep": "#a58748", "bg2": "#322f28", "band": "#12100c", "accentbg": "#8a6a2f"}}, "patNames": {"orig": "見本の色", "ai": "藍と銀", "midori": "緑と金", "enji": "臙脂と金", "sumi": "墨と金"}, "fixes": [".flow .n{background:{accentbg} !important}", "a.cta{background:{accentbg} !important}"], "accentVar": "--olive", "follow": [["fs-hero", "header.hero"], ["fs-photo", "img"], ["fs-sub", "section.flow"], ["fs-list", "section.lesson"], ["fs-info", "section.info"], ["fs-frames", ".kobo-frames"], ["fs-extra", "#extraSec"]], "listLegend": "今月のレッスン", "heroSel": "header.hero", "footerLines": [{"i": 0, "tpl": "{N}"}, {"i": 1, "tpl": "{A0} ・ {T}"}], "extras": [], "extrasInit": [], "extrasLabels": [], "badgeSel": null, "absorbSel": null, "leadJoin": false, "infoLabels": ["場所", "開催日", "持ち物"], "sample": "37-cooking-hare.html", "subLabel": "レッスンの流れ"};
 var listData = [{"n": "基本の和食", "d": "だしの取り方、魚の焼き方、煮物", "p": "4,500円"}, {"n": "手打ちパスタ", "d": "生地から。ソースは2種", "p": "5,000円"}, {"n": "作り置きの回", "d": "5品を2時間で。平日の自分を助ける回", "p": "4,500円"}, {"n": "親子でパン", "d": "小学生と一緒。午前だけの回", "p": "3,800円"}];
+/* photo-frame state must exist before the first apply() call below */
+var framesData = [];
+var blockOrder = ['hero', 'list'].concat(CFG.subSel ? ['sub'] : []).concat(['info', 'extra']);
+var BLOCK_LABELS = {hero: 'ページの最初', list: CFG.listLegend, sub: CFG.subLabel || 'サブセクション', info: '店の案内', extra: '追加した項目'};
 var faqData = [{"q": "予約は必要ですか", "a": "お電話でお気軽にどうぞ。"}];
 var FIELD_KEYS = ["n", "d", "p"];
 var FIELD_LABELS = {"n": "品目の名前", "d": "補足（小さい文字）", "p": "料金"};
@@ -288,6 +304,17 @@ function esc(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
 
 /* ---------- color patterns ---------- */
 var curPattern = 'orig';
+/* pattern chosen on the sample page (order-NN.html?pat=...) becomes the
+   initial pattern here; it can still be changed on this page */
+(function(){
+  var p = new URLSearchParams(location.search).get('pat');
+  if (p && CFG.patterns && Object.prototype.hasOwnProperty.call(CFG.patterns, p)){
+    curPattern = p;
+    document.querySelectorAll('.patbtn').forEach(function(b){
+      b.classList.toggle('sel', b.getAttribute('data-pat') === p);
+    });
+  }
+})();
 document.querySelectorAll('.patbtn').forEach(function(btn){
   btn.addEventListener('click', function(){
     curPattern = btn.getAttribute('data-pat');
@@ -449,6 +476,9 @@ function renderListGrouped(d){
 }
 function renderList(d){
   if (CFG.groupSel){ renderListGrouped(d); return; }
+  /* absorbSel: the fixed row that looks like an item (e.g. 入会金) is
+     removed from its original place; it is rendered as a normal item */
+  if (CFG.absorbSel) d.querySelectorAll(CFG.absorbSel).forEach(function(e){ e.remove(); });
   var conts = d.querySelectorAll(CFG.containerSel);
   var cont = conts[CFG.containerIdx || 0]; if (!cont) return;
   var liveRows = [];
@@ -459,9 +489,15 @@ function renderList(d){
   if (anchor && anchor.parentNode !== rowParent) anchor = null;
   liveRows.forEach(function(r){ r.remove(); });
   if (on('t-items') && rowTpl){
-    listData.forEach(function(row){
+    listData.forEach(function(row, ri){
       var el = rowTpl.cloneNode(true);
       CFG.fields.forEach(function(f){ setRowField(el, f, row); });
+      /* badgeSel: number badges are automatic, following the row
+         position (01, 02, ...) - they are not editable text */
+      if (CFG.badgeSel){
+        var b = el.querySelector(CFG.badgeSel);
+        if (b) b.textContent = String(ri + 1).padStart(2, '0');
+      }
       if (anchor) rowParent.insertBefore(el, anchor); else rowParent.appendChild(el);
     });
   }
@@ -473,6 +509,8 @@ function apply(){
      it must never appear inside the order preview (already ordering) */
   var kd = d.getElementById('koboDecide');
   if (kd) kd.style.display = 'none';
+  var cb = d.getElementById('koboColorBar');
+  if (cb) cb.style.display = 'none';
   /* color pattern */
   var rootEl = d.documentElement;
   var pat = CFG.patterns[curPattern];
@@ -507,7 +545,15 @@ function apply(){
     var leadEl = d.querySelector(CFG.leadSel);
     showEl(leadEl, on('t-lead'));
     var leadVal = val('f-lead');
-    if (leadEl && leadVal !== CFG.initLead) leadEl.textContent = leadVal;
+    if (CFG.leadJoin){
+      /* the text was extracted from several paragraphs: put it back
+         into the first one and hide the rest, so both stay editable */
+      var leadEls = d.querySelectorAll(CFG.leadSel);
+      if (leadEls.length && leadVal !== CFG.initLead){
+        leadEls[0].innerHTML = leadVal.split('\n').map(esc).join('<br>');
+        for (var li2 = 1; li2 < leadEls.length; li2++) leadEls[li2].style.display = 'none';
+      }
+    } else if (leadEl && leadVal !== CFG.initLead) leadEl.textContent = leadVal;
   }
   /* facts */
   if (CFG.factsSel){ show(d, CFG.factsSel, on('t-facts')); setText(d, CFG.factsSel, val('f-facts')); }
@@ -533,6 +579,7 @@ function apply(){
      cloning, so all copies follow the one photo toggle / replacement
      (the form has a single photo field). */
   d.querySelectorAll('img').forEach(function(im){
+    if (im.hasAttribute('data-koboframe')) return; /* added photo frames are independent */
     var wrap = im.closest('.photo') || im.closest('.ph') || im.closest('.hero-photo') || im;
     showEl(wrap, on('t-photo'));
     if (photoURL) im.src = photoURL;
@@ -562,6 +609,34 @@ function apply(){
       });
     }
   }
+  /* extras: fixed texts that are editable here */
+  (CFG.extras || []).forEach(function(ex, j){
+    var els = d.querySelectorAll(ex.sel);
+    var el = els[ex.idx || 0]; if (!el) return;
+    el.style.display = on('t-x' + j) ? '' : 'none';
+    var v = val('f-x' + j);
+    if (v !== CFG.extrasInit[j]) el.textContent = v;
+  });
+  /* footer: rebuilt from the same inputs as the info table, so the
+     address / phone / shop name never need to be typed twice */
+  if (CFG.footerLines && CFG.footerLines.length){
+    CFG.footerLines.forEach(function(fl){
+      var el = foot[fl.i]; if (!el) return;
+      /* {N} is the name as the preview itself shows it: the form value
+         can differ from the name element's text (e.g. a genre prefix
+         like 整体院 lives only in the footer line / form value) */
+      var dispName = (nameEl && nameEl.textContent.trim()) || name || CFG.initName;
+      var s = fl.tpl.split('{N}').join(dispName).split('{T}').join(tel);
+      s = s.replace(/\{A(\d+)(p?)\}/g, function(m, jj, pp){
+        var v = val('f-info' + jj);
+        if (!v) return '';
+        v = v.split(' ・ ')[0];
+        if (pp) v = v.replace(/（[^）]*）\s*$/, '');
+        return v;
+      });
+      el.textContent = s;
+    });
+  }
   /* extra section (news / faq / link), styled with the list section's class */
   var old = d.getElementById('extraSec'); if (old) old.remove();
   var parts = '';
@@ -583,12 +658,18 @@ function apply(){
           var rr = {}; rr[fd.k] = v; rr.d = f.a;
           setRowField(el, fd, rr);
         });
+        if (CFG.badgeSel){
+          var bb = el.querySelector(CFG.badgeSel);
+          if (bb) bb.remove();
+        }
         holder.appendChild(el);
       });
     }
     var info = d.querySelector(CFG.infoSecSel);
     if (info) info.parentNode.insertBefore(s2, info);
   }
+  /* added photo frames */
+  renderFrames(d);
 }
 /* ---------- preview device tabs ---------- */
 var pvMode = 'phone';
@@ -674,7 +755,7 @@ window.addEventListener('scroll', function(){
   followTimer = setTimeout(function(){ followTimer = null; followCheck(); }, 120);
 }, {passive: true});
 
-pv.addEventListener('load', function(){ buildItems(); buildFaqs(); apply(); layoutPreview(); });
+pv.addEventListener('load', function(){ buildItems(); buildFaqs(); buildFrames(); apply(); layoutPreview(); });
 document.querySelectorAll('#orderForm input[type=text], #orderForm textarea').forEach(function(el){
   el.addEventListener('input', apply);
 });
@@ -719,6 +800,129 @@ function idbPut(rec){
     });
   });
 }
+/* ---------- added photo frames (追加の写真枠) ----------
+   A frame holds 1-4 photos and can be moved up/down between the fixed
+   sections. Only frames move; the text sections keep their order.
+   blockOrder mixes section keys (strings) and frame objects.
+   (framesData / blockOrder / BLOCK_LABELS are declared at the top of
+   this script, before the first apply() call.) */
+function framePosLabel(fr){
+  var i = blockOrder.indexOf(fr);
+  if (i <= 0) return 'ページの先頭';
+  var prev = blockOrder[i - 1];
+  if (typeof prev === 'string') return (BLOCK_LABELS[prev] || '') + 'の後';
+  return '追加の写真枠 ' + (framesData.indexOf(prev) + 1) + 'の後';
+}
+function buildFrames(){
+  var box = document.getElementById('frameRows');
+  if (!box) return;
+  box.innerHTML = '';
+  framesData.forEach(function(fr, fi){
+    var div = document.createElement('div');
+    div.className = 'rowbox';
+    var html = '<div class="frhead"><span class="t">追加の写真枠 ' + (fi + 1) + '</span><span class="frtools">' +
+      '<button type="button" data-fr-up="' + fi + '">↑ 上へ</button>' +
+      '<button type="button" data-fr-dn="' + fi + '">↓ 下へ</button>' +
+      '<button type="button" data-fr-del="' + fi + '">削除</button></span></div>';
+    html += '<label>枠の形（写真の枚数）</label><select data-fr-count="' + fi + '">' +
+      [1, 2, 3, 4].map(function(n){ return '<option value="' + n + '"' + (fr.count === n ? ' selected' : '') + '>' + n + '枚</option>'; }).join('') + '</select>';
+    for (var si = 0; si < fr.count; si++){
+      html += '<label>' + (si + 1) + '枚目</label><input type="file" accept="image/*" data-fr-file="' + fi + '-' + si + '">';
+    }
+    html += '<p class="hint">置く場所：' + framePosLabel(fr) + '（上下のボタンで動かせます）</p>';
+    div.innerHTML = html;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('[data-fr-count]').forEach(function(sel){
+    sel.addEventListener('change', function(){
+      var fr = framesData[+sel.getAttribute('data-fr-count')];
+      var n = +sel.value;
+      while (fr.files.length > n){ var u = fr.urls.pop(); if (u) URL.revokeObjectURL(u); fr.files.pop(); }
+      while (fr.files.length < n){ fr.files.push(null); fr.urls.push(null); }
+      fr.count = n;
+      buildFrames(); apply();
+    });
+  });
+  box.querySelectorAll('[data-fr-file]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var parts = inp.getAttribute('data-fr-file').split('-');
+      var fr = framesData[+parts[0]], si = +parts[1];
+      var f = inp.files && inp.files[0];
+      if (fr.urls[si]) URL.revokeObjectURL(fr.urls[si]);
+      fr.files[si] = f || null;
+      fr.urls[si] = f ? URL.createObjectURL(f) : null;
+      apply();
+    });
+  });
+  box.querySelectorAll('[data-fr-up]').forEach(function(btn){
+    btn.addEventListener('click', function(){ moveFrame(framesData[+btn.getAttribute('data-fr-up')], -1); });
+  });
+  box.querySelectorAll('[data-fr-dn]').forEach(function(btn){
+    btn.addEventListener('click', function(){ moveFrame(framesData[+btn.getAttribute('data-fr-dn')], 1); });
+  });
+  box.querySelectorAll('[data-fr-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var fr = framesData[+btn.getAttribute('data-fr-del')];
+      fr.urls.forEach(function(u){ if (u) URL.revokeObjectURL(u); });
+      framesData.splice(framesData.indexOf(fr), 1);
+      blockOrder.splice(blockOrder.indexOf(fr), 1);
+      buildFrames(); apply();
+    });
+  });
+}
+function moveFrame(fr, dir){
+  var i = blockOrder.indexOf(fr), j = i + dir;
+  if (i < 0 || j < 0 || j >= blockOrder.length) return;
+  blockOrder[i] = blockOrder[j]; blockOrder[j] = fr;
+  buildFrames(); apply();
+}
+function renderFrames(d){
+  d.querySelectorAll('.kobo-frames').forEach(function(e){ e.remove(); });
+  if (!framesData.length) return;
+  var listPair = CFG.follow.filter(function(p){ return p[0] === 'fs-list'; })[0];
+  var anchors = {
+    hero: d.querySelector(CFG.heroSel),
+    list: listPair ? d.querySelector(listPair[1]) : null,
+    sub: CFG.subSel ? d.querySelectorAll(CFG.subSel)[CFG.subIdx || 0] : null,
+    info: d.querySelector(CFG.infoSecSel),
+    extra: d.getElementById('extraSec')
+  };
+  var firstImg = d.querySelector('img');
+  var fallbackSrc = firstImg ? firstImg.getAttribute('src') : '';
+  var listSec = anchors.list;
+  blockOrder.forEach(function(tok){
+    if (typeof tok === 'string') return;
+    var fr = tok;
+    var sec = d.createElement('section');
+    sec.className = (listSec ? listSec.className : '') + ' kobo-frames';
+    var cols = fr.count === 1 ? '1fr' : (fr.count === 3 ? '1fr 1fr 1fr' : '1fr 1fr');
+    var html = '<div style="display:grid;grid-template-columns:' + cols + ';gap:10px">';
+    for (var si = 0; si < fr.count; si++){
+      html += '<img data-koboframe="1" src="' + (fr.urls[si] || fallbackSrc) + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block" alt="">';
+    }
+    sec.innerHTML = html + '</div>';
+    var ti = blockOrder.indexOf(fr), anchor = null;
+    for (var k = ti + 1; k < blockOrder.length; k++){
+      var b = blockOrder[k];
+      if (typeof b === 'string' && anchors[b]){ anchor = anchors[b]; break; }
+    }
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
+    else {
+      var sp = d.getElementById('pvSpacer');
+      if (sp && sp.parentNode) sp.parentNode.insertBefore(sec, sp);
+      else d.body.appendChild(sec);
+    }
+  });
+}
+var addFrameBtn = document.getElementById('addFrame');
+if (addFrameBtn) addFrameBtn.addEventListener('click', function(){
+  var fr = {count: 1, files: [null], urls: [null]};
+  framesData.push(fr);
+  var ei = blockOrder.indexOf('extra');
+  if (ei >= 0) blockOrder.splice(ei, 0, fr); else blockOrder.push(fr);
+  buildFrames(); apply();
+});
+
 function buildSummary(){
   var items = [];
   items.push(['色パターン', CFG.patNames[curPattern]]);
@@ -739,6 +943,13 @@ function buildSummary(){
   if (on('t-news')){ items.push(['お知らせの見出し', val('f-newsT')]); items.push(['お知らせの本文', val('f-newsB')]); }
   if (on('t-faq')) faqData.forEach(function(f, i){ items.push(['よくある質問 ' + (i + 1), '質問：' + f.q + '／答え：' + f.a]); });
   if (on('t-link')) items.push(['リンク', val('f-linkT') + '（' + val('f-linkU') + '）']);
+  framesData.forEach(function(fr, fi){
+    var sel = fr.files.filter(function(f){ return f; }).length;
+    items.push(['追加の写真枠 ' + (fi + 1), fr.count + '枚の枠（' + framePosLabel(fr) + '）／写真 ' + sel + '枚選択']);
+  });
+  (CFG.extras || []).forEach(function(ex, j){
+    if (on('t-x' + j)) items.push([CFG.extrasLabels[j], val('f-x' + j)]);
+  });
   items.push(['写真', on('t-photo') ? (photoInput && photoInput.files[0] ? '選択済み' : '見本のまま') : '入れない']);
   return items;
 }
@@ -748,6 +959,13 @@ function collectPhotoRecs(){
     var f = photoInput.files[0];
     recs.push({key: receiptNum + '|0', num: receiptNum, slot: '写真', name: f.name, type: f.type, blob: f});
   }
+  framesData.forEach(function(fr, fi){
+    fr.files.forEach(function(f, si){
+      if (!f) return;
+      recs.push({key: receiptNum + '|f' + fi + '-' + si, num: receiptNum,
+        slot: '追加の写真枠' + (fi + 1) + '（' + (si + 1) + '枚目）', name: f.name, type: f.type, blob: f});
+    });
+  });
   return recs;
 }
 function saveOrder(){
@@ -757,6 +975,7 @@ function saveOrder(){
     sample: CFG.sample,
     shop: CFG.initName,
     patternName: CFG.patNames[curPattern],
+    frames: framesData.map(function(fr){ return {count: fr.count, pos: framePosLabel(fr)}; }),
     summary: summaryPairs
   };
   try { localStorage.setItem('koboOrderV1', JSON.stringify(data)); } catch(e){}
