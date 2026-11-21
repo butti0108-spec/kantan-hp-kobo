@@ -50,6 +50,11 @@ input[type=file]{font-size:13.5px}
 .rowbox label{display:block;font-size:13px;font-weight:700;margin:8px 0 4px}
 .rowbox .del{margin-top:8px;background:none;border:1px solid var(--line);border-radius:8px;padding:4px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;color:#b3261e}
 .addbtn{margin-top:10px;background:#eef3fa;border:1.5px solid var(--blue);color:var(--blue-deep);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+select{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14.5px;font-family:inherit;background:#fff;width:100%}
+.frhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.frhead .t{font-weight:700;font-size:14px}
+.frtools{display:flex;gap:6px}
+.frtools button{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit}
 .patbtn{display:flex;align-items:center;gap:10px;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;text-align:left}
 .patbtn .dots{display:flex;gap:4px}
 .patbtn .dot{width:20px;height:20px;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
@@ -115,6 +120,12 @@ footer a{color:var(--blue-deep)}
     <legend>ページの最初</legend>
 
         <div class="unit">
+      <div class="unit-head"><span class="nm">お店の名前 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-name" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-name"><input type="text" id="f-name" value="懐石 玄海"></div>
+      <div class="shutter" id="s-name">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
       <div class="unit-head"><span class="nm">写真A（最初に出る写真）</span><label class="switch"><input type="checkbox" id="t-photoA" checked><span class="track"></span></label></div>
       <div class="unit-body" id="w-photoA">
         <input type="file" id="f-photoA" accept="image/*">
@@ -122,12 +133,6 @@ footer a{color:var(--blue-deep)}
         <p class="hint">写真の切り取りや位置の調整は行いません。プレビューで表示された通りの形で公開します。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。</p>
       </div>
       <div class="shutter" id="s-photoA">この項目は使いません</div>
-    </div>
-
-        <div class="unit">
-      <div class="unit-head"><span class="nm">お店の名前 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-name" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-name"><input type="text" id="f-name" value="懐石 玄海"></div>
-      <div class="shutter" id="s-name">この項目は使いません</div>
     </div>
 
         <div class="unit">
@@ -195,6 +200,13 @@ footer a{color:var(--blue-deep)}
       <div class="unit-body" id="w-seats"><input type="text" id="f-seats" value="カウンター八席のみ"></div>
       <div class="shutter" id="s-seats">この項目は使いません</div>
     </div>
+  </fieldset>
+
+  <fieldset id="fs-frames">
+    <legend>追加の写真枠</legend>
+    <p class="hint">写真だけの枠を、好きな場所に追加できます。枠1つに写真は1〜4枚まで。文章の並びは変わりません。枠は上下のボタンで動かせます。</p>
+    <div id="frameRows"></div>
+    <button type="button" class="addbtn" id="addFrame">＋ 写真の枠を追加する</button>
   </fieldset>
 
   <fieldset id="fs-extra">
@@ -322,6 +334,21 @@ var PATTERNS = {
 };
 var PAT_NAMES = {sumi:'墨と金（見本の色）', ai:'藍と銀', midori:'緑と金', enji:'臙脂と金', shiro:'白と藍'};
 var curPattern = 'sumi';
+/* photo-frame state must exist before the first apply() call below */
+var framesData = [];
+var blockOrder = ['hero', 'list', 'info', 'extra'];
+var BLOCK_LABELS = {hero: 'ページの最初', list: 'お品書き', info: '店の案内', extra: '追加した項目'};
+/* pattern chosen on the sample page (order-01.html?pat=...) becomes the
+   initial pattern here; it can still be changed on this page */
+(function(){
+  var p = new URLSearchParams(location.search).get('pat');
+  if (p && Object.prototype.hasOwnProperty.call(PATTERNS, p)){
+    curPattern = p;
+    document.querySelectorAll('.patbtn').forEach(function(b){
+      b.classList.toggle('sel', b.getAttribute('data-pat') === p);
+    });
+  }
+})();
 document.querySelectorAll('.patbtn').forEach(function(btn){
   btn.addEventListener('click', function(){
     curPattern = btn.getAttribute('data-pat');
@@ -396,6 +423,8 @@ function apply(){
      it must never appear inside the order preview (already ordering) */
   var kd = d.getElementById('koboDecide');
   if (kd) kd.style.display = 'none';
+  var cb = d.getElementById('koboColorBar');
+  if (cb) cb.style.display = 'none';
   /* color pattern: set (or clear) the palette variables on the sample root */
   var rootEl = d.documentElement;
   var pat = PATTERNS[curPattern];
@@ -463,6 +492,8 @@ function apply(){
     var info = d.querySelector('.info');
     info.parentNode.insertBefore(s2, info);
   }
+  /* added photo frames */
+  renderFrames(d);
 }
 /* ---------- preview device tabs ---------- */
 var pvMode = 'phone';
@@ -526,6 +557,7 @@ var SECTION_MAP = [
   ['fs-course', '.course'],
   ['fs-band', '.band'],
   ['fs-info', '.info'],
+  ['fs-frames', '.kobo-frames'],
   ['fs-extra', '#extraSec']
 ];
 var followCurrent = null, followTimer = null;
@@ -554,7 +586,7 @@ window.addEventListener('scroll', function(){
   followTimer = setTimeout(function(){ followTimer = null; followCheck(); }, 120);
 }, {passive: true});
 
-pv.addEventListener('load', function(){ buildCourses(); buildFaqs(); apply(); layoutPreview(); });
+pv.addEventListener('load', function(){ buildCourses(); buildFaqs(); buildFrames(); apply(); layoutPreview(); });
 document.querySelectorAll('#orderForm input[type=text], #orderForm textarea').forEach(function(el){
   el.addEventListener('input', apply);
 });
@@ -600,6 +632,126 @@ function idbPut(rec){
     });
   });
 }
+/* ---------- added photo frames (追加の写真枠) ----------
+   A frame holds 1-4 photos and can be moved up/down between the fixed
+   sections. Only frames move; the text sections keep their order.
+   blockOrder mixes section keys (strings) and frame objects.
+   (framesData / blockOrder / BLOCK_LABELS are declared near the top of
+   this script, before the first apply() call.) */
+function framePosLabel(fr){
+  var i = blockOrder.indexOf(fr);
+  if (i <= 0) return 'ページの先頭';
+  var prev = blockOrder[i - 1];
+  if (typeof prev === 'string') return (BLOCK_LABELS[prev] || '') + 'の後';
+  return '追加の写真枠 ' + (framesData.indexOf(prev) + 1) + 'の後';
+}
+function buildFrames(){
+  var box = document.getElementById('frameRows');
+  if (!box) return;
+  box.innerHTML = '';
+  framesData.forEach(function(fr, fi){
+    var div = document.createElement('div');
+    div.className = 'rowbox';
+    var html = '<div class="frhead"><span class="t">追加の写真枠 ' + (fi + 1) + '</span><span class="frtools">' +
+      '<button type="button" data-fr-up="' + fi + '">↑ 上へ</button>' +
+      '<button type="button" data-fr-dn="' + fi + '">↓ 下へ</button>' +
+      '<button type="button" data-fr-del="' + fi + '">削除</button></span></div>';
+    html += '<label>枠の形（写真の枚数）</label><select data-fr-count="' + fi + '">' +
+      [1, 2, 3, 4].map(function(n){ return '<option value="' + n + '"' + (fr.count === n ? ' selected' : '') + '>' + n + '枚</option>'; }).join('') + '</select>';
+    for (var si = 0; si < fr.count; si++){
+      html += '<label>' + (si + 1) + '枚目</label><input type="file" accept="image/*" data-fr-file="' + fi + '-' + si + '">';
+    }
+    html += '<p class="hint">置く場所：' + framePosLabel(fr) + '（上下のボタンで動かせます）</p>';
+    div.innerHTML = html;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('[data-fr-count]').forEach(function(sel){
+    sel.addEventListener('change', function(){
+      var fr = framesData[+sel.getAttribute('data-fr-count')];
+      var n = +sel.value;
+      while (fr.files.length > n){ var u = fr.urls.pop(); if (u) URL.revokeObjectURL(u); fr.files.pop(); }
+      while (fr.files.length < n){ fr.files.push(null); fr.urls.push(null); }
+      fr.count = n;
+      buildFrames(); apply();
+    });
+  });
+  box.querySelectorAll('[data-fr-file]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var parts = inp.getAttribute('data-fr-file').split('-');
+      var fr = framesData[+parts[0]], si = +parts[1];
+      var f = inp.files && inp.files[0];
+      if (fr.urls[si]) URL.revokeObjectURL(fr.urls[si]);
+      fr.files[si] = f || null;
+      fr.urls[si] = f ? URL.createObjectURL(f) : null;
+      apply();
+    });
+  });
+  box.querySelectorAll('[data-fr-up]').forEach(function(btn){
+    btn.addEventListener('click', function(){ moveFrame(framesData[+btn.getAttribute('data-fr-up')], -1); });
+  });
+  box.querySelectorAll('[data-fr-dn]').forEach(function(btn){
+    btn.addEventListener('click', function(){ moveFrame(framesData[+btn.getAttribute('data-fr-dn')], 1); });
+  });
+  box.querySelectorAll('[data-fr-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var fr = framesData[+btn.getAttribute('data-fr-del')];
+      fr.urls.forEach(function(u){ if (u) URL.revokeObjectURL(u); });
+      framesData.splice(framesData.indexOf(fr), 1);
+      blockOrder.splice(blockOrder.indexOf(fr), 1);
+      buildFrames(); apply();
+    });
+  });
+}
+function moveFrame(fr, dir){
+  var i = blockOrder.indexOf(fr), j = i + dir;
+  if (i < 0 || j < 0 || j >= blockOrder.length) return;
+  blockOrder[i] = blockOrder[j]; blockOrder[j] = fr;
+  buildFrames(); apply();
+}
+function renderFrames(d){
+  d.querySelectorAll('.kobo-frames').forEach(function(e){ e.remove(); });
+  if (!framesData.length) return;
+  var anchors = {
+    hero: d.querySelector('.hero'),
+    list: d.querySelector('.course'),
+    info: d.querySelector('.info'),
+    extra: d.getElementById('extraSec')
+  };
+  var firstImg = d.querySelector('img');
+  var fallbackSrc = firstImg ? firstImg.getAttribute('src') : '';
+  var listSec = anchors.list;
+  blockOrder.forEach(function(tok){
+    if (typeof tok === 'string') return;
+    var fr = tok;
+    var sec = d.createElement('section');
+    sec.className = (listSec ? listSec.className : '') + ' kobo-frames';
+    var cols = fr.count === 1 ? '1fr' : (fr.count === 3 ? '1fr 1fr 1fr' : '1fr 1fr');
+    var html = '<div style="display:grid;grid-template-columns:' + cols + ';gap:10px">';
+    for (var si = 0; si < fr.count; si++){
+      html += '<img data-koboframe="1" src="' + (fr.urls[si] || fallbackSrc) + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block" alt="">';
+    }
+    sec.innerHTML = html + '</div>';
+    var ti = blockOrder.indexOf(fr), anchor = null;
+    for (var k = ti + 1; k < blockOrder.length; k++){
+      var b = blockOrder[k];
+      if (typeof b === 'string' && anchors[b]){ anchor = anchors[b]; break; }
+    }
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
+    else {
+      var sp = d.getElementById('pvSpacer');
+      if (sp && sp.parentNode) sp.parentNode.insertBefore(sec, sp);
+      else d.body.appendChild(sec);
+    }
+  });
+}
+document.getElementById('addFrame').addEventListener('click', function(){
+  var fr = {count: 1, files: [null], urls: [null]};
+  framesData.push(fr);
+  var ei = blockOrder.indexOf('extra');
+  if (ei >= 0) blockOrder.splice(ei, 0, fr); else blockOrder.push(fr);
+  buildFrames(); apply();
+});
+
 function collectPhotoRecs(){
   var recs = [];
   [['f-photoA', 't-photoA', '写真A（最初に出る写真）'], ['f-photoB', 't-photoB', '写真B（途中の帯の写真）']].forEach(function(cfg, i){
@@ -608,6 +760,13 @@ function collectPhotoRecs(){
       var f = inp.files[0];
       recs.push({key: receiptNum + '|' + i, num: receiptNum, slot: cfg[2], name: f.name, type: f.type, blob: f});
     }
+  });
+  framesData.forEach(function(fr, fi){
+    fr.files.forEach(function(f, si){
+      if (!f) return;
+      recs.push({key: receiptNum + '|f' + fi + '-' + si, num: receiptNum,
+        slot: '追加の写真枠' + (fi + 1) + '（' + (si + 1) + '枚目）', name: f.name, type: f.type, blob: f});
+    });
   });
   return recs;
 }
@@ -618,6 +777,7 @@ function saveOrder(){
     sample: '01-kaiseki-genkai.html',
     shop: val('f-name'),
     patternName: PAT_NAMES[curPattern],
+    frames: framesData.map(function(fr){ return {count: fr.count, pos: framePosLabel(fr)}; }),
     summary: summaryPairs
   };
   try { localStorage.setItem('koboOrderV1', JSON.stringify(data)); } catch(e){}
@@ -673,6 +833,10 @@ document.getElementById('orderForm').addEventListener('submit', function(e){
   if (on('t-news')) items.push(['お知らせ', val('f-newsT')]);
   if (on('t-faq')) items.push(['よくある質問', faqData.length + '件']);
   if (on('t-link')) items.push(['リンク', val('f-linkT')]);
+  framesData.forEach(function(fr, fi){
+    var sel = fr.files.filter(function(f){ return f; }).length;
+    items.push(['追加の写真枠 ' + (fi + 1), fr.count + '枚の枠（' + framePosLabel(fr) + '）／写真 ' + sel + '枚選択']);
+  });
   items.push(['写真', 'A：' + (on('t-photoA') ? (document.getElementById('f-photoA').files[0] ? '選択済み' : '見本のまま') : '入れない') + '／B：' + (on('t-photoB') ? (document.getElementById('f-photoB').files[0] ? '選択済み' : '見本のまま') : '入れない')]);
   summaryPairs = items;
   if (!receiptNum) receiptNum = genReceiptNum();

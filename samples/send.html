@@ -73,6 +73,7 @@ footer{margin-top:34px;font-size:13px;color:var(--ink-2);text-align:center}
   <p>ボタンを押すとGoogleの画面が開きます。お使いのGoogleアカウントでログイン（連携）して、送信ボタンを押すだけで、入力した内容と写真がそのまま工房に届きます。入力し直す必要はありません。</p>
   <button type="button" class="btn" id="googleBtn">Google連携して送信する</button>
   <p class="err" id="protoA">試作品のため、このボタンはまだ接続していません。本番では、ここからGoogleフォームが開きます。</p>
+  <p class="err" id="tooManyMsg" style="display:none"></p>
 </div>
 
 <div class="box" id="routeB">
@@ -156,6 +157,15 @@ function idbAll(){
       div.appendChild(img); div.appendChild(cap);
       box.appendChild(div);
     });
+    /* 写真が10枚を超えると、Googleフォーム（1回の送信で10枚まで）では
+       送れないため、送り方Aは使えず、ファイル経路（送り方B）だけを案内する */
+    if (photoRecs.length > 10){
+      document.getElementById('googleBtn').style.display = 'none';
+      document.getElementById('protoA').style.display = 'none';
+      var tm = document.getElementById('tooManyMsg');
+      tm.textContent = '写真が10枚を超えているため（現在 ' + photoRecs.length + ' 枚）、この送り方は使えません。写真は、下の「送り方 B：ファイルを送る」でお送りください。';
+      tm.style.display = 'block';
+    }
   });
 })();
 
