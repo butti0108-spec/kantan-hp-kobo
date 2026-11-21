@@ -116,6 +116,16 @@ footer a{color:var(--blue-deep)}
     <p class="hint">色パターンは全ての型で共通です。業種や写真に関係なく、好きなものを選べます。</p>
   </fieldset>
 
+  <fieldset id="fs-frames">
+    <legend>追加の写真枠</legend>
+    <p class="hint">写真だけの枠を、好きな場所に追加できます。枠1つに写真は1〜4枚まで。枠は7個まで追加できます。文章の並びは変わりません。枠は上下のボタンで動かせます。</p>
+    <div id="frameRows"></div>
+    <button type="button" class="addbtn" id="addFrame">＋ 写真の枠を追加する</button>
+    <p class="err" id="frameLimit" style="display:none">これ以上は追加できません（写真枠は7個までです）。</p>
+    <p id="photoTotal" style="margin-top:10px;font-weight:700">写真の合計：0枚（約0.0MB）</p>
+    <p class="hint">写真が10枚を超えると、送信はファイルで送る方法だけになります。</p>
+  </fieldset>
+
   <fieldset id="fs-hero">
     <legend>ページの最初</legend>
     <div class="unit">
@@ -165,6 +175,37 @@ footer a{color:var(--blue-deep)}
     </div>
   </fieldset>
 
+  <fieldset id="fs-news">
+    <legend>お知らせ</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お知らせ</span><label class="switch"><input type="checkbox" id="t-news"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-news"><div class="rowbox" style="margin-top:4px"><label>お知らせの見出し</label><input type="text" id="f-newsT" value="お知らせ"><label>お知らせの本文</label><textarea id="f-newsB" rows="2">詳しくはお電話でお問い合わせください。</textarea></div></div>
+      <div class="shutter" id="s-news">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-faq">
+    <legend>よくある質問</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">よくある質問</span><label class="switch"><input type="checkbox" id="t-faq"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-faq">
+        <div id="faqRows"></div>
+        <button type="button" class="addbtn" id="addFaq">＋ 質問を追加する</button>
+      </div>
+      <div class="shutter" id="s-faq">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-link">
+    <legend>リンク</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">リンク</span><label class="switch"><input type="checkbox" id="t-link"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-link"><div class="rowbox" style="margin-top:4px"><label>リンクの文字</label><input type="text" id="f-linkT" value="Instagramはこちら"><label>リンク先のアドレス</label><input type="text" id="f-linkU" value="https://www.instagram.com/"></div></div>
+      <div class="shutter" id="s-link">この項目は使いません</div>
+    </div>
+    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。レイアウト自体の変更は、別途オプション（2万円から）で承ります。</p>
+  </fieldset>
+
   <fieldset id="fs-info">
     <legend>店の案内</legend>
     <div class="unit">
@@ -187,38 +228,6 @@ footer a{color:var(--blue-deep)}
       <div class="unit-body" id="w-x0"><textarea id="f-x0" rows="3">宴会は小上がりで10名まで。飲み放題つきコースは4,500円から、2日前までに電話でご相談ください。混む日は、カウンターも予約で埋まります。</textarea></div>
       <div class="shutter" id="s-x0">この項目は使いません</div>
     </div>
-  </fieldset>
-
-  <fieldset id="fs-frames">
-    <legend>追加の写真枠</legend>
-    <p class="hint">写真だけの枠を、好きな場所に追加できます。枠1つに写真は1〜4枚まで。文章の並びは変わりません。枠は上下のボタンで動かせます。</p>
-    <div id="frameRows"></div>
-    <button type="button" class="addbtn" id="addFrame">＋ 写真の枠を追加する</button>
-  </fieldset>
-
-  <fieldset id="fs-extra">
-    <legend>追加できる項目（どの型にも足せます）</legend>
-    <div class="unit">
-      <div class="unit-head"><span class="nm">お知らせ</span><label class="switch"><input type="checkbox" id="t-news"><span class="track"></span></label></div>
-      <div class="unit-body" id="w-news"><div class="rowbox" style="margin-top:4px"><label>お知らせの見出し</label><input type="text" id="f-newsT" value="お知らせ"><label>お知らせの本文</label><textarea id="f-newsB" rows="2">詳しくはお電話でお問い合わせください。</textarea></div></div>
-      <div class="shutter" id="s-news">この項目は使いません</div>
-    </div>
-
-    <div class="unit">
-      <div class="unit-head"><span class="nm">よくある質問</span><label class="switch"><input type="checkbox" id="t-faq"><span class="track"></span></label></div>
-      <div class="unit-body" id="w-faq">
-        <div id="faqRows"></div>
-        <button type="button" class="addbtn" id="addFaq">＋ 質問を追加する</button>
-      </div>
-      <div class="shutter" id="s-faq">この項目は使いません</div>
-    </div>
-    <div class="unit">
-      <div class="unit-head"><span class="nm">リンク</span><label class="switch"><input type="checkbox" id="t-link"><span class="track"></span></label></div>
-      <div class="unit-body" id="w-link"><div class="rowbox" style="margin-top:4px"><label>リンクの文字</label><input type="text" id="f-linkT" value="Instagramはこちら"><label>リンク先のアドレス</label><input type="text" id="f-linkU" value="https://www.instagram.com/"></div></div>
-      <div class="shutter" id="s-link">この項目は使いません</div>
-    </div>
-
-    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。レイアウト自体の変更は、別途オプション（2万円から）で承ります。</p>
   </fieldset>
 
   <div class="send">
@@ -283,10 +292,11 @@ footer a{color:var(--blue-deep)}
 </div>
 
 <script>
-var CFG = {"nameSel": ".logo", "catchSel": "h1", "leadSel": ".hero p", "factsSel": null, "initName": "酒場 つばめ", "initCatch": "仕事帰りに、\n一杯だけ寄れる店。", "initLead": "カウンター8席と小上がりだけの小さな店です。名物のもつ煮は、開店の時から継ぎ足しの鍋で煮込んでいます。", "containerSel": "section.menu", "containerIdx": 0, "rowSel": ".mrow", "groupSel": null, "fields": [{"k": "n", "sel": ".name", "kind": "t"}, {"k": "d", "sel": ".desc", "kind": "t"}, {"k": "p", "sel": ".price", "kind": "t"}], "infoSecSel": "section.info", "infoTextSel": null, "listNoteSel": null, "subSel": null, "subIdx": 0, "roles": {"bg": ["--bg"], "ink": ["--paper"], "dim": ["--paper-dim"], "line": ["--line"], "accent": ["--aka"], "deep": ["--kin"], "bg2": ["--bg2"]}, "patterns": {"orig": null, "ai": {"bg": "#1c2b4d", "ink": "#e9ecf2", "dim": "#a3aec4", "line": "#35466a", "accent": "#bfc9d8", "deep": "#93a1b5", "bg2": "#26365c", "band": "#131f38", "accentbg": "#51648c"}, "midori": {"bg": "#1d4030", "ink": "#ecf0e2", "dim": "#a7b8a2", "line": "#33523f", "accent": "#c8a45c", "deep": "#bb9753", "bg2": "#26503c", "band": "#132a1f", "accentbg": "#7d5f27"}, "enji": {"bg": "#472228", "ink": "#f2e7dd", "dim": "#c2a49b", "line": "#5f343b", "accent": "#d9a45c", "deep": "#ba8a48", "bg2": "#55292f", "band": "#33161b", "accentbg": "#9c6a30"}, "shiro": {"bg": "#f8f6f1", "ink": "#26241f", "dim": "#75705f", "line": "#ddd6c4", "accent": "#0052B5", "deep": "#003d87", "bg2": "#efeade", "band": "#003d87", "accentbg": "#0052B5"}}, "patNames": {"orig": "墨と金（見本の色）", "ai": "藍と銀", "midori": "緑と金", "enji": "臙脂と金", "shiro": "白と藍"}, "fixes": [".hero .cta{background:{accentbg} !important}"], "accentVar": "--aka", "follow": [["fs-hero", ".hero"], ["fs-photo", "img"], ["fs-list", "section.menu"], ["fs-info", "section.info"], ["fs-frames", ".kobo-frames"], ["fs-extra", "#extraSec"]], "listLegend": "お品書き", "heroSel": ".hero", "footerLines": [{"i": 0, "tpl": "{N}"}, {"i": 1, "tpl": "{A2} ・ {T}"}], "extras": [{"sel": "section.info .note", "idx": 0}], "extrasInit": ["宴会は小上がりで10名まで。飲み放題つきコースは4,500円から、2日前までに電話でご相談ください。混む日は、カウンターも予約で埋まります。"], "extrasLabels": ["案内の注記"], "badgeSel": null, "absorbSel": null, "leadJoin": false, "infoLabels": ["営業時間", "定休日", "場所"], "sample": "14-izakaya-tsubame.html", "subLabel": ""};
+var CFG = {"nameSel": ".logo", "catchSel": "h1", "leadSel": ".hero p", "factsSel": null, "initName": "酒場 つばめ", "initCatch": "仕事帰りに、\n一杯だけ寄れる店。", "initLead": "カウンター8席と小上がりだけの小さな店です。名物のもつ煮は、開店の時から継ぎ足しの鍋で煮込んでいます。", "containerSel": "section.menu", "containerIdx": 0, "rowSel": ".mrow", "groupSel": null, "fields": [{"k": "n", "sel": ".name", "kind": "t"}, {"k": "d", "sel": ".desc", "kind": "t"}, {"k": "p", "sel": ".price", "kind": "t"}], "infoSecSel": "section.info", "infoTextSel": null, "listNoteSel": null, "subSel": null, "subIdx": 0, "roles": {"bg": ["--bg"], "ink": ["--paper"], "dim": ["--paper-dim"], "line": ["--line"], "accent": ["--aka"], "deep": ["--kin"], "bg2": ["--bg2"]}, "patterns": {"orig": null, "ai": {"bg": "#1c2b4d", "ink": "#e9ecf2", "dim": "#a3aec4", "line": "#35466a", "accent": "#bfc9d8", "deep": "#93a1b5", "bg2": "#26365c", "band": "#131f38", "accentbg": "#51648c"}, "midori": {"bg": "#1d4030", "ink": "#ecf0e2", "dim": "#a7b8a2", "line": "#33523f", "accent": "#c8a45c", "deep": "#bb9753", "bg2": "#26503c", "band": "#132a1f", "accentbg": "#7d5f27"}, "enji": {"bg": "#472228", "ink": "#f2e7dd", "dim": "#c2a49b", "line": "#5f343b", "accent": "#d9a45c", "deep": "#ba8a48", "bg2": "#55292f", "band": "#33161b", "accentbg": "#9c6a30"}, "shiro": {"bg": "#f8f6f1", "ink": "#26241f", "dim": "#75705f", "line": "#ddd6c4", "accent": "#0052B5", "deep": "#003d87", "bg2": "#efeade", "band": "#003d87", "accentbg": "#0052B5"}}, "patNames": {"orig": "墨と金（見本の色）", "ai": "藍と銀", "midori": "緑と金", "enji": "臙脂と金", "shiro": "白と藍"}, "fixes": [".hero .cta{background:{accentbg} !important}"], "accentVar": "--aka", "follow": [["fs-frames", ".kobo-frames"], ["fs-hero", ".hero"], ["fs-photo", "img"], ["fs-list", "section.menu"], ["fs-news", "#extraSec"], ["fs-faq", "#extraSec"], ["fs-link", "#extraSec"], ["fs-info", "section.info"]], "listLegend": "お品書き", "heroSel": ".hero", "footerLines": [{"i": 0, "tpl": "{N}"}, {"i": 1, "tpl": "{A2} ・ {T}"}], "extras": [{"sel": "section.info .note", "idx": 0}], "extrasInit": ["宴会は小上がりで10名まで。飲み放題つきコースは4,500円から、2日前までに電話でご相談ください。混む日は、カウンターも予約で埋まります。"], "extrasLabels": ["案内の注記"], "badgeSel": null, "absorbSel": null, "leadJoin": false, "infoLabels": ["営業時間", "定休日", "場所"], "sample": "14-izakaya-tsubame.html", "subLabel": ""};
 var listData = [{"n": "もつ煮込み", "d": "", "p": "550円"}, {"n": "焼き鳥 各種", "d": "塩かタレか聞きます", "p": "1本 180円から"}, {"n": "その日の刺身", "d": "市場で見て決めます", "p": "780円"}, {"n": "生ビール", "d": "", "p": "550円"}, {"n": "おまかせ盛り", "d": "2〜3人でつまめる量", "p": "1,800円"}];
 /* photo-frame state must exist before the first apply() call below */
 var framesData = [];
+var FRAME_MAX = 7; /* added photo frames are capped at 7 (2026-11-22, user instruction; previously unlimited) */
 var blockOrder = ['hero', 'list'].concat(CFG.subSel ? ['sub'] : []).concat(['info', 'extra']);
 var BLOCK_LABELS = {hero: 'ページの最初', list: CFG.listLegend, sub: CFG.subLabel || 'サブセクション', info: '店の案内', extra: '追加した項目'};
 var faqData = [{"q": "予約は必要ですか", "a": "お電話でお気軽にどうぞ。"}];
@@ -326,7 +336,8 @@ document.querySelectorAll('.switch input[id^="t-"]').forEach(function(t){
     var w = document.getElementById('w-' + u), s = document.getElementById('s-' + u);
     if (w) w.style.display = t.checked ? '' : 'none';
     if (s) s.style.display = t.checked ? 'none' : 'block';
-    apply();
+    if (t.checked && (u === 'news' || u === 'faq' || u === 'link')) revealExtraSection();
+    else apply();
   };
   t.addEventListener('change', sync);
   sync();
@@ -666,6 +677,21 @@ function apply(){
   }
   /* added photo frames */
   renderFrames(d);
+  updatePhotoTotal();
+}
+/* running total of the photos to be sent (count + approximate size),
+   always visible in the photo-frame fieldset so the customer never
+   learns a sending limit only at the send step (2026-11-22). */
+function updatePhotoTotal(){
+  var el = document.getElementById('photoTotal');
+  if (!el) return;
+  var n = 0, bytes = 0;
+  var pin = document.getElementById('f-photo');
+  if (pin && pin.files && pin.files[0]){ n++; bytes += pin.files[0].size; }
+  framesData.forEach(function(fr){
+    fr.files.forEach(function(f){ if (f){ n++; bytes += f.size; } });
+  });
+  el.textContent = '写真の合計：' + n + '枚（約' + (bytes / 1048576).toFixed(1) + 'MB）';
 }
 /* ---------- preview device tabs ---------- */
 var pvMode = 'phone';
@@ -734,6 +760,7 @@ function previewScrollTo(sel){
   w.scrollTo({top: Math.max(0, y - 2), behavior: 'smooth'});
 }
 function followCheck(){
+  if (Date.now() < focusGuardUntil) return;
   var cur = SECTION_MAP[0][0];
   SECTION_MAP.forEach(function(pair){
     var fs = document.getElementById(pair[0]);
@@ -760,8 +787,9 @@ if (photoInput){
   photoInput.addEventListener('change', function(){
     var f = this.files && this.files[0]; if (!f) return;
     photoURL = URL.createObjectURL(f);
+    updatePhotoTotal();
     var d = doc(); if (!d) return;
-    d.querySelectorAll('img').forEach(function(im){ im.src = photoURL; });
+    d.querySelectorAll('img').forEach(function(im){ if (!im.hasAttribute('data-koboframe')) im.src = photoURL; });
   });
 }
 
@@ -812,6 +840,8 @@ function framePosLabel(fr){
 function buildFrames(){
   var box = document.getElementById('frameRows');
   if (!box) return;
+  var lm = document.getElementById('frameLimit');
+  if (lm) lm.style.display = framesData.length >= FRAME_MAX ? 'block' : 'none';
   box.innerHTML = '';
   framesData.forEach(function(fr, fi){
     var div = document.createElement('div');
@@ -871,6 +901,41 @@ function moveFrame(fr, dir){
   if (i < 0 || j < 0 || j >= blockOrder.length) return;
   blockOrder[i] = blockOrder[j]; blockOrder[j] = fr;
   buildFrames(); apply();
+  focusFrameInPreview(fr);
+}
+/* after a frame is added or moved, scroll the preview so that frame is
+   on screen: without this the user cannot tell where the frame went
+   (2026-11-22, user instruction; no flash/highlight, by decision).
+   focusGuardUntil keeps the section-follow from immediately scrolling
+   the preview back when the click itself scrolled the form window. */
+var focusGuardUntil = 0;
+function focusFrameInPreview(fr){
+  var d = doc(); if (!d) return;
+  var sec = d.querySelector('.kobo-frames[data-fr-idx="' + framesData.indexOf(fr) + '"]');
+  if (!sec) return;
+  focusGuardUntil = Date.now() + 1000;
+  var w = pv.contentWindow;
+  var y = sec.getBoundingClientRect().top + w.scrollY;
+  w.scrollTo({top: Math.max(0, y - 8), behavior: 'smooth'});
+}
+/* when an added item (お知らせ / よくある質問 / リンク) is switched on:
+   move first, then show (2026-11-22, user instruction). The section is
+   rendered invisibly; if its place is outside the preview's view, the
+   preview scrolls there first and only then is the section revealed.
+   If the place is already in view, it simply appears there. */
+function revealExtraSection(){
+  apply();
+  var d = doc(); if (!d) return;
+  var sec = d.getElementById('extraSec');
+  if (!sec) return;
+  var w = pv.contentWindow;
+  var r = sec.getBoundingClientRect();
+  if (r.top >= -2 && r.top < w.innerHeight) return; /* already in view */
+  sec.style.visibility = 'hidden';
+  focusGuardUntil = Date.now() + 1200;
+  var y = r.top + w.scrollY;
+  w.scrollTo({top: Math.max(0, y - 8), behavior: 'smooth'});
+  setTimeout(function(){ sec.style.visibility = ''; }, 480);
 }
 function renderFrames(d){
   d.querySelectorAll('.kobo-frames').forEach(function(e){ e.remove(); });
@@ -891,12 +956,22 @@ function renderFrames(d){
     var fr = tok;
     var sec = d.createElement('section');
     sec.className = (listSec ? listSec.className : '') + ' kobo-frames';
+    sec.setAttribute('data-fr-idx', framesData.indexOf(fr));
+    sec.style.position = 'relative';
     var cols = fr.count === 1 ? '1fr' : (fr.count === 3 ? '1fr 1fr 1fr' : '1fr 1fr');
     var html = '<div style="display:grid;grid-template-columns:' + cols + ';gap:10px">';
     for (var si = 0; si < fr.count; si++){
       html += '<img data-koboframe="1" src="' + (fr.urls[si] || fallbackSrc) + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block" alt="">';
     }
     sec.innerHTML = html + '</div>';
+    /* small persistent number tag matching the form-side frame number,
+       so a frame can be told apart from the sample's own photos and
+       still be identified after it is moved (2026-11-22). */
+    var tag = d.createElement('span');
+    tag.className = 'kobo-fr-tag';
+    tag.textContent = '写真枠' + (framesData.indexOf(fr) + 1);
+    tag.style.cssText = 'position:absolute;top:8px;left:8px;z-index:6;background:rgba(20,18,14,.72);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:2px 9px;border-radius:999px;pointer-events:none';
+    sec.appendChild(tag);
     var ti = blockOrder.indexOf(fr), anchor = null;
     for (var k = ti + 1; k < blockOrder.length; k++){
       var b = blockOrder[k];
@@ -912,11 +987,17 @@ function renderFrames(d){
 }
 var addFrameBtn = document.getElementById('addFrame');
 if (addFrameBtn) addFrameBtn.addEventListener('click', function(){
+  if (framesData.length >= FRAME_MAX){
+    var lm = document.getElementById('frameLimit');
+    if (lm) lm.style.display = 'block';
+    return;
+  }
   var fr = {count: 1, files: [null], urls: [null]};
   framesData.push(fr);
   var ei = blockOrder.indexOf('extra');
   if (ei >= 0) blockOrder.splice(ei, 0, fr); else blockOrder.push(fr);
   buildFrames(); apply();
+  focusFrameInPreview(fr);
 });
 
 function buildSummary(){
