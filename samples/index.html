@@ -52,6 +52,43 @@ p,span{text-wrap:pretty}
 footer{margin-top:44px;border-top:1px solid var(--line);padding:20px 0 34px;font-size:12.5px;color:var(--ink-dim)}
 footer a{color:var(--blue-deep);text-decoration:underline}
 .note{background:#eef3fa;border-radius:10px;padding:14px 18px;font-size:13.5px;margin-top:26px}
+.ladder{margin-top:34px}
+.ladder h2{font-family:"Noto Serif JP",serif;font-size:21px;letter-spacing:.08em;margin-bottom:12px}
+.ld-guide{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14.5px}
+.ld-guide p{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:5px 0}
+.ld-guide p+p{border-top:1px dashed var(--line)}
+.ld-guide .amt{font-weight:900;color:var(--blue-deep);white-space:nowrap}
+.ld-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px clamp(16px,4vw,26px);margin-top:16px}
+.ld-card .fit{font-size:13px;color:var(--blue);font-weight:700;letter-spacing:.04em}
+.ld-card .price{display:flex;align-items:baseline;flex-wrap:wrap;gap:8px 12px;margin-top:4px}
+.ld-card .price .yen{font-size:27px;font-weight:900;letter-spacing:.02em}
+.ld-card .price .pname{font-size:15px;font-weight:700}
+.ld-badge{display:inline-block;background:var(--blue);color:#fff;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 10px;letter-spacing:.06em}
+.ld-card .body{font-size:14.5px;margin-top:8px}
+.ld-card .consul{margin-top:10px;font-size:13.5px;color:var(--ink-dim)}
+.ld-fig{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px clamp(16px,4vw,26px);margin-top:16px}
+.ld-fig .cond{font-size:13px;font-weight:700;margin-bottom:12px}
+.ld-bar{margin-bottom:14px}
+.ld-bar .blabel{font-size:13px;margin-bottom:4px}
+.ld-bar .blabel b{font-size:14.5px}
+.ld-track{display:flex;gap:3px;max-width:100%}
+.ld-seg{background:#dbe7f5;border:1px solid #b9cfea;border-radius:6px;font-size:11.5px;padding:5px 4px;text-align:center;white-space:nowrap;overflow:hidden}
+.ld-seg.main{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:700}
+.ld-total{font-size:13px;margin-top:4px}
+.ld-total b{font-size:15px}
+.ld-fig .fnote{font-size:12px;color:var(--ink-dim);margin-top:6px}
+.ld-extra{border:1px solid var(--line);border-radius:14px;padding:18px clamp(16px,4vw,26px);margin-top:16px;background:#fffdf8}
+.ld-extra h3{font-size:15.5px;letter-spacing:.05em;margin-bottom:8px}
+.ld-extra dl{font-size:14px}
+.ld-extra .row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:6px 0}
+.ld-extra .row+.row{border-top:1px dashed var(--line)}
+.ld-extra dt{flex:1}
+.ld-extra dt small{display:block;font-size:12px;color:var(--ink-dim);line-height:1.6}
+.ld-extra dd{font-weight:700;white-space:nowrap}
+.ld-line{margin-top:16px;background:#eef3fa;border-radius:14px;padding:20px clamp(16px,4vw,26px);text-align:center}
+.ld-line p{font-size:14.5px;max-width:32em;margin:0 auto}
+.ld-line a{display:inline-block;margin-top:12px;background:var(--blue);color:#fff;font-weight:700;font-size:15px;border-radius:9px;padding:11px 26px}
+.ld-line a:hover{background:var(--blue-deep)}
 </style>
 </head>
 <body>
@@ -64,7 +101,73 @@ footer a{color:var(--blue-deep);text-decoration:underline}
 
 <section class="quiz" id="quiz" aria-live="polite"></section>
 
-<div class="note"><span class="ph">文章や写真は、</span><span class="ph">全部サンプルの</span><span class="ph">内容です。</span><span class="ph">実際は、</span><span class="ph">選んだ型に</span><span class="ph">お店の名前・内容・写真を</span><span class="ph">差し込んで</span><span class="ph">お渡しします。</span><span class="ph">もっと</span><span class="ph">自分らしく</span><span class="ph">したい場合は、</span><span class="ph">上のプランも</span><span class="ph">ご用意しています。</span></div>
+<div class="note"><span class="ph">文章や写真は、</span><span class="ph">全部サンプルの</span><span class="ph">内容です。</span><span class="ph">実際は、</span><span class="ph">選んだ型に</span><span class="ph">お店の名前・内容・写真を</span><span class="ph">差し込んで</span><span class="ph">お渡しします。</span></div>
+
+<section class="ladder" aria-label="プランのご案内">
+  <h2>プランの選び方</h2>
+  <div class="ld-guide">
+    <p><span>公開したあと、ほとんど直さない方</span><span class="amt">5,000円</span></p>
+    <p><span>いざという時の修正に備えたい方</span><span class="amt">10,000円</span></p>
+    <p><span>こまめに、自分で直したい方</span><span class="amt">50,000円</span></p>
+  </div>
+
+  <div class="ld-card">
+    <p class="fit">自分で内容を用意し、公開作業だけを頼みたい方へ</p>
+    <p class="price"><span class="yen">5,000円</span><span class="pname">公開作業のみ</span></p>
+    <p class="body">内容はお客様が用意し、工房は公開作業のみ行います（構成や内容の確認は含みません。写真は送っていただいた通りに出します）。工房側の反映ミスは無料で直します。修正のご依頼は1回3,000円です。</p>
+  </div>
+
+  <div class="ld-fig">
+    <p class="cond">工房へ修正を2回依頼した場合の料金例</p>
+    <div class="ld-bar">
+      <p class="blabel"><b>5,000円のプラン</b>に、修正を2回ご依頼いただくと</p>
+      <div class="ld-track">
+        <span class="ld-seg main" style="flex:5">公開作業 5,000円</span>
+        <span class="ld-seg" style="flex:3">修正 3,000円</span>
+        <span class="ld-seg" style="flex:3">修正 3,000円</span>
+      </div>
+      <p class="ld-total">合計 <b>11,000円</b></p>
+    </div>
+    <div class="ld-bar">
+      <p class="blabel"><b>10,000円のプラン</b>は、ビデオ面談1時間と修正2回まで無料が含まれます</p>
+      <div class="ld-track" style="width:91%">
+        <span class="ld-seg main" style="flex:1">10,000円（面談・修正2回まで無料込み）</span>
+      </div>
+      <p class="ld-total">合計 <b>10,000円</b></p>
+    </div>
+    <p class="fnote">※上記は、工房へ依頼する修正を2回利用した場合の比較例です。利用する修正方法や適用条件によって、料金は変わります。</p>
+  </div>
+
+  <div class="ld-card">
+    <p class="fit">いざという時のために、修正の回数を確保しておきたい方へ</p>
+    <p class="price"><span class="yen">10,000円</span><span class="pname">サポート込み</span></p>
+    <p class="body">ビデオ面談が1時間つきます。文章や写真の差し替え調整は、2回まで無料で承ります。</p>
+  </div>
+
+  <div class="ld-card">
+    <p class="fit">公開後も文章・色・写真を自分で変更したい方へ</p>
+    <p class="price"><span class="yen">50,000円</span><span class="pname">自分で更新できる</span><span class="ld-badge">サポート込み</span></p>
+    <p class="body">文章・色・写真を自分で変更できる編集機能がつきます。レイアウトの相談と、ビデオ面談も含まれます。文章や写真の差し替え調整は、2回まで無料で承ります。途中からこのプランへ変更する場合は、総額50,000円との差額だけです（10,000円のプランからは+40,000円、5,000円のプランからは+45,000円）。</p>
+    <p class="consul">このプランは、まずはご相談ください。</p>
+  </div>
+
+  <div class="ld-extra">
+    <h3>後から足せるもの・追加の料金</h3>
+    <dl>
+      <div class="row"><dt>ページ追加</dt><dd>10,000円</dd></div>
+      <div class="row"><dt>個別ページ</dt><dd>30,000円から</dd></div>
+      <div class="row"><dt>レイアウト変更</dt><dd>20,000円から</dd></div>
+      <div class="row"><dt>修正のご依頼<small>5万円以下のコースが対象です</small></dt><dd>1回 3,000円</dd></div>
+      <div class="row"><dt>データ変更<small>お客様が直したデータを送っていただき、工房が公開します</small></dt><dd>1回 1,000円</dd></div>
+      <div class="row"><dt>自分で更新できるプランへの変更</dt><dd>総額50,000円との差額</dd></div>
+    </dl>
+  </div>
+
+  <div class="ld-line">
+    <p>1万円より上のプランのご相談や、どのプランが合うか迷った時は、まず公式LINEへご連絡ください。</p>
+    <a href="https://line.me/R/ti/p/@799qinao" target="_blank" rel="noopener">公式LINEで相談する</a>
+  </div>
+</section>
 
 <div class="allhead"><h2>全部の見本（50件）</h2><p>絞らずに全部見たい方はこちら</p></div>
 <div class="cards" id="allcards">
@@ -121,7 +224,7 @@ footer a{color:var(--blue-deep);text-decoration:underline}
 </div>
 
 <footer>
-  <p>見本の文章・写真・料金は、すべて架空のサンプルです。</p>
+  <p>見本の文章・写真・料金は、すべてサンプル（架空の内容）です。</p>
   <p><a href="../index.html">かんたんホームページ工房へ戻る</a> ／ アーチデザイン工房</p>
 </footer>
 </div>
