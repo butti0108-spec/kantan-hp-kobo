@@ -95,11 +95,11 @@ footer a{color:var(--blue-deep)}
 <header>
   <p class="brand">アーチデザイン工房</p>
   <h1>この型で作る</h1>
-  <p><span class="proto">試作品です。送信しても実際には届かず、決済もできません</span></p>
+  <p><span class="proto">これは試作品です。送信しても実際には届かず、決済もできません</span></p>
   <div class="steps"><span><b>1</b> 色と内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
   <div class="lead">
-    <p class="l1">まず色を選んでください。<br>あとは、ページに出る順番のまま、上から埋めるだけです。</p>
-    <p class="l2">入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに右のスイッチで「入れる／入れない」を選べます。品目は好きなだけ増やせます。</p>
+    <p class="l1">まず色を選んでください。<br>あとは、ページに出てくる順番のまま、上から順に入れていくだけです。</p>
+    <p class="l2">入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに、右のスイッチで『入れる／入れない』を選べます。品目は好きなだけ増やせます。</p>
   </div>
 </header>
 
@@ -113,17 +113,16 @@ footer a{color:var(--blue-deep)}
     <button type="button" class="patbtn" data-pat="midori"><span class="dots"><span class="dot" style="background:#1d4030"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ecf0e2"></span></span>緑と金</button>
     <button type="button" class="patbtn" data-pat="enji"><span class="dots"><span class="dot" style="background:#472228"></span><span class="dot" style="background:#d9a45c"></span><span class="dot" style="background:#f2e7dd"></span></span>臙脂と金</button>
     <button type="button" class="patbtn" data-pat="sumi"><span class="dots"><span class="dot" style="background:#26241f"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ece7db"></span></span>墨と金</button>
-    <p class="hint">色パターンは全ての型で共通です。業種や写真に関係なく、好きなものを選べます。</p>
+    <p class="hint">色パターンは、すべての型で共通です。業種や写真に関係なく、お好きなものを選べます。</p>
   </fieldset>
 
   <fieldset id="fs-frames">
     <legend>追加の写真枠</legend>
-    <p class="hint">写真だけの枠を、好きな場所に追加できます。枠1つに写真は1〜4枚まで。枠は7個まで追加できます。文章の並びは変わりません。枠は上下のボタンで動かせます。</p>
+    <p class="hint">写真だけの枠を、好きな場所に追加できます（1つの枠に写真は1〜4枚、追加できる写真枠は7個まで）。枠を足しても、今ある文章の順番はそのまま変わりません。追加した枠は、上下のボタンで好きな位置へ動かせます。</p>
     <div id="frameRows"></div>
     <button type="button" class="addbtn" id="addFrame">＋ 写真の枠を追加する</button>
-    <p class="err" id="frameLimit" style="display:none">これ以上は追加できません（写真枠は7個までです）。</p>
-    <p id="photoTotal" style="margin-top:10px;font-weight:700">写真の合計：0枚（約0.0MB）</p>
-    <p class="hint">写真が10枚を超えると、送信はファイルで送る方法だけになります。</p>
+    <p class="err" id="frameLimit" style="display:none">写真枠は7個までなので、これ以上は追加できません。</p>
+    <p id="photoTotal" style="margin-top:10px;font-weight:700">写真の合計：0枚（今 約0.0MB／上限100MBまで）</p>
   </fieldset>
 
   <fieldset id="fs-hero">
@@ -160,7 +159,7 @@ footer a{color:var(--blue-deep)}
     <legend>進め方</legend>
     <div class="unit">
       <div class="unit-head"><span class="nm">相談の進め方（まとめて）</span><label class="switch"><input type="checkbox" id="t-sub" checked><span class="track"></span></label></div>
-      <div class="unit-body" id="w-sub"><p class="hint">この部分は、まとめて入れる／入れないを選べます。</p></div>
+      <div class="unit-body" id="w-sub"><p class="hint">この部分の項目は、まとめて『入れる／入れない』を選べます。</p></div>
       <div class="shutter" id="s-sub">この項目は使いません</div>
     </div>
   </fieldset>
@@ -183,8 +182,8 @@ footer a{color:var(--blue-deep)}
     <div class="unit">
       <div class="unit-head"><span class="nm">写真</span><label class="switch"><input type="checkbox" id="t-photo" checked><span class="track"></span></label></div>
       <div class="unit-body" id="w-photo"><input type="file" id="f-photo" accept="image/*">
-        <p class="hint">選ぶと、プレビューの写真が差し替わります。未選択の場合は見本の写真のままです。</p>
-        <p class="hint">写真の切り取りや位置の調整は行いません。プレビューで表示された通りの形で公開します。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。</p></div>
+        <p class="hint">写真を選ぶと、プレビューの写真が差し替わります。選ばない場合は、見本の写真のままです。</p>
+        <p class="hint">写真の切り取りや位置の調整は、工房では行いません。プレビューで見えている通りの形で、そのまま公開されます。枠からはみ出したり切れたりしていないかプレビューで確かめて、枠にきれいに収まるよう整えた写真をお選びください。</p></div>
       <div class="shutter" id="s-photo">この項目は使いません</div>
     </div>
   </fieldset>
@@ -217,7 +216,7 @@ footer a{color:var(--blue-deep)}
       <div class="unit-body" id="w-link"><div class="rowbox" style="margin-top:4px"><label>リンクの文字</label><input type="text" id="f-linkT" value="Instagramはこちら"><label>リンク先のアドレス</label><input type="text" id="f-linkU" value="https://www.instagram.com/"></div></div>
       <div class="shutter" id="s-link">この項目は使いません</div>
     </div>
-    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。レイアウト自体の変更は、別途オプション（2万円から）で承ります。</p>
+    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。レイアウト自体を変更したい場合は、別途オプションで対応します（2万円から）。</p>
   </fieldset>
 
   <fieldset id="fs-info">
@@ -246,8 +245,8 @@ footer a{color:var(--blue-deep)}
 
   <div class="send">
     <button type="submit">入力内容を確定する</button>
-    <p class="err" id="err">「入れる」設定の名前と電話番号を入れてください。</p>
-    <p class="hint" style="margin-top:8px">確定すると確認画面が出ます。内容と規約を確認してから、お支払いに進みます。お支払いの後、ご案内に沿って入力内容をお送りください。</p>
+    <p class="err" id="err">『入れる』設定の名前と電話番号を入れてください。</p>
+    <p class="hint" style="margin-top:8px">確定すると確認画面が出ます。内容と規約を確認してから、お支払いに進みます。お支払いの後は、画面の案内に沿って入力内容をお送りください。</p>
   </div>
 
 
@@ -276,26 +275,26 @@ footer a{color:var(--blue-deep)}
   <ul id="confirmSummary"></ul>
   <p style="margin-top:14px"><b>ご利用規約</b></p>
   <div class="terms" id="termsBox">ご利用規約
-1. 本サービスは、あらかじめ用意した型（デザイン）に、お客様の文章と写真を差し込んで作る、1ページのホームページ制作サービスです。レイアウト（ページの構成）の変更は、別途オプション（2万円から）で承ります。
+1. 本サービスは、あらかじめ用意した型（デザイン）に、お客様の文章と写真を差し込んで作る、1ページのホームページ制作サービスです。レイアウト（ページの構成）を変更したい場合は、別途オプションで対応します（2万円から）。
 2. 料金は10,000円（税込）です。お支払いの確認が取れてから、制作を開始します。
-3. 写真について：写真の切り取りや位置の調整は、工房では行っておりません。プレビューで表示された通りの形で公開いたします。写真は表示の枠に合うよう調整のうえ、ご登録をお願いいたします。
+3. 写真について：写真の切り取りや位置の調整は、工房では行いません。プレビューに表示された通りの形で公開いたします。表示の枠に合うよう整えた写真をご登録ください。
 4. 納品は、完成したページのURLをお知らせする形で行います。
-5. 完成URLのお知らせから1ヶ月以内は、修正を2回まで無料で承ります。それ以降の修正は、1回3,000円です。
+5. 完成したページのURLをお知らせしてから、修正を2回まで無料で承ります。無料修正の2回を使い切った場合は、1回につき3,000円です。
 6. 制作開始後のお客様都合による解約は、返金できません。
-7. サーバーや外部サービス（Google、Stripe等）の障害・仕様変更によって生じた影響は、当工房の責任範囲外とさせていただきます。
+7. サーバーや外部サービス（Google、Stripeなど）の障害や仕様変更によって生じた影響は、当工房の責任の範囲外です。
 8. ご入力いただいた文章・写真の権利は、お客様に帰属します。第三者の権利を侵害する内容や、法令に触れる内容はお受けできません。
 9. お支払いの後は、送信案内ページから入力内容をお送りください。送信をもって、制作の受け付けが完了します。</div>
   <p class="hint">規約を一番下まで読むと、チェックできるようになります。</p>
   <label class="agree"><input type="checkbox" id="agreeCheck" disabled> 規約を読み、内容に同意します</label>
-  <p class="photonote">写真の切り取りや位置の調整は行いません。プレビュー通りに公開します</p>
+  <p class="photonote">工房では写真の切り取りや位置の調整をせず、プレビューで見た通りの形で公開します</p>
   <button type="button" id="payBtn" disabled>お支払いへ進む（10,000円）</button>
   <button type="button" class="backbtn" id="backBtn">戻って直す</button>
 </div>
 
 <div class="paid" id="paidView">
   <h2>お支払いが完了しました</h2>
-  <p class="hint">試作品のため、実際の決済は行われていません。本番では、この画面の前にStripeの決済画面でお支払いいただきます。</p>
-  <p style="margin-top:8px">ご案内メールをお送りします。メールに記載のリンク先（送信案内ページ）から、入力いただいた内容と写真をお送りください。このまま送信案内ページへ進むこともできます。</p>
+  <p class="hint">試作品のため、実際の決済は行われていません。本番では、この画面の前に決済画面でお支払いいただきます。</p>
+  <p style="margin-top:8px">ご案内メールをお送りします。メールに書かれたリンク先（送信案内ページ）から、入力いただいた内容と写真をお送りください。このまま送信案内ページへ進むこともできます。</p>
   <p style="margin-top:8px">受付番号：<b id="paidNum"></b></p>
   <a class="sendlink" href="send.html">送信案内ページへ</a>
 </div>
@@ -800,7 +799,7 @@ function updatePhotoTotal(){
   framesData.forEach(function(fr){
     fr.files.forEach(function(f){ if (f){ n++; bytes += f.size; } });
   });
-  el.textContent = '写真の合計：' + n + '枚（約' + (bytes / 1048576).toFixed(1) + 'MB）';
+  el.textContent = '写真の合計：' + n + '枚（今 約' + (bytes / 1048576).toFixed(1) + 'MB／上限100MBまで）';
 }
 /* ---------- preview device tabs ---------- */
 var pvMode = 'phone';
