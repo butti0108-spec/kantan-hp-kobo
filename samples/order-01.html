@@ -321,6 +321,15 @@ footer a{color:var(--blue-deep)}
 <script>
 var pv = document.getElementById('pv');
 function doc(){ return pv.contentDocument; }
+/* host lookups skip the kobo extra sections, which reuse host classes
+   (2026-11-22 restyle) */
+function qHost(d, sel){
+  var els = d.querySelectorAll(sel);
+  for (var i = 0; i < els.length; i++){
+    if (!els[i].closest('#extraNews, #extraFaq, #extraLink, #extraSec')) return els[i];
+  }
+  return null;
+}
 function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; }
 function on(id){ return document.getElementById(id).checked; }
 function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
@@ -376,7 +385,7 @@ UNITS.forEach(function(u){
   var sync = function(){
     document.getElementById('w-' + u).style.display = t.checked ? '' : 'none';
     document.getElementById('s-' + u).style.display = t.checked ? 'none' : 'block';
-    if (t.checked && (u === 'news' || u === 'faq' || u === 'link')) revealExtraSection();
+    if (t.checked && (u === 'news' || u === 'faq' || u === 'link')) revealExtraSection(u);
     else apply();
   };
   t.addEventListener('change', sync);
@@ -489,21 +498,32 @@ function apply(){
     if (th.textContent === '席'){ tr.style.display = on('t-seats') ? '' : 'none'; if (td) td.textContent = val('f-seats'); }
     if (th.textContent === '電話'){ tr.style.display = on('t-tel') ? '' : 'none'; if (td) td.textContent = tel; }
   });
-  var old = d.getElementById('extraSec'); if (old) old.remove();
-  var parts = '';
-  if (on('t-news')) parts += '<h2>' + esc(val('f-newsT')) + '</h2><p>' + esc(val('f-newsB')) + '</p>';
-  if (on('t-faq')){
-    parts += '<h2>よくある質問</h2>' + faqData.map(function(f){
-      return '<div class="course-row"><h3>' + esc(f.q) + '</h3><p>' + esc(f.a) + '</p></div>';
-    }).join('');
+  /* extra sections: each topic is its OWN section, classed after the
+     page's own sections (news/link -> info, faq -> course), so spacing,
+     headings and backgrounds follow the page (2026-11-22 restyle). */
+  ['extraNews', 'extraFaq', 'extraLink', 'extraSec'].forEach(function(id){
+    var o = d.getElementById(id); if (o) o.remove();
+  });
+  var xInfo = d.querySelector('.info');
+  function addExtraSec01(id, cls, html){
+    var s = d.createElement('section');
+    s.className = cls; s.id = id; s.innerHTML = html;
+    if (xInfo && xInfo.parentNode) xInfo.parentNode.insertBefore(s, xInfo);
+    return s;
   }
-  if (on('t-link')) parts += '<p style="margin-top:14px"><a href="' + esc(val('f-linkU')) + '" target="_blank" rel="noopener">' + esc(val('f-linkT')) + '</a></p>';
-  if (parts){
-    var s2 = d.createElement('section');
-    s2.className = 'course'; s2.id = 'extraSec';
-    s2.innerHTML = parts;
-    var info = d.querySelector('.info');
-    info.parentNode.insertBefore(s2, info);
+  if (on('t-news')){
+    addExtraSec01('extraNews', 'info',
+      '<h2>' + esc(val('f-newsT')) + '</h2><p>' + esc(val('f-newsB')) + '</p>');
+  }
+  if (on('t-faq')){
+    addExtraSec01('extraFaq', 'course',
+      '<h2>よくある質問</h2>' + faqData.map(function(f){
+        return '<div class="course-row"><h3>' + esc(f.q) + '</h3><p>' + esc(f.a) + '</p></div>';
+      }).join(''));
+  }
+  if (on('t-link')){
+    addExtraSec01('extraLink', 'info',
+      '<p><a href="' + esc(val('f-linkU')) + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;text-underline-offset:3px;font-weight:600">' + esc(val('f-linkT')) + '</a></p>');
   }
   /* added photo frames */
   renderFrames(d);
@@ -586,15 +606,15 @@ var SECTION_MAP = [
   ['fs-hero', '.hero'],
   ['fs-course', '.course'],
   ['fs-band', '.band'],
-  ['fs-news', '#extraSec'],
-  ['fs-faq', '#extraSec'],
-  ['fs-link', '#extraSec'],
+  ['fs-news', '#extraNews'],
+  ['fs-faq', '#extraFaq'],
+  ['fs-link', '#extraLink'],
   ['fs-info', '.info']
 ];
 var followCurrent = null, followTimer = null;
 function previewScrollTo(sel){
   var d = pv.contentDocument; if (!d) return;
-  var el = d.querySelector(sel); if (!el) return;
+  var el = sel.indexOf('#extra') === 0 ? d.querySelector(sel) : qHost(d, sel); if (!el) return;
   var w = pv.contentWindow;
   var y = el.getBoundingClientRect().top + w.scrollY;
   w.scrollTo({top: Math.max(0, y - 2), behavior: 'smooth'});
@@ -753,10 +773,12 @@ var focusGuardUntil = 0;
    rendered invisibly; if its place is outside the preview's view, the
    preview scrolls there first and only then is the section revealed.
    If the place is already in view, it simply appears there. */
-function revealExtraSection(){
+function revealExtraSection(u){
   apply();
   var d = doc(); if (!d) return;
-  var sec = d.getElementById('extraSec');
+  var id = u === 'news' ? 'extraNews' : (u === 'faq' ? 'extraFaq' : (u === 'link' ? 'extraLink' : null));
+  var sec = id ? d.getElementById(id) : null;
+  if (!sec) sec = d.getElementById('extraNews') || d.getElementById('extraFaq') || d.getElementById('extraLink');
   if (!sec) return;
   var w = pv.contentWindow;
   var r = sec.getBoundingClientRect();
@@ -782,8 +804,8 @@ function renderFrames(d){
   var anchors = {
     hero: d.querySelector('.hero'),
     list: d.querySelector('.course'),
-    info: d.querySelector('.info'),
-    extra: d.getElementById('extraSec')
+    info: qHost(d, '.info'),
+    extra: d.getElementById('extraNews') || d.getElementById('extraFaq') || d.getElementById('extraLink') || d.getElementById('extraSec')
   };
   var firstImg = d.querySelector('img');
   var fallbackSrc = firstImg ? firstImg.getAttribute('src') : '';
