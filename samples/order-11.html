@@ -260,6 +260,15 @@ footer a{color:var(--blue-deep)}
     <p class="rnum" id="receiptNum"></p>
     <p class="hint">この番号をメモしてください。お支払いの確認や、内容を送る時に使います。</p>
   </div>
+  <div class="custinfo">
+    <p style="margin-top:14px"><b>お客様の情報</b></p>
+    <label class="fl" for="f-custName">お名前（ニックネームでも大丈夫です）</label>
+    <input type="text" id="f-custName" autocomplete="name">
+    <label class="fl" for="f-custMail">メールアドレス</label>
+    <input type="email" id="f-custMail" autocomplete="email">
+    <p class="err" id="custErr" style="display:none">お名前とメールアドレスを入れてください。</p>
+    <p class="hint">受け付けのご連絡は、このメールアドレスへお送りします。</p>
+  </div>
   <p style="margin-top:10px"><b>入力内容</b></p>
   <ul id="confirmSummary"></ul>
   <p style="margin-top:14px"><b>ご利用規約</b></p>
@@ -280,12 +289,39 @@ footer a{color:var(--blue-deep)}
   <button type="button" class="backbtn" id="backBtn">戻って直す</button>
 </div>
 
-<div class="paid" id="paidView">
-  <h2>お支払いが完了しました</h2>
-  <p class="hint">試作品のため、実際の決済は行われていません。本番では、この画面の前に決済画面でお支払いいただきます。</p>
-  <p style="margin-top:8px">ご案内メールをお送りします。メールに書かれたリンク先（送信案内ページ）から、入力いただいた内容と写真をお送りください。このまま送信案内ページへ進むこともできます。</p>
-  <p style="margin-top:8px">受付番号：<b id="paidNum"></b></p>
-  <a class="sendlink" href="send.html">送信案内ページへ</a>
+<style>
+.custinfo label.fl{display:block;font-size:13px;font-weight:700;margin-top:12px}
+.custinfo input[type=text],.custinfo input[type=email]{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15.5px;font-family:inherit;background:#fff;margin-top:4px;box-sizing:border-box}
+.spinner{width:44px;height:44px;margin:20px auto;border-radius:50%;border:5px solid var(--line);border-top-color:var(--blue);animation:kobospin .9s linear infinite}
+@keyframes kobospin{to{transform:rotate(360deg)}}
+</style>
+
+<div class="paid" id="sendView">
+  <h2>工房へ送信しています</h2>
+  <div class="spinner" aria-label="送信中"></div>
+  <p style="text-align:center"><b>ファイルの送信完了までブラウザを閉じないでください。</b></p>
+  <p class="hint" style="text-align:center">入力いただいた内容と写真を工房へ送っています。そのままお待ちください。</p>
+  <p style="margin-top:8px">受付番号：<b id="sendNum"></b></p>
+</div>
+
+<div class="paid" id="doneView">
+  <h2>送信が完了しました</h2>
+  <p style="margin-top:8px">ご注文を受け付けました。</p>
+  <p style="margin-top:8px" id="doneMailLine">受付内容を書いたメールを、ご入力のメールアドレスへお送りしました。</p>
+  <p class="hint" id="doneSimNote" style="display:none">試作品のため、実際の送信とメール送信は行われていません。本番では、工房への送信が自動で行われ、受付メールが送られます。</p>
+  <p style="margin-top:8px">受付番号：<b id="doneNum"></b></p>
+  <p style="margin-top:8px">これから制作を開始します。完成しましたら、ページのURLをお知らせします。</p>
+</div>
+
+<div class="paid" id="sendErrView">
+  <h2>送信できませんでした</h2>
+  <p style="margin-top:8px" id="errLead">通信の状態により、工房への送信が完了しませんでした。</p>
+  <p style="margin-top:8px">お手数ですが、ファイルをダウンロードしていただき、メールまたは公式LINEからご自身でご送信ください。</p>
+  <p style="margin-top:8px">受付番号：<b id="errNum"></b></p>
+  <button type="button" class="backbtn" id="dlZipBtn">ファイルをダウンロードする</button>
+  <a class="sendlink" href="https://line.me/R/ti/p/@799qinao" target="_blank" rel="noopener">公式LINEを開く</a>
+  <button type="button" class="backbtn" id="retrySendBtn">もう一度送信する</button>
+  <p class="hint" style="margin-top:10px">「もう一度送信する」で送り直すこともできます。送信は何度でもやり直せます（受付番号が同じなら、工房では同じご注文として1件にまとめます）。</p>
 </div>
 
 <footer>
@@ -890,12 +926,12 @@ if (photoInput){
   });
 }
 
-/* ---------- order flow: 確定 -> 確認画面 -> 保存 -> 決済 ----------
-   本番の決済: STRIPE_LINK にStripe支払いリンクを設定すると、お支払いボタンで
-   受付番号を client_reference_id として渡して決済画面へ進む。
-   試作品ではリンク未設定のため、保存の後にモック決済ページ (mock-pay.html) へ進み、
-   完了するとこのページへ戻って決済完了画面を表示する。 */
-var STRIPE_LINK = '';
+/* ---------- order flow: 確定 -> 確認画面 -> 保存 -> 決済 -> 自動送信 ----------
+   決済はモック決済ページ (mock-pay.html) へ進み、完了するとこのページへ戻る。
+   戻ったら、送信ボタンを別に押させることはせず、そのまま工房の受け口へ自動で送る。
+   受け口（Google Apps Script のWebアプリ）のURLは RECEIVER_URL に設定する。
+   未設定の間は試作品モードとして、送信の流れだけを再現する（実際の送信は行われない）。 */
+var RECEIVER_URL = '';
 var receiptNum = null;
 var summaryPairs = [];
 function genReceiptNum(){
@@ -1152,7 +1188,9 @@ function saveOrder(){
     shop: CFG.initName,
     patternName: CFG.patNames[curPattern],
     frames: framesData.map(function(fr){ return {count: fr.count, pos: framePosLabel(fr)}; }),
-    summary: summaryPairs
+    summary: summaryPairs,
+    custName: val('f-custName'),
+    custMail: val('f-custMail')
   };
   try { localStorage.setItem('koboOrderV1', JSON.stringify(data)); } catch(e){}
   return Promise.all(collectPhotoRecs().map(idbPut)).catch(function(){});
@@ -1164,30 +1202,213 @@ function termsCheck(){
   if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 10) agreeCheck.disabled = false;
 }
 termsBox.addEventListener('scroll', termsCheck);
-agreeCheck.addEventListener('change', function(){ payBtn.disabled = !agreeCheck.checked; });
+function payReady(){
+  var mailOk = /.+@.+\..+/.test(val('f-custMail'));
+  var ok = agreeCheck.checked && !!val('f-custName') && mailOk;
+  payBtn.disabled = !ok;
+  var ce = document.getElementById('custErr');
+  if (ce) ce.style.display = (agreeCheck.checked && (!val('f-custName') || !mailOk)) ? 'block' : 'none';
+}
+agreeCheck.addEventListener('change', payReady);
+document.getElementById('f-custName').addEventListener('input', payReady);
+document.getElementById('f-custMail').addEventListener('input', payReady);
 document.getElementById('backBtn').addEventListener('click', function(){
   document.getElementById('confirmView').style.display = 'none';
   document.getElementById('orderForm').scrollIntoView({behavior: 'smooth', block: 'start'});
 });
 payBtn.addEventListener('click', function(){
   saveOrder().then(function(){
-    if (STRIPE_LINK){
-      location.href = STRIPE_LINK + '?client_reference_id=' + encodeURIComponent(receiptNum);
-      return;
-    }
     location.href = 'mock-pay.html?num=' + encodeURIComponent(receiptNum) + '&from=' + encodeURIComponent(location.pathname.split('/').pop());
   });
 });
 
-/* モック決済の完了後に戻ってきたら、決済完了画面を表示する */
+/* 決済（モック）から戻ってきたら、送信ボタンを押させず、そのまま工房へ自動送信する。
+   送信の前に注文ファイル（ZIP）を端末内に作っておき、失敗した時は
+   そのファイルをダウンロードして送ってもらえるようにする。 */
+var sendState = { order: null, photos: [], zipBlob: null, zipName: '' };
+
+function idbAllPhotos(){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var rq = db.transaction('photos', 'readonly').objectStore('photos').getAll();
+      rq.onsuccess = function(){ res(rq.result || []); };
+      rq.onerror = function(){ rej(rq.error); };
+    });
+  }).catch(function(){ return []; });
+}
+function blobBytes(blob){ return blob.arrayBuffer().then(function(ab){ return new Uint8Array(ab); }); }
+function b64FromBytes(bytes){
+  var s = '', CH = 0x8000;
+  for (var i = 0; i < bytes.length; i += CH) s += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+  return btoa(s);
+}
+/* ---------- ZIP (store / 無圧縮。写真はもともと圧縮済みの形式のため) ---------- */
+var CRC_TABLE = null;
+function crc32(bytes){
+  if (!CRC_TABLE){
+    CRC_TABLE = [];
+    for (var n = 0; n < 256; n++){
+      var c = n;
+      for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      CRC_TABLE[n] = c >>> 0;
+    }
+  }
+  var crc = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+function zipStore(files){
+  var enc = new TextEncoder();
+  var parts = [], central = [], offset = 0;
+  function u16(v){ return [v & 0xFF, (v >>> 8) & 0xFF]; }
+  function u32(v){ return [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF]; }
+  files.forEach(function(f){
+    var nameB = enc.encode(f.name);
+    var crc = crc32(f.bytes), size = f.bytes.length;
+    var local = new Uint8Array([].concat(
+      u32(0x04034b50), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21),
+      u32(crc), u32(size), u32(size), u16(nameB.length), u16(0)));
+    parts.push(local, nameB, f.bytes);
+    var cen = new Uint8Array([].concat(
+      u32(0x02014b50), u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21),
+      u32(crc), u32(size), u32(size), u16(nameB.length), u16(0), u16(0),
+      u16(0), u16(0), u32(0), u32(offset)));
+    central.push(cen, nameB);
+    offset += local.length + nameB.length + size;
+  });
+  var cenSize = central.reduce(function(a, b){ return a + b.length; }, 0);
+  var end = new Uint8Array([].concat(
+    u32(0x06054b50), u16(0), u16(0), u16(files.length), u16(files.length),
+    u32(cenSize), u32(offset), u16(0)));
+  return new Blob(parts.concat(central, [end]), {type: 'application/zip'});
+}
+function photoExt(name, type){
+  var m = String(name || '').match(/\.([A-Za-z0-9]{2,5})$/);
+  if (m) return '.' + m[1].toLowerCase();
+  if (type === 'image/png') return '.png';
+  if (type === 'image/webp') return '.webp';
+  if (type === 'image/gif') return '.gif';
+  return '.jpg';
+}
+async function buildOrderZip(order, photos){
+  var meta = {
+    num: order.num, ts: order.ts, custName: order.custName || '', custMail: order.custMail || '',
+    sample: order.sample || '', shop: order.shop || '', patternName: order.patternName || '',
+    frames: order.frames || [], summary: order.summary || [],
+    photos: photos.map(function(p, i){
+      return {file: 'photos/' + String(i + 1).padStart(2, '0') + photoExt(p.name, p.type),
+        slot: p.slot, name: p.name, type: p.type, size: p.blob.size};
+    })
+  };
+  var lines = ['アーチデザイン工房 ご注文内容', '受付番号：' + order.num,
+    'お名前：' + meta.custName, 'メールアドレス：' + meta.custMail, '', '入力内容'];
+  (order.summary || []).forEach(function(it){ lines.push('・' + it[0] + '：' + it[1]); });
+  lines.push('', '写真：' + photos.length + '枚（このファイルの photos フォルダに入っています。画質は登録した通りのままです）');
+  var files = [
+    {name: 'order.json', bytes: new TextEncoder().encode(JSON.stringify(meta, null, 2))},
+    {name: 'order.txt', bytes: new TextEncoder().encode(lines.join('\n'))}
+  ];
+  for (var i = 0; i < photos.length; i++){
+    files.push({name: meta.photos[i].file, bytes: await blobBytes(photos[i].blob)});
+  }
+  return zipStore(files);
+}
+/* ---------- 受け口への送信（大きい時は写真を分けて送る） ---------- */
+function postToReceiver(obj){
+  return fetch(RECEIVER_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain;charset=utf-8'},
+    body: JSON.stringify(obj)
+  }).then(function(r){ return r.json(); }).then(function(j){
+    if (!j || !j.ok) throw new Error((j && j.error) || 'receiver error');
+    return j;
+  });
+}
+var CHUNK_BYTES = 4 * 1024 * 1024;
+async function sendToReceiver(order, photos){
+  if (!RECEIVER_URL){
+    /* 試作品モード：受け口のURLが未設定の間は、送信の流れだけを再現する */
+    await new Promise(function(res){ setTimeout(res, 1800); });
+    return {simulated: true};
+  }
+  var total = photos.reduce(function(a, p){ return a + p.blob.size; }, 0);
+  await postToReceiver({action: 'begin', num: order.num, custName: order.custName || '',
+    custMail: order.custMail || '', sample: order.sample || '', shop: order.shop || '',
+    patternName: order.patternName || '', frames: order.frames || [], summary: order.summary || [],
+    photoCount: photos.length, totalBytes: total});
+  var chunks = [], cur = [], curSize = 0;
+  photos.forEach(function(p){
+    if (cur.length && curSize + p.blob.size > CHUNK_BYTES){ chunks.push(cur); cur = []; curSize = 0; }
+    cur.push(p); curSize += p.blob.size;
+  });
+  if (cur.length) chunks.push(cur);
+  for (var seq = 0; seq < chunks.length; seq++){
+    var arr = [];
+    for (var i = 0; i < chunks[seq].length; i++){
+      var p = chunks[seq][i];
+      arr.push({slot: p.slot, name: p.name, type: p.type, data: b64FromBytes(await blobBytes(p.blob))});
+    }
+    await postToReceiver({action: 'chunk', num: order.num, seq: seq, photos: arr});
+  }
+  return postToReceiver({action: 'complete', num: order.num});
+}
+/* ---------- 画面の切り替えと自動送信の実行 ---------- */
+function showSendPanel(id){
+  ['sendView', 'doneView', 'sendErrView'].forEach(function(x){
+    var el = document.getElementById(x);
+    if (el) el.style.display = (x === id) ? 'block' : 'none';
+  });
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+async function runAutoSend(num){
+  var order = null;
+  try { var raw = localStorage.getItem('koboOrderV1'); if (raw) order = JSON.parse(raw); } catch(e){}
+  document.getElementById('sendNum').textContent = num;
+  document.getElementById('doneNum').textContent = num;
+  document.getElementById('errNum').textContent = num;
+  showSendPanel('sendView');
+  if (!order || order.num !== num){
+    document.getElementById('errLead').textContent = 'この端末・このブラウザに、ご入力いただいた内容が保存されていませんでした。入力した時と同じスマホ・同じブラウザで開き直してください。それでも送れない場合は、受付番号を公式LINEでお伝えください。工房で確認して、送信のご案内を送り直します。';
+    var dl = document.getElementById('dlZipBtn'); if (dl) dl.style.display = 'none';
+    var rt = document.getElementById('retrySendBtn'); if (rt) rt.style.display = 'none';
+    showSendPanel('sendErrView');
+    return;
+  }
+  sendState.order = order;
+  var all = await idbAllPhotos();
+  var photos = all.filter(function(r){ return r.num === num; });
+  photos.sort(function(a, b){ return a.key < b.key ? -1 : 1; });
+  sendState.photos = photos;
+  try { sendState.zipBlob = await buildOrderZip(order, photos); } catch(e){ sendState.zipBlob = null; }
+  sendState.zipName = '注文内容_' + num + '.zip';
+  try {
+    var res = await sendToReceiver(order, photos);
+    if (res && res.simulated){
+      document.getElementById('doneMailLine').style.display = 'none';
+      document.getElementById('doneSimNote').style.display = 'block';
+    }
+    showSendPanel('doneView');
+  } catch(e){
+    showSendPanel('sendErrView');
+  }
+}
 (function(){
   var paid = new URLSearchParams(location.search).get('paid');
   if (!paid) return;
-  document.getElementById('paidNum').textContent = paid;
-  var paidv = document.getElementById('paidView');
-  paidv.style.display = 'block';
-  paidv.scrollIntoView({behavior: 'smooth', block: 'start'});
+  runAutoSend(paid);
 })();
+document.getElementById('dlZipBtn').addEventListener('click', function(){
+  if (!sendState.zipBlob) return;
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(sendState.zipBlob);
+  a.download = sendState.zipName;
+  document.body.appendChild(a); a.click(); a.remove();
+});
+document.getElementById('retrySendBtn').addEventListener('click', function(){
+  var num = (sendState.order && sendState.order.num) || new URLSearchParams(location.search).get('paid');
+  if (num) runAutoSend(num);
+});
 
 document.getElementById('orderForm').addEventListener('submit', function(e){
   e.preventDefault();
