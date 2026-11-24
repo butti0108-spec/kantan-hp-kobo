@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>この型で作る｜懐石 玄海の型（文章を選ぶ形の試作）</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Serif+JP:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#fbf8f2;--ink:#2e2a24;--ink-dim:#8a7f6d;--blue:#0052B5;--blue-deep:#003d87;--line:#e4dac6;--card:#fff}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{overflow-x:clip}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans JP",sans-serif;line-height:1.85;letter-spacing:.03em}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1060px;margin:0 auto;padding:0 clamp(16px,4vw,32px)}
+header{padding:26px 0 4px;text-align:center}
+header .brand{font-size:12px;letter-spacing:.3em;color:var(--ink-dim);font-weight:700}
+h1{font-family:"Noto Serif JP",serif;font-size:clamp(23px,5vw,32px);letter-spacing:.05em;margin-top:4px}
+.proto{display:inline-block;margin-top:8px;font-size:12px;background:#fdf3d8;border:1px solid #e5cf8a;border-radius:999px;padding:2px 12px}
+.steps{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:16px 0 4px;font-size:13px}
+.steps span{border:1px solid var(--line);background:#fff;border-radius:999px;padding:3px 12px}
+.steps b{color:var(--blue-deep)}
+.lead{max-width:640px;margin:16px auto 0;text-align:left}
+.lead .l1{font-size:16px;font-weight:700;color:var(--ink);line-height:1.8}
+.lead .l2{font-size:13.5px;color:var(--ink-dim);line-height:1.9;margin-top:8px}
+.cols{display:grid;gap:22px;margin-top:22px}
+@media(min-width:720px){.cols{grid-template-columns:1fr 1fr;align-items:start}.pv{position:sticky;top:14px}}
+form{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px clamp(16px,3vw,26px)}
+fieldset{border:none;margin-bottom:22px}
+legend{font-weight:900;font-size:15.5px;margin-bottom:10px;color:var(--blue-deep)}
+.unit{margin-bottom:14px}
+.unit-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.unit-head .nm{font-size:13.5px;font-weight:700}
+.unit-head .nm .req{color:#b3261e;font-weight:900}
+.unit-body{margin-top:5px}
+.shutter{display:none;background:#22201c;color:#f5efe2;border-radius:10px;padding:11px 14px;font-size:13.5px;text-align:center;letter-spacing:.06em;margin-top:5px}
+.switch{position:relative;display:inline-block;flex:none;cursor:pointer}
+.switch input{position:absolute;opacity:0;width:100%;height:100%;cursor:pointer}
+.track{display:block;width:58px;height:32px;border-radius:999px;background:#c9c2b2;transition:background .2s;position:relative;pointer-events:none}
+.track::after{content:'';position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.switch input:checked + .track{background:var(--blue)}
+.switch input:checked + .track::after{left:29px}
+.switch input:focus-visible + .track{outline:3px solid var(--blue);outline-offset:2px}
+input[type=text],textarea{width:100%;border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;font-size:15px;font-family:inherit;background:#fff}
+textarea{resize:vertical}
+input[type=file]{font-size:13.5px}
+.hint{font-size:12px;color:var(--ink-dim)}
+.rowbox{border:1px solid var(--line);border-radius:10px;padding:10px 12px 12px;margin-top:10px}
+.rowbox label{display:block;font-size:13px;font-weight:700;margin:8px 0 4px}
+.rowbox .del{margin-top:8px;background:none;border:1px solid var(--line);border-radius:8px;padding:4px 12px;font-size:12.5px;cursor:pointer;font-family:inherit;color:#b3261e}
+.addbtn{margin-top:10px;background:#eef3fa;border:1.5px solid var(--blue);color:var(--blue-deep);border-radius:8px;padding:8px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+select{border:1.5px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14.5px;font-family:inherit;background:#fff;width:100%}
+.frhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.frhead .t{font-weight:700;font-size:14px}
+.frtools{display:flex;gap:6px}
+.frtools button{background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:3px 10px;font-size:13px;cursor:pointer;font-family:inherit}
+.patbtn{display:flex;align-items:center;gap:10px;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;margin-top:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;text-align:left}
+.patbtn .dots{display:flex;gap:4px}
+.patbtn .dot{width:20px;height:20px;border-radius:50%;border:1px solid rgba(0,0,0,.18)}
+.patbtn.sel{border-color:var(--blue);background:#eef3fa}
+.patpick{margin-top:10px;border:1px dashed var(--line);border-radius:10px;padding:10px 12px 12px;background:#fffdf6}
+.patpick .pp-label{font-size:12.5px;font-weight:700;color:var(--blue-deep)}
+.patpick .pp-btn{display:block;width:100%;margin-top:7px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:8px 11px;font-size:13.5px;line-height:1.7;cursor:pointer;font-family:inherit;text-align:left;color:var(--ink)}
+.patpick .pp-btn:hover{border-color:var(--blue)}
+.patpick .pp-btn.picked{border-color:var(--blue);background:#eef3fa}
+.patpick .pp-note{font-size:12px;color:var(--ink-dim);margin-top:7px}
+.presetrow{margin-top:10px}
+.presetrow .pp-label{font-size:12.5px;font-weight:700;color:var(--blue-deep)}
+.presetrow .pp-btn{display:block;width:100%;margin-top:7px;background:#fff;border:1.5px solid var(--line);border-radius:8px;padding:8px 11px;font-size:13.5px;line-height:1.7;cursor:pointer;font-family:inherit;text-align:left;color:var(--ink)}
+.presetrow .pp-btn:hover{border-color:var(--blue)}
+.pv h2,.done h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.pvtabs{display:flex;gap:8px;margin-bottom:8px}
+.pvtab{flex:1;border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit}
+.pvtab.sel{background:var(--blue);border-color:var(--blue);color:#fff}
+.pvframe{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+iframe{width:100%;height:640px;border:0;display:block;transform-origin:top left}
+.send{margin-top:6px}
+.send button{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit}
+.send button:hover{background:var(--blue-deep)}
+.err{display:none;color:#b3261e;font-size:13.5px;margin-top:8px}
+.done{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
+.done ul{margin:8px 0 8px 1.2em;font-size:14px}
+.pay{display:inline-block;margin-top:10px;background:#9a917e;color:#fff;border-radius:10px;padding:12px 22px;font-weight:900}
+.confirm,.paid{display:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,26px);margin-top:22px}
+.confirm h2,.paid h2{font-family:"Noto Serif JP",serif;font-size:19px;margin-bottom:8px}
+.confirm ul{margin:8px 0 8px 1.2em;font-size:14px}
+.receipt{background:#fdf3d8;border:1px solid #e5cf8a;border-radius:10px;padding:12px 16px;margin:12px 0;text-align:center}
+.receipt .rnum{font-size:26px;font-weight:900;letter-spacing:.08em;margin:2px 0}
+.terms{border:1px solid var(--line);border-radius:10px;background:#fff;height:180px;overflow-y:auto;padding:12px 16px;font-size:13px;line-height:1.9;margin-top:8px;white-space:pre-line}
+.agree{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14.5px;font-weight:700}
+.agree input{width:20px;height:20px;flex:none}
+.photonote{margin-top:16px;border:1.5px solid #b3261e;border-radius:10px;padding:10px 14px;font-size:14px;font-weight:700}
+#payBtn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:15px;font-size:17px;font-weight:900;cursor:pointer;font-family:inherit;margin-top:10px}
+#payBtn:disabled{background:#9a917e;cursor:not-allowed}
+#payBtn:hover:not(:disabled){background:var(--blue-deep)}
+.backbtn{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:11px;font-size:14.5px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:10px}
+.sendlink{display:inline-block;margin-top:12px;background:var(--blue);color:#fff;border-radius:10px;padding:13px 26px;font-weight:900;text-decoration:none}
+footer{margin:34px 0 30px;font-size:12.5px;color:var(--ink-dim);text-align:center}
+footer a{color:var(--blue-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <p class="brand">アーチデザイン工房</p>
+  <h1>この型で作る</h1>
+  <p><span class="proto">これは試作品です（文章を「選ぶだけ」で作る形の試作）。送信しても実際には届かず、決済もできません</span></p>
+  <div class="steps"><span><b>1</b> 色と内容を入れる</span><span><b>2</b> プレビューで確認</span><span><b>3</b> 送信とお支払い</span></div>
+  <div class="lead">
+    <p class="l1">まず色を選んでください。<br>あとは、ページに出てくる順番のまま、上から順に入れていくだけです。</p>
+    <p class="l2">入れた内容は、右（下）のプレビューにその場で出ます。項目ごとに、右のスイッチで『入れる／入れない』を選べます。品目は好きなだけ増やせます。</p>
+    <p class="l2">文章は、選んでいくだけでできます。各項目に用意した文章の中から選ぶと、そのまま入ります。選んだ文章は、その場で自由に直せます。あとは、お好きな画像を登録して、必須の店舗情報（お店の名前・電話番号・住所・営業時間）を入力してください。</p>
+  </div>
+</header>
+
+<div class="cols">
+<form id="orderForm" novalidate>
+  <fieldset>
+    <legend>色パターン</legend>
+    <p class="hint">まず色を選んでください。押すとプレビューの色が変わります。</p>
+    <button type="button" class="patbtn sel" data-pat="sumi"><span class="dots"><span class="dot" style="background:#131417"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ece7db"></span></span>墨と金（見本の色）</button>
+    <button type="button" class="patbtn" data-pat="ai"><span class="dots"><span class="dot" style="background:#1c2b4d"></span><span class="dot" style="background:#bfc9d8"></span><span class="dot" style="background:#e9ecf2"></span></span>藍と銀</button>
+    <button type="button" class="patbtn" data-pat="midori"><span class="dots"><span class="dot" style="background:#1d4030"></span><span class="dot" style="background:#c8a45c"></span><span class="dot" style="background:#ecf0e2"></span></span>緑と金</button>
+    <button type="button" class="patbtn" data-pat="enji"><span class="dots"><span class="dot" style="background:#472228"></span><span class="dot" style="background:#d9a45c"></span><span class="dot" style="background:#f2e7dd"></span></span>臙脂と金</button>
+    <button type="button" class="patbtn" data-pat="shiro"><span class="dots"><span class="dot" style="background:#f8f6f1"></span><span class="dot" style="background:#0052B5"></span><span class="dot" style="background:#26241f"></span></span>白と藍</button>
+    <p class="hint">色パターンは、すべての型で共通です。業種や写真に関係なく、お好きなものを選べます。</p>
+  </fieldset>
+
+  <fieldset id="fs-frames">
+    <legend>追加の写真枠</legend>
+    <p class="hint">写真だけの枠を、好きな場所に追加できます（1つの枠に写真は1〜4枚、追加できる写真枠は7個まで）。枠を足しても、今ある文章の順番はそのまま変わりません。追加した枠は、上下のボタンで好きな位置へ動かせます。</p>
+    <div id="frameRows"></div>
+    <button type="button" class="addbtn" id="addFrame">＋ 写真の枠を追加する</button>
+    <p class="err" id="frameLimit" style="display:none">写真枠は7個までなので、これ以上は追加できません。</p>
+    <p id="photoTotal" style="margin-top:10px;font-weight:700">写真の合計：0枚（今 約0.0MB／上限100MBまで）</p>
+  </fieldset>
+
+  <fieldset id="fs-hero">
+    <legend>ページの最初</legend>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">お店の名前 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-name" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-name"><input type="text" id="f-name" value="懐石 玄海"></div>
+      <div class="shutter" id="s-name">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">写真A（最初に出る写真）</span><label class="switch"><input type="checkbox" id="t-photoA" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-photoA">
+        <input type="file" id="f-photoA" accept="image/*">
+        <p class="hint">写真を選ぶと、プレビューの写真が差し替わります。選ばない場合は、見本の写真のままです。</p>
+        <p class="hint">写真の切り取りや位置の調整は、工房では行いません。プレビューで見えている通りの形で、そのまま公開されます。枠からはみ出したり切れたりしていないかプレビューで確かめて、枠にきれいに収まるよう整えた写真をお選びください。</p>
+      </div>
+      <div class="shutter" id="s-photoA">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">キャッチコピー（改行できます）</span><label class="switch"><input type="checkbox" id="t-catch" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-catch"><textarea id="f-catch" rows="2">八席だけの、
+静かな懐石の店です。</textarea></div>
+      <div class="shutter" id="s-catch">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">特徴の一行</span><label class="switch"><input type="checkbox" id="t-facts" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-facts"><input type="text" id="f-facts" value="おまかせ一本 ・ 完全予約制 ・ 銀座"></div>
+      <div class="shutter" id="s-facts">この項目は使いません</div>
+    </div>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">電話番号 <span class="req">必須</span></span><label class="switch"><input type="checkbox" id="t-tel" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-tel"><input type="text" id="f-tel" value="03-0000-0000"></div>
+      <div class="shutter" id="s-tel">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-course">
+    <legend>お品書き</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お品書きの説明</span><label class="switch"><input type="checkbox" id="t-note" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-note"><textarea id="f-note" rows="2">季節で変わります。苦手な食材は予約の時に教えてください。</textarea></div>
+      <div class="shutter" id="s-note">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">品目</span><label class="switch"><input type="checkbox" id="t-courses" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-courses">
+        <div id="courseRows"></div>
+        <button type="button" class="addbtn" id="addCourse">＋ 品目を追加する</button>
+        <p class="hint">品目は好きなだけ増やせます。長くなれば、ページもそのまま長くなります。</p>
+      </div>
+      <div class="shutter" id="s-courses">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-band">
+    <legend>途中の写真</legend>
+
+        <div class="unit">
+      <div class="unit-head"><span class="nm">写真B（途中の帯の写真）</span><label class="switch"><input type="checkbox" id="t-photoB" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-photoB"><input type="file" id="f-photoB" accept="image/*"></div>
+      <div class="shutter" id="s-photoB">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-news">
+    <legend>お知らせ</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">お知らせ</span><label class="switch"><input type="checkbox" id="t-news"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-news">
+        <div class="rowbox" style="margin-top:4px">
+          <label>お知らせの見出し</label>
+          <input type="text" id="f-newsT" value="年末年始の営業について">
+          <label>お知らせの本文</label>
+          <textarea id="f-newsB" rows="2">12月31日から1月3日まで休ませていただきます。</textarea>
+        </div>
+      </div>
+      <div class="shutter" id="s-news">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-faq">
+    <legend>よくある質問</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">よくある質問</span><label class="switch"><input type="checkbox" id="t-faq"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-faq">
+        <div id="faqRows"></div>
+        <button type="button" class="addbtn" id="addFaq">＋ 質問を追加する</button>
+      </div>
+      <div class="shutter" id="s-faq">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <fieldset id="fs-link">
+    <legend>リンク</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">リンク</span><label class="switch"><input type="checkbox" id="t-link"><span class="track"></span></label></div>
+      <div class="unit-body" id="w-link">
+        <div class="rowbox" style="margin-top:4px">
+          <label>リンクの文字</label>
+          <input type="text" id="f-linkT" value="Instagramはこちら">
+          <label>リンク先のアドレス</label>
+          <input type="text" id="f-linkU" value="https://www.instagram.com/">
+        </div>
+      </div>
+      <div class="shutter" id="s-link">この項目は使いません</div>
+    </div>
+    <p class="hint">追加した項目は、この型のデザイン（字体や色）に合わせて表示されます。レイアウト自体を変更したい場合は、別途オプションで対応します（2万円から）。</p>
+  </fieldset>
+
+  <fieldset id="fs-info">
+    <legend>店の案内</legend>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">場所（住所と最寄り）</span><label class="switch"><input type="checkbox" id="t-place" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-place"><input type="text" id="f-place" value="東京都中央区銀座 0-0-0 ・ 銀座駅から徒歩4分"></div>
+      <div class="shutter" id="s-place">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">営業時間</span><label class="switch"><input type="checkbox" id="t-hours" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-hours"><input type="text" id="f-hours" value="昼 12:00（一斉）/ 夜 18:00・20:30（二部制）・ 日曜定休"></div>
+      <div class="shutter" id="s-hours">この項目は使いません</div>
+    </div>
+    <div class="unit">
+      <div class="unit-head"><span class="nm">席数・その他</span><label class="switch"><input type="checkbox" id="t-seats" checked><span class="track"></span></label></div>
+      <div class="unit-body" id="w-seats"><input type="text" id="f-seats" value="カウンター八席のみ"></div>
+      <div class="shutter" id="s-seats">この項目は使いません</div>
+    </div>
+  </fieldset>
+
+  <div class="send">
+    <button type="submit">入力内容を確定する</button>
+    <p class="err" id="err">『入れる』設定の名前と電話番号を入れてください。</p>
+    <p class="hint" style="margin-top:8px">確定すると確認画面が出ます。内容と規約を確認してから、お支払いに進みます。お支払いの後は、画面の案内に沿って入力内容をお送りください。</p>
+  </div>
+
+
+</form>
+
+<div class="pv">
+  <h2>プレビュー（入力した内容がそのまま出ます）</h2>
+  <div class="pvtabs">
+    <button type="button" class="pvtab sel" id="tabPhone">スマホ表示</button>
+    <button type="button" class="pvtab" id="tabPc">パソコン表示</button>
+  </div>
+  <div class="pvframe" id="pvframe"><iframe id="pv" src="01-kaiseki-genkai.html" title="プレビュー"></iframe></div>
+  <p class="hint" style="margin-top:6px">パソコン表示は、広い画面での見え方を縮小して表示しています。</p>
+</div>
+</div>
+
+<div class="confirm" id="confirmView">
+  <h2>内容の確認</h2>
+  <p>この内容で制作します。よくご確認ください。</p>
+  <div class="receipt">
+    <p>受付番号（決済の控え）</p>
+    <p class="rnum" id="receiptNum"></p>
+    <p class="hint">この番号をメモしてください。お支払いの確認や、内容を送る時に使います。</p>
+  </div>
+  <div class="custinfo">
+    <p style="margin-top:14px"><b>お客様の情報</b></p>
+    <label class="fl" for="f-custName">お名前（ニックネームでも大丈夫です）</label>
+    <input type="text" id="f-custName" autocomplete="name">
+    <label class="fl" for="f-custMail">メールアドレス</label>
+    <input type="email" id="f-custMail" autocomplete="email">
+    <p class="err" id="custErr" style="display:none">お名前とメールアドレスを入れてください。</p>
+    <p class="hint">受け付けのご連絡は、このメールアドレスへお送りします。</p>
+  </div>
+  <p style="margin-top:10px"><b>入力内容</b></p>
+  <ul id="confirmSummary"></ul>
+  <p style="margin-top:14px"><b>ご利用規約</b></p>
+  <div class="terms" id="termsBox">ご利用規約
+1. 本サービスは、あらかじめ用意した型（デザイン）に、お客様の文章と写真を差し込んで作る、1ページのホームページ制作サービスです。レイアウト（ページの構成）を変更したい場合は、別途オプションで対応します（2万円から）。
+2. 料金は10,000円（税込）です。お支払いの確認が取れてから、制作を開始します。
+3. 写真について：写真の切り取りや位置の調整は、工房では行いません。プレビューに表示された通りの形で公開いたします。表示の枠に合うよう整えた写真をご登録ください。
+4. 納品は、完成したページのURLをお知らせする形で行います。
+5. 完成したページのURLをお知らせしてから、修正を2回まで無料で承ります。無料修正の2回を使い切った場合は、1回につき3,000円です。
+6. 制作開始後のお客様都合による解約は、返金できません。
+7. サーバーや外部サービス（Google、Stripeなど）の障害や仕様変更によって生じた影響は、当工房の責任の範囲外です。
+8. ご入力いただいた文章・写真の権利は、お客様に帰属します。第三者の権利を侵害する内容や、法令に触れる内容はお受けできません。
+9. お支払いの後は、送信案内ページから入力内容をお送りください。送信をもって、制作の受け付けが完了します。</div>
+  <p class="hint">規約を一番下まで読むと、チェックできるようになります。</p>
+  <label class="agree"><input type="checkbox" id="agreeCheck" disabled> 規約を読み、内容に同意します</label>
+  <p class="photonote">工房では写真の切り取りや位置の調整をせず、プレビューで見た通りの形で公開します</p>
+  <button type="button" id="payBtn" disabled>お支払いへ進む（10,000円）</button>
+  <button type="button" class="backbtn" id="backBtn">戻って直す</button>
+</div>
+
+<style>
+.custinfo label.fl{display:block;font-size:13px;font-weight:700;margin-top:12px}
+.custinfo input[type=text],.custinfo input[type=email]{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15.5px;font-family:inherit;background:#fff;margin-top:4px;box-sizing:border-box}
+.spinner{width:44px;height:44px;margin:20px auto;border-radius:50%;border:5px solid var(--line);border-top-color:var(--blue);animation:kobospin .9s linear infinite}
+@keyframes kobospin{to{transform:rotate(360deg)}}
+</style>
+
+<div class="paid" id="sendView">
+  <h2>工房へ送信しています</h2>
+  <div class="spinner" aria-label="送信中"></div>
+  <p style="text-align:center"><b>ファイルの送信完了までブラウザを閉じないでください。</b></p>
+  <p class="hint" style="text-align:center">入力いただいた内容と写真を工房へ送っています。そのままお待ちください。</p>
+  <p style="margin-top:8px">受付番号：<b id="sendNum"></b></p>
+</div>
+
+<div class="paid" id="doneView">
+  <h2>送信が完了しました</h2>
+  <p style="margin-top:8px">ご注文を受け付けました。</p>
+  <p style="margin-top:8px" id="doneMailLine">受付内容を書いたメールを、ご入力のメールアドレスへお送りしました。</p>
+  <p class="hint" id="doneSimNote" style="display:none">試作品のため、実際の送信とメール送信は行われていません。本番では、工房への送信が自動で行われ、受付メールが送られます。</p>
+  <p style="margin-top:8px">受付番号：<b id="doneNum"></b></p>
+  <p style="margin-top:8px">これから制作を開始します。完成しましたら、ページのURLをお知らせします。</p>
+</div>
+
+<div class="paid" id="sendErrView">
+  <h2>送信できませんでした</h2>
+  <p style="margin-top:8px" id="errLead">通信の状態により、工房への送信が完了しませんでした。</p>
+  <p style="margin-top:8px">お手数ですが、ファイルをダウンロードしていただき、メールまたは公式LINEからご自身でご送信ください。</p>
+  <p style="margin-top:8px">受付番号：<b id="errNum"></b></p>
+  <button type="button" class="backbtn" id="dlZipBtn">ファイルをダウンロードする</button>
+  <a class="sendlink" href="https://line.me/R/ti/p/@799qinao" target="_blank" rel="noopener">公式LINEを開く</a>
+  <button type="button" class="backbtn" id="retrySendBtn">もう一度送信する</button>
+  <p class="hint" style="margin-top:10px">「もう一度送信する」で送り直すこともできます。送信は何度でもやり直せます（受付番号が同じなら、工房では同じご注文として1件にまとめます）。</p>
+</div>
+
+<footer>
+  <p><a href="index.html">見本を選ぶページへ戻る</a> ／ アーチデザイン工房</p>
+</footer>
+</div>
+
+<script>
+var pv = document.getElementById('pv');
+function doc(){ return pv.contentDocument; }
+/* host lookups skip the kobo extra sections, which reuse host classes
+   (2026-11-22 restyle) */
+function qHost(d, sel){
+  var els = d.querySelectorAll(sel);
+  for (var i = 0; i < els.length; i++){
+    if (!els[i].closest('#extraNews, #extraFaq, #extraLink, #extraSec')) return els[i];
+  }
+  return null;
+}
+function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function on(id){ return document.getElementById(id).checked; }
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+/* ---------- data (declared before the switches, whose first sync calls apply()) ---------- */
+var courseData = [
+  {n:'昼のおまかせ', d:'全八品。軽めに、季節の走りを。', p:'12,000円'},
+  {n:'夜のおまかせ', d:'全十一品。この店の真ん中です。', p:'18,000円'},
+  {n:'特別のおまかせ', d:'旬の頂きを使う、月に数日だけの一本。', p:'25,000円'}
+];
+var faqData = [
+  {q:'予約は必要ですか', a:'完全予約制です。お電話でお願いします。'}
+];
+
+/* ---------- color patterns ---------- */
+var PATTERNS = {
+  sumi: null,
+  ai:    {'--ink':'#1c2b4d','--ink-2':'#24365e','--paper':'#e9ecf2','--paper-dim':'#a3aec4','--gold':'#bfc9d8','--gold-deep':'#93a1b5'},
+  midori:{'--ink':'#1d4030','--ink-2':'#27503c','--paper':'#ecf0e2','--paper-dim':'#a7b8a2','--gold':'#c8a45c','--gold-deep':'#9a7c3f'},
+  enji:  {'--ink':'#472228','--ink-2':'#552a31','--paper':'#f2e7dd','--paper-dim':'#c2a49b','--gold':'#d9a45c','--gold-deep':'#b07f3f'},
+  shiro: {'--ink':'#f8f6f1','--ink-2':'#ffffff','--paper':'#26241f','--paper-dim':'#75705f','--gold':'#0052B5','--gold-deep':'#003d87'}
+};
+var PAT_NAMES = {sumi:'墨と金（見本の色）', ai:'藍と銀', midori:'緑と金', enji:'臙脂と金', shiro:'白と藍'};
+var curPattern = 'sumi';
+/* photo-frame state must exist before the first apply() call below */
+var framesData = [];
+var FRAME_MAX = 7; /* added photo frames are capped at 7 (2026-11-22, user instruction; previously unlimited) */
+var blockOrder = ['hero', 'list', 'info', 'extra'];
+var BLOCK_LABELS = {hero: 'ページの最初', list: 'お品書き', info: '店の案内', extra: '追加した項目'};
+/* pattern chosen on the sample page (order-01.html?pat=...) becomes the
+   initial pattern here; it can still be changed on this page */
+(function(){
+  var p = new URLSearchParams(location.search).get('pat');
+  if (p && Object.prototype.hasOwnProperty.call(PATTERNS, p)){
+    curPattern = p;
+    document.querySelectorAll('.patbtn').forEach(function(b){
+      b.classList.toggle('sel', b.getAttribute('data-pat') === p);
+    });
+  }
+})();
+document.querySelectorAll('.patbtn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    curPattern = btn.getAttribute('data-pat');
+    document.querySelectorAll('.patbtn').forEach(function(b){ b.classList.toggle('sel', b === btn); });
+    apply();
+  });
+});
+
+/* ---------- switches + shutters ---------- */
+var UNITS = ['name','catch','facts','tel','photoA','photoB','note','courses','place','hours','seats','news','faq','link'];
+UNITS.forEach(function(u){
+  var t = document.getElementById('t-' + u);
+  var sync = function(){
+    document.getElementById('w-' + u).style.display = t.checked ? '' : 'none';
+    document.getElementById('s-' + u).style.display = t.checked ? 'none' : 'block';
+    if (t.checked && (u === 'news' || u === 'faq' || u === 'link')) revealExtraSection(u);
+    else apply();
+  };
+  t.addEventListener('change', sync);
+  sync();
+});
+
+/* ---------- repeatable rows ---------- */
+function buildRows(containerId, data, labels, keys){
+  var box = document.getElementById(containerId);
+  box.innerHTML = '';
+  data.forEach(function(row, i){
+    var div = document.createElement('div');
+    div.className = 'rowbox';
+    var html = '';
+    labels.forEach(function(lb, j){
+      html += '<label>' + lb + '</label><input type="text" data-i="' + i + '" data-k="' + keys[j] + '" value="' + esc(row[keys[j]]) + '">';
+    });
+    html += '<button type="button" class="del" data-del="' + i + '">この項目を削除する</button>';
+    div.innerHTML = html;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      data[+inp.getAttribute('data-i')][inp.getAttribute('data-k')] = inp.value;
+      apply();
+    });
+  });
+  box.querySelectorAll('[data-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if (data.length <= 1) return;
+      data.splice(+btn.getAttribute('data-del'), 1);
+      buildRows(containerId, data, labels, keys);
+      apply();
+    });
+  });
+}
+function buildCourses(){ buildRows('courseRows', courseData, ['品目の名前','説明','料金'], ['n','d','p']); }
+function buildFaqs(){ buildRows('faqRows', faqData, ['質問','答え'], ['q','a']); }
+document.getElementById('addCourse').addEventListener('click', function(){
+  courseData.push({n:'', d:'', p:''}); buildCourses(); apply();
+});
+document.getElementById('addFaq').addEventListener('click', function(){
+  faqData.push({q:'', a:''}); buildFaqs(); apply();
+});
+
+/* ---------- preview ---------- */
+function setText(d, sel, text){ var el = d.querySelector(sel); if (el) el.textContent = text; }
+function show(d, sel, visible){ var el = d.querySelector(sel); if (el) el.style.display = visible ? '' : 'none'; }
+function apply(){
+  var d = doc(); if (!d || !d.querySelector('.hero')) return;
+  /* anchor the hero image: top-aligned, no re-centering, so the photo never
+     slides when items below it are switched off; the hero just gets shorter */
+  var heroEl = d.querySelector('.hero');
+  if (heroEl){ heroEl.style.justifyContent = 'flex-start'; heroEl.style.minHeight = 'auto'; }
+  sizeSpacer(d);
+  /* the workshop decide band belongs to the standalone sample page only;
+     it must never appear inside the order preview (already ordering) */
+  var kd = d.getElementById('koboDecide');
+  if (kd) kd.style.display = 'none';
+  var cb = d.getElementById('koboColorBar');
+  if (cb) cb.style.display = 'none';
+  /* color pattern: set (or clear) the palette variables on the sample root */
+  var rootEl = d.documentElement;
+  var pat = PATTERNS[curPattern];
+  ['--ink','--ink-2','--paper','--paper-dim','--gold','--gold-deep'].forEach(function(v){
+    rootEl.style.setProperty(v, pat ? pat[v] : '');
+  });
+  var name = val('f-name');
+  show(d, '.v-title', on('t-name'));
+  var vt = d.querySelector('.v-title');
+  if (vt && name){
+    if (name.length >= 2) vt.innerHTML = esc(name.slice(0,1)) + '<span class="gold">' + esc(name.slice(1)) + '</span>';
+    else vt.textContent = name;
+  }
+  var foot = d.querySelectorAll('footer p');
+  if (foot[0]){ foot[0].style.display = on('t-name') ? '' : 'none'; if (name) foot[0].textContent = name; }
+  if (foot[1]){ foot[1].style.display = on('t-place') ? '' : 'none'; foot[1].textContent = val('f-place').split('・')[0]; }
+  show(d, '.hero h1', on('t-catch'));
+  var h1 = d.querySelector('.hero h1');
+  if (h1) h1.innerHTML = val('f-catch').split('\n').map(esc).join('<br>');
+  show(d, '.facts', on('t-facts')); setText(d, '.facts', val('f-facts'));
+  var tel = val('f-tel');
+  show(d, '.tel', on('t-tel'));
+  var telEl = d.querySelector('.tel');
+  if (telEl){ telEl.textContent = '予約の電話 ' + tel; telEl.setAttribute('href', 'tel:' + tel.replace(/-/g,'')); }
+  show(d, 'img.dish', on('t-photoA'));
+  show(d, '.band', on('t-photoB'));
+  show(d, '.course .note', on('t-note')); setText(d, '.course .note', val('f-note'));
+  var sec = d.querySelector('.course');
+  if (sec){
+    sec.querySelectorAll('.course-row').forEach(function(r){ r.remove(); });
+    if (on('t-courses')){
+      courseData.forEach(function(c){
+        var div = d.createElement('div');
+        div.className = 'course-row';
+        div.innerHTML = '<h3></h3><p></p><p class="price"></p>';
+        div.querySelector('h3').textContent = c.n;
+        div.querySelector('p').textContent = c.d;
+        div.querySelector('.price').textContent = c.p;
+        sec.appendChild(div);
+      });
+    }
+  }
+  var trs = d.querySelectorAll('.info tr');
+  trs.forEach(function(tr){
+    var th = tr.querySelector('th'); if (!th) return;
+    var td = tr.querySelector('td');
+    if (th.textContent === '場所'){ tr.style.display = on('t-place') ? '' : 'none'; if (td) td.textContent = val('f-place'); }
+    if (th.textContent === '営業'){ tr.style.display = on('t-hours') ? '' : 'none'; if (td) td.textContent = val('f-hours'); }
+    if (th.textContent === '席'){ tr.style.display = on('t-seats') ? '' : 'none'; if (td) td.textContent = val('f-seats'); }
+    if (th.textContent === '電話'){ tr.style.display = on('t-tel') ? '' : 'none'; if (td) td.textContent = tel; }
+  });
+  /* extra sections: each topic is its OWN section, classed after the
+     page's own sections (news/link -> info, faq -> course), so spacing,
+     headings and backgrounds follow the page (2026-11-22 restyle). */
+  ['extraNews', 'extraFaq', 'extraLink', 'extraSec'].forEach(function(id){
+    var o = d.getElementById(id); if (o) o.remove();
+  });
+  var xInfo = d.querySelector('.info');
+  function addExtraSec01(id, cls, html){
+    var s = d.createElement('section');
+    s.className = cls; s.id = id; s.innerHTML = html;
+    if (xInfo && xInfo.parentNode) xInfo.parentNode.insertBefore(s, xInfo);
+    return s;
+  }
+  if (on('t-news')){
+    addExtraSec01('extraNews', 'info',
+      '<h2>' + esc(val('f-newsT')) + '</h2><p>' + esc(val('f-newsB')) + '</p>');
+  }
+  if (on('t-faq')){
+    addExtraSec01('extraFaq', 'course',
+      '<h2>よくある質問</h2>' + faqData.map(function(f){
+        return '<div class="course-row"><h3>' + esc(f.q) + '</h3><p>' + esc(f.a) + '</p></div>';
+      }).join(''));
+  }
+  if (on('t-link')){
+    addExtraSec01('extraLink', 'info',
+      '<p><a href="' + esc(val('f-linkU')) + '" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline;text-underline-offset:3px;font-weight:600">' + esc(val('f-linkT')) + '</a></p>');
+  }
+  /* added photo frames */
+  renderFrames(d);
+  updatePhotoTotal();
+}
+/* running total of the photos to be sent (count + approximate size),
+   always visible in the photo-frame fieldset (2026-11-22). */
+function updatePhotoTotal(){
+  var el = document.getElementById('photoTotal');
+  if (!el) return;
+  var n = 0, bytes = 0;
+  ['f-photoA', 'f-photoB'].forEach(function(id){
+    var pin = document.getElementById(id);
+    if (pin && pin.files && pin.files[0]){ n++; bytes += pin.files[0].size; }
+  });
+  framesData.forEach(function(fr){
+    fr.files.forEach(function(f){ if (f){ n++; bytes += f.size; } });
+  });
+  el.textContent = '写真の合計：' + n + '枚（今 約' + (bytes / 1048576).toFixed(1) + 'MB／上限100MBまで）';
+}
+/* ---------- preview device tabs ---------- */
+var pvMode = 'phone';
+function layoutPreview(){
+  var frame = document.getElementById('pvframe');
+  var w = frame.clientWidth;
+  if (pvMode === 'pc'){
+    var s = w / 1280;
+    pv.style.width = '1280px';
+    pv.style.height = '860px';
+    pv.style.transform = 'scale(' + s + ')';
+    frame.style.height = (860 * s) + 'px';
+  } else {
+    pv.style.width = '100%';
+    pv.style.height = '640px';
+    pv.style.transform = '';
+    frame.style.height = '';
+  }
+  sizeSpacer();
+}
+document.getElementById('tabPhone').addEventListener('click', function(){
+  pvMode = 'phone';
+  this.classList.add('sel'); document.getElementById('tabPc').classList.remove('sel');
+  layoutPreview();
+});
+document.getElementById('tabPc').addEventListener('click', function(){
+  pvMode = 'pc';
+  this.classList.add('sel'); document.getElementById('tabPhone').classList.remove('sel');
+  layoutPreview();
+});
+window.addEventListener('resize', layoutPreview);
+
+/* spacer at the end of the preview document, so any section can be
+   scrolled to the very top of the preview frame (preview copy only).
+   It carries a back-to-top button so the space reads as intentional;
+   the button returns BOTH the preview and the form to the top
+   (scroll positions only - entered content is never touched). */
+function sizeSpacer(d){
+  d = d || doc(); if (!d || !d.body) return;
+  var sp = d.getElementById('pvSpacer');
+  if (!sp){
+    sp = d.createElement('div'); sp.id = 'pvSpacer';
+    sp.style.cssText = 'display:flex;justify-content:center;align-items:flex-start;padding-top:34px;box-sizing:border-box';
+    var btn = d.createElement('button');
+    btn.id = 'pvTopBtn'; btn.type = 'button'; btn.textContent = '↑ 一番上に戻る';
+    btn.style.cssText = 'font-family:var(--serif);font-size:14px;letter-spacing:.18em;color:var(--gold);background:transparent;border:1px solid var(--gold-deep);border-radius:999px;padding:11px 26px;cursor:pointer';
+    btn.addEventListener('click', function(){
+      pv.contentWindow.scrollTo({top: 0, behavior: 'smooth'});
+      window.scrollTo({top: 0, behavior: 'smooth'});
+      followCurrent = null;
+    });
+    sp.appendChild(btn);
+    d.body.appendChild(sp);
+  }
+  sp.style.height = Math.round(pv.clientHeight * 0.62) + 'px';
+}
+
+/* ---------- section follow: left scroll -> preview aligns its section to the top ---------- */
+var SECTION_MAP = [
+  ['fs-frames', '.kobo-frames'],
+  ['fs-hero', '.hero'],
+  ['fs-course', '.course'],
+  ['fs-band', '.band'],
+  ['fs-news', '#extraNews'],
+  ['fs-faq', '#extraFaq'],
+  ['fs-link', '#extraLink'],
+  ['fs-info', '.info']
+];
+var followCurrent = null, followTimer = null;
+function previewScrollTo(sel){
+  var d = pv.contentDocument; if (!d) return;
+  var el = sel.indexOf('#extra') === 0 ? d.querySelector(sel) : qHost(d, sel); if (!el) return;
+  var w = pv.contentWindow;
+  var y = el.getBoundingClientRect().top + w.scrollY;
+  w.scrollTo({top: Math.max(0, y - 2), behavior: 'smooth'});
+}
+function followCheck(){
+  if (Date.now() < focusGuardUntil) return;
+  var cur = 'fs-hero';
+  SECTION_MAP.forEach(function(pair){
+    var fs = document.getElementById(pair[0]);
+    if (fs && fs.getBoundingClientRect().top <= 90) cur = pair[0];
+  });
+  if (cur !== followCurrent){
+    followCurrent = cur;
+    for (var i = 0; i < SECTION_MAP.length; i++){
+      if (SECTION_MAP[i][0] === cur){ previewScrollTo(SECTION_MAP[i][1]); break; }
+    }
+  }
+}
+window.addEventListener('scroll', function(){
+  if (followTimer) return;
+  followTimer = setTimeout(function(){ followTimer = null; followCheck(); }, 120);
+}, {passive: true});
+
+pv.addEventListener('load', function(){ buildCourses(); buildFaqs(); buildFrames(); apply(); layoutPreview(); });
+document.querySelectorAll('#orderForm input[type=text], #orderForm textarea').forEach(function(el){
+  el.addEventListener('input', apply);
+});
+function photo(inputId, sel){
+  document.getElementById(inputId).addEventListener('change', function(){
+    var f = this.files && this.files[0]; if (!f) return;
+    updatePhotoTotal();
+    var url = URL.createObjectURL(f);
+    var d = doc(); if (!d) return;
+    var img = d.querySelector(sel); if (img) img.src = url;
+  });
+}
+photo('f-photoA', 'img.dish');
+photo('f-photoB', '.band img');
+
+/* ---------- 文章を選ぶ（試作：選ぶと入力欄に入り、そのまま自由に直せる） ---------- */
+function pickInto(fieldId, text){
+  var f = document.getElementById(fieldId); if (!f) return;
+  var name = val('f-name');
+  f.value = text.split('{店名}').join(name || '当店');
+  f.dispatchEvent(new Event('input', {bubbles: true}));
+}
+var TEXT_PICKS = [
+  {id:'f-catch', label:'文章を選ぶ（選ぶと上の欄に入ります）', items:[
+    '八席だけの、\n静かな懐石の店です。',
+    '季節の味を、\n一皿ずつ丁寧にお出しします。',
+    '{店名}でしか味わえない、\n季節のおまかせをお楽しみください。'
+  ]},
+  {id:'f-facts', label:'文章を選ぶ（選ぶと上の欄に入ります）', items:[
+    'おまかせ一本 ・ 完全予約制 ・ カウンターのみ',
+    '旬の食材 ・ 完全予約制 ・ 少人数の静かな店',
+    '地元の食材にこだわる ・ 予約優先 ・ 貸切は相談可'
+  ]},
+  {id:'f-note', label:'文章を選ぶ（選ぶと上の欄に入ります）', items:[
+    '季節で変わります。苦手な食材は予約の時に教えてください。',
+    'その日に一番よい食材で組み立てます。アレルギーや苦手な食材は、ご予約の時にお知らせください。',
+    'おまかせのみのご用意です。量の加減はお気軽にお申し付けください。'
+  ]},
+  {id:'f-newsT', label:'見出しを選ぶ（選ぶと上の欄に入ります）', items:[
+    '年末年始の営業について',
+    '臨時休業のお知らせ',
+    '営業時間変更のお知らせ'
+  ]},
+  {id:'f-newsB', label:'文章を選ぶ（選ぶと上の欄に入ります）', items:[
+    '12月31日から1月3日まで休ませていただきます。',
+    '誠に勝手ながら、○月○日は臨時休業とさせていただきます。',
+    '○月○日から、営業時間を変更いたします。新しい時間は「店の案内」をご覧ください。'
+  ]},
+  {id:'f-hours', label:'書き方を選ぶ（選ぶと上の欄に入ります）', note:'時刻と曜日は、ご自身の営業時間に直してください。', items:[
+    '昼 12:00（一斉）／ 夜 18:00・20:30（二部制）・ 日曜定休',
+    '00:00〜00:00（ラストオーダー 00:00）・ ○曜定休',
+    '昼 00:00〜00:00 ／ 夜 00:00〜00:00 ・ 不定休'
+  ]},
+  {id:'f-seats', label:'文章を選ぶ（選ぶと上の欄に入ります）', items:[
+    'カウンター八席のみ',
+    'カウンター ○席 ・ テーブル ○席',
+    '全○席 ・ 貸切はお電話でご相談ください'
+  ]}
+];
+TEXT_PICKS.forEach(function(set){
+  var f = document.getElementById(set.id); if (!f) return;
+  var box = document.createElement('div');
+  box.className = 'patpick';
+  box.setAttribute('data-pickfor', set.id);
+  var html = '<p class="pp-label">' + set.label + '</p>';
+  set.items.forEach(function(t, i){
+    html += '<button type="button" class="pp-btn" data-pick="' + i + '">' + esc(t.split('\n').join(' ')) + '</button>';
+  });
+  if (set.note) html += '<p class="pp-note">' + set.note + '</p>';
+  box.innerHTML = html;
+  f.parentNode.insertBefore(box, f.nextSibling);
+  box.querySelectorAll('.pp-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      pickInto(set.id, set.items[+btn.getAttribute('data-pick')]);
+      box.querySelectorAll('.pp-btn').forEach(function(b){ b.classList.toggle('picked', b === btn); });
+    });
+  });
+});
+/* 繰り返し項目（よくある質問・品目）の「例から追加」 */
+function addPresetRow(anchorBtnId, label, presets, pushFn){
+  var anchor = document.getElementById(anchorBtnId); if (!anchor) return;
+  var box = document.createElement('div');
+  box.className = 'presetrow';
+  var html = '<p class="pp-label">' + label + '</p>';
+  presets.forEach(function(p, i){
+    html += '<button type="button" class="pp-btn" data-pi="' + i + '">' + esc(p.title) + '</button>';
+  });
+  box.innerHTML = html;
+  anchor.parentNode.insertBefore(box, anchor);
+  box.querySelectorAll('.pp-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){ pushFn(presets[+btn.getAttribute('data-pi')]); });
+  });
+}
+addPresetRow('addFaq', '例から追加する（追加したあと、自由に直せます）', [
+  {title:'例：予約は必要ですか', q:'予約は必要ですか', a:'はい、完全予約制です。お電話でご予約ください。'},
+  {title:'例：子どもを連れて行けますか', q:'子どもを連れて行けますか', a:'静かにお食事いただける年齢のお子様からご案内しています。詳しくはお電話でご相談ください。'},
+  {title:'例：駐車場はありますか', q:'駐車場はありますか', a:'専用の駐車場はございません。近くのコインパーキングをご利用ください。'}
+], function(p){ faqData.push({q:p.q, a:p.a}); buildFaqs(); apply(); });
+addPresetRow('addCourse', '例から追加する（追加したあと、自由に直せます）', [
+  {title:'例：おまかせコース', n:'おまかせコース', d:'季節の食材で組み立てます。苦手な食材はご予約の時にお知らせください。', p:'00,000円'},
+  {title:'例：昼のおまかせ', n:'昼のおまかせ', d:'昼だけの短いコースです。お時間の目安は約1時間です。', p:'00,000円'}
+], function(p){ courseData.push({n:p.n, d:p.d, p:p.p}); buildCourses(); apply(); });
+
+/* ---------- order flow: 確定 -> 確認画面 -> 保存 -> 決済 -> 自動送信 ----------
+   決済はモック決済ページ (mock-pay.html) へ進み、完了するとこのページへ戻る。
+   戻ったら、送信ボタンを別に押させることはせず、そのまま工房の受け口へ自動で送る。
+   受け口（Google Apps Script のWebアプリ）のURLは RECEIVER_URL に設定する。
+   未設定の間は試作品モードとして、送信の流れだけを再現する（実際の送信は行われない）。 */
+var RECEIVER_URL = '';
+var receiptNum = null;
+var summaryPairs = [];
+function genReceiptNum(){
+  var d = new Date();
+  var ymd = d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  return 'R' + ymd + '-' + String(Math.floor(1000 + Math.random() * 9000));
+}
+function idbOpen(){
+  return new Promise(function(res, rej){
+    var rq = indexedDB.open('koboOrderDB', 1);
+    rq.onupgradeneeded = function(){ rq.result.createObjectStore('photos', {keyPath: 'key'}); };
+    rq.onsuccess = function(){ res(rq.result); };
+    rq.onerror = function(){ rej(rq.error); };
+  });
+}
+function idbPut(rec){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var tx = db.transaction('photos', 'readwrite');
+      tx.objectStore('photos').put(rec);
+      tx.oncomplete = function(){ res(); };
+      tx.onerror = function(){ rej(tx.error); };
+    });
+  });
+}
+/* ---------- added photo frames (追加の写真枠) ----------
+   A frame holds 1-4 photos and can be moved up/down between the fixed
+   sections. Only frames move; the text sections keep their order.
+   blockOrder mixes section keys (strings) and frame objects.
+   (framesData / blockOrder / BLOCK_LABELS are declared near the top of
+   this script, before the first apply() call.) */
+function framePosLabel(fr){
+  var i = blockOrder.indexOf(fr);
+  if (i <= 0) return 'ページの先頭';
+  var prev = blockOrder[i - 1];
+  if (typeof prev === 'string') return (BLOCK_LABELS[prev] || '') + 'の後';
+  return '追加の写真枠 ' + (framesData.indexOf(prev) + 1) + 'の後';
+}
+function buildFrames(){
+  var box = document.getElementById('frameRows');
+  if (!box) return;
+  var lm = document.getElementById('frameLimit');
+  if (lm) lm.style.display = framesData.length >= FRAME_MAX ? 'block' : 'none';
+  box.innerHTML = '';
+  framesData.forEach(function(fr, fi){
+    var div = document.createElement('div');
+    div.className = 'rowbox';
+    var html = '<div class="frhead"><span class="t">追加の写真枠 ' + (fi + 1) + '</span><span class="frtools">' +
+      '<button type="button" data-fr-up="' + fi + '">↑ 上へ</button>' +
+      '<button type="button" data-fr-dn="' + fi + '">↓ 下へ</button>' +
+      '<button type="button" data-fr-del="' + fi + '">削除</button></span></div>';
+    html += '<label>枠の形（写真の枚数）</label><select data-fr-count="' + fi + '">' +
+      [1, 2, 3, 4].map(function(n){ return '<option value="' + n + '"' + (fr.count === n ? ' selected' : '') + '>' + n + '枚</option>'; }).join('') + '</select>';
+    for (var si = 0; si < fr.count; si++){
+      html += '<label>' + (si + 1) + '枚目</label><input type="file" accept="image/*" data-fr-file="' + fi + '-' + si + '">';
+    }
+    html += '<p class="hint">置く場所：' + framePosLabel(fr) + '（上下のボタンで動かせます）</p>';
+    div.innerHTML = html;
+    box.appendChild(div);
+  });
+  box.querySelectorAll('[data-fr-count]').forEach(function(sel){
+    sel.addEventListener('change', function(){
+      var fr = framesData[+sel.getAttribute('data-fr-count')];
+      var n = +sel.value;
+      while (fr.files.length > n){ var u = fr.urls.pop(); if (u) URL.revokeObjectURL(u); fr.files.pop(); }
+      while (fr.files.length < n){ fr.files.push(null); fr.urls.push(null); }
+      fr.count = n;
+      buildFrames(); apply();
+    });
+  });
+  box.querySelectorAll('[data-fr-file]').forEach(function(inp){
+    inp.addEventListener('change', function(){
+      var parts = inp.getAttribute('data-fr-file').split('-');
+      var fr = framesData[+parts[0]], si = +parts[1];
+      var f = inp.files && inp.files[0];
+      if (fr.urls[si]) URL.revokeObjectURL(fr.urls[si]);
+      fr.files[si] = f || null;
+      fr.urls[si] = f ? URL.createObjectURL(f) : null;
+      apply();
+    });
+  });
+  box.querySelectorAll('[data-fr-up]').forEach(function(btn){
+    btn.addEventListener('click', function(){ moveFrame(framesData[+btn.getAttribute('data-fr-up')], -1); });
+  });
+  box.querySelectorAll('[data-fr-dn]').forEach(function(btn){
+    btn.addEventListener('click', function(){ moveFrame(framesData[+btn.getAttribute('data-fr-dn')], 1); });
+  });
+  box.querySelectorAll('[data-fr-del]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var fr = framesData[+btn.getAttribute('data-fr-del')];
+      fr.urls.forEach(function(u){ if (u) URL.revokeObjectURL(u); });
+      framesData.splice(framesData.indexOf(fr), 1);
+      blockOrder.splice(blockOrder.indexOf(fr), 1);
+      buildFrames(); apply();
+    });
+  });
+}
+function moveFrame(fr, dir){
+  var i = blockOrder.indexOf(fr), j = i + dir;
+  if (i < 0 || j < 0 || j >= blockOrder.length) return;
+  blockOrder[i] = blockOrder[j]; blockOrder[j] = fr;
+  buildFrames(); apply();
+  focusFrameInPreview(fr);
+}
+/* after a frame is added or moved, scroll the preview so that frame is
+   on screen (2026-11-22, user instruction; no flash/highlight).
+   focusGuardUntil keeps the section-follow from scrolling it back. */
+var focusGuardUntil = 0;
+/* when an added item (news / faq / link) is switched on:
+   move first, then show (2026-11-22, user instruction). The section is
+   rendered invisibly; if its place is outside the preview's view, the
+   preview scrolls there first and only then is the section revealed.
+   If the place is already in view, it simply appears there. */
+function revealExtraSection(u){
+  apply();
+  var d = doc(); if (!d) return;
+  var id = u === 'news' ? 'extraNews' : (u === 'faq' ? 'extraFaq' : (u === 'link' ? 'extraLink' : null));
+  var sec = id ? d.getElementById(id) : null;
+  if (!sec) sec = d.getElementById('extraNews') || d.getElementById('extraFaq') || d.getElementById('extraLink');
+  if (!sec) return;
+  var w = pv.contentWindow;
+  var r = sec.getBoundingClientRect();
+  if (r.top >= -2 && r.top < w.innerHeight) return; /* already in view */
+  sec.style.visibility = 'hidden';
+  focusGuardUntil = Date.now() + 1200;
+  var y = r.top + w.scrollY;
+  w.scrollTo({top: Math.max(0, y - 8), behavior: 'smooth'});
+  setTimeout(function(){ sec.style.visibility = ''; }, 480);
+}
+function focusFrameInPreview(fr){
+  var d = doc(); if (!d) return;
+  var sec = d.querySelector('.kobo-frames[data-fr-idx="' + framesData.indexOf(fr) + '"]');
+  if (!sec) return;
+  focusGuardUntil = Date.now() + 1000;
+  var w = pv.contentWindow;
+  var y = sec.getBoundingClientRect().top + w.scrollY;
+  w.scrollTo({top: Math.max(0, y - 8), behavior: 'smooth'});
+}
+function renderFrames(d){
+  d.querySelectorAll('.kobo-frames').forEach(function(e){ e.remove(); });
+  if (!framesData.length) return;
+  var anchors = {
+    hero: d.querySelector('.hero'),
+    list: d.querySelector('.course'),
+    info: qHost(d, '.info'),
+    extra: d.getElementById('extraNews') || d.getElementById('extraFaq') || d.getElementById('extraLink') || d.getElementById('extraSec')
+  };
+  var firstImg = d.querySelector('img');
+  var fallbackSrc = firstImg ? firstImg.getAttribute('src') : '';
+  var listSec = anchors.list;
+  blockOrder.forEach(function(tok){
+    if (typeof tok === 'string') return;
+    var fr = tok;
+    var sec = d.createElement('section');
+    sec.className = (listSec ? listSec.className : '') + ' kobo-frames';
+    sec.setAttribute('data-fr-idx', framesData.indexOf(fr));
+    sec.style.position = 'relative';
+    var cols = fr.count === 1 ? '1fr' : (fr.count === 3 ? '1fr 1fr 1fr' : '1fr 1fr');
+    var html = '<div style="display:grid;grid-template-columns:' + cols + ';gap:10px">';
+    for (var si = 0; si < fr.count; si++){
+      html += '<img data-koboframe="1" src="' + (fr.urls[si] || fallbackSrc) + '" style="width:100%;aspect-ratio:3/2;object-fit:cover;display:block" alt="">';
+    }
+    sec.innerHTML = html + '</div>';
+    /* small persistent number tag matching the form-side frame number (2026-11-22). */
+    var tag = d.createElement('span');
+    tag.className = 'kobo-fr-tag';
+    tag.textContent = '写真枠' + (framesData.indexOf(fr) + 1);
+    tag.style.cssText = 'position:absolute;top:8px;left:8px;z-index:6;background:rgba(20,18,14,.72);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;padding:2px 9px;border-radius:999px;pointer-events:none';
+    sec.appendChild(tag);
+    var ti = blockOrder.indexOf(fr), anchor = null;
+    for (var k = ti + 1; k < blockOrder.length; k++){
+      var b = blockOrder[k];
+      if (typeof b === 'string' && anchors[b]){ anchor = anchors[b]; break; }
+    }
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(sec, anchor);
+    else {
+      var sp = d.getElementById('pvSpacer');
+      if (sp && sp.parentNode) sp.parentNode.insertBefore(sec, sp);
+      else d.body.appendChild(sec);
+    }
+  });
+}
+document.getElementById('addFrame').addEventListener('click', function(){
+  if (framesData.length >= FRAME_MAX){
+    var lm = document.getElementById('frameLimit');
+    if (lm) lm.style.display = 'block';
+    return;
+  }
+  var fr = {count: 1, files: [null], urls: [null]};
+  framesData.push(fr);
+  var ei = blockOrder.indexOf('extra');
+  if (ei >= 0) blockOrder.splice(ei, 0, fr); else blockOrder.push(fr);
+  buildFrames(); apply();
+  focusFrameInPreview(fr);
+});
+
+function collectPhotoRecs(){
+  var recs = [];
+  [['f-photoA', 't-photoA', '写真A（最初に出る写真）'], ['f-photoB', 't-photoB', '写真B（途中の帯の写真）']].forEach(function(cfg, i){
+    var inp = document.getElementById(cfg[0]);
+    if (on(cfg[1]) && inp && inp.files && inp.files[0]){
+      var f = inp.files[0];
+      recs.push({key: receiptNum + '|' + i, num: receiptNum, slot: cfg[2], name: f.name, type: f.type, blob: f});
+    }
+  });
+  framesData.forEach(function(fr, fi){
+    fr.files.forEach(function(f, si){
+      if (!f) return;
+      recs.push({key: receiptNum + '|f' + fi + '-' + si, num: receiptNum,
+        slot: '追加の写真枠' + (fi + 1) + '（' + (si + 1) + '枚目）', name: f.name, type: f.type, blob: f});
+    });
+  });
+  return recs;
+}
+function saveOrder(){
+  var data = {
+    num: receiptNum,
+    ts: new Date().toISOString(),
+    sample: '01-kaiseki-genkai.html',
+    shop: val('f-name'),
+    patternName: PAT_NAMES[curPattern],
+    frames: framesData.map(function(fr){ return {count: fr.count, pos: framePosLabel(fr)}; }),
+    summary: summaryPairs,
+    custName: val('f-custName'),
+    custMail: val('f-custMail')
+  };
+  try { localStorage.setItem('koboOrderV1', JSON.stringify(data)); } catch(e){}
+  return Promise.all(collectPhotoRecs().map(idbPut)).catch(function(){});
+}
+var termsBox = document.getElementById('termsBox');
+var agreeCheck = document.getElementById('agreeCheck');
+var payBtn = document.getElementById('payBtn');
+function termsCheck(){
+  if (termsBox.scrollTop + termsBox.clientHeight >= termsBox.scrollHeight - 10) agreeCheck.disabled = false;
+}
+termsBox.addEventListener('scroll', termsCheck);
+function payReady(){
+  var mailOk = /.+@.+\..+/.test(val('f-custMail'));
+  var ok = agreeCheck.checked && !!val('f-custName') && mailOk;
+  payBtn.disabled = !ok;
+  var ce = document.getElementById('custErr');
+  if (ce) ce.style.display = (agreeCheck.checked && (!val('f-custName') || !mailOk)) ? 'block' : 'none';
+}
+agreeCheck.addEventListener('change', payReady);
+document.getElementById('f-custName').addEventListener('input', payReady);
+document.getElementById('f-custMail').addEventListener('input', payReady);
+document.getElementById('backBtn').addEventListener('click', function(){
+  document.getElementById('confirmView').style.display = 'none';
+  document.getElementById('orderForm').scrollIntoView({behavior: 'smooth', block: 'start'});
+});
+payBtn.addEventListener('click', function(){
+  saveOrder().then(function(){
+    location.href = 'mock-pay.html?num=' + encodeURIComponent(receiptNum) + '&from=' + encodeURIComponent(location.pathname.split('/').pop());
+  });
+});
+
+/* 決済（モック）から戻ってきたら、送信ボタンを押させず、そのまま工房へ自動送信する。
+   送信の前に注文ファイル（ZIP）を端末内に作っておき、失敗した時は
+   そのファイルをダウンロードして送ってもらえるようにする。 */
+var sendState = { order: null, photos: [], zipBlob: null, zipName: '' };
+
+function idbAllPhotos(){
+  return idbOpen().then(function(db){
+    return new Promise(function(res, rej){
+      var rq = db.transaction('photos', 'readonly').objectStore('photos').getAll();
+      rq.onsuccess = function(){ res(rq.result || []); };
+      rq.onerror = function(){ rej(rq.error); };
+    });
+  }).catch(function(){ return []; });
+}
+function blobBytes(blob){ return blob.arrayBuffer().then(function(ab){ return new Uint8Array(ab); }); }
+function b64FromBytes(bytes){
+  var s = '', CH = 0x8000;
+  for (var i = 0; i < bytes.length; i += CH) s += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+  return btoa(s);
+}
+/* ---------- ZIP (store / 無圧縮。写真はもともと圧縮済みの形式のため) ---------- */
+var CRC_TABLE = null;
+function crc32(bytes){
+  if (!CRC_TABLE){
+    CRC_TABLE = [];
+    for (var n = 0; n < 256; n++){
+      var c = n;
+      for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      CRC_TABLE[n] = c >>> 0;
+    }
+  }
+  var crc = 0xFFFFFFFF;
+  for (var i = 0; i < bytes.length; i++) crc = CRC_TABLE[(crc ^ bytes[i]) & 0xFF] ^ (crc >>> 8);
+  return (crc ^ 0xFFFFFFFF) >>> 0;
+}
+function zipStore(files){
+  var enc = new TextEncoder();
+  var parts = [], central = [], offset = 0;
+  function u16(v){ return [v & 0xFF, (v >>> 8) & 0xFF]; }
+  function u32(v){ return [v & 0xFF, (v >>> 8) & 0xFF, (v >>> 16) & 0xFF, (v >>> 24) & 0xFF]; }
+  files.forEach(function(f){
+    var nameB = enc.encode(f.name);
+    var crc = crc32(f.bytes), size = f.bytes.length;
+    var local = new Uint8Array([].concat(
+      u32(0x04034b50), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21),
+      u32(crc), u32(size), u32(size), u16(nameB.length), u16(0)));
+    parts.push(local, nameB, f.bytes);
+    var cen = new Uint8Array([].concat(
+      u32(0x02014b50), u16(20), u16(20), u16(0x0800), u16(0), u16(0), u16(0x21),
+      u32(crc), u32(size), u32(size), u16(nameB.length), u16(0), u16(0),
+      u16(0), u16(0), u32(0), u32(offset)));
+    central.push(cen, nameB);
+    offset += local.length + nameB.length + size;
+  });
+  var cenSize = central.reduce(function(a, b){ return a + b.length; }, 0);
+  var end = new Uint8Array([].concat(
+    u32(0x06054b50), u16(0), u16(0), u16(files.length), u16(files.length),
+    u32(cenSize), u32(offset), u16(0)));
+  return new Blob(parts.concat(central, [end]), {type: 'application/zip'});
+}
+function photoExt(name, type){
+  var m = String(name || '').match(/\.([A-Za-z0-9]{2,5})$/);
+  if (m) return '.' + m[1].toLowerCase();
+  if (type === 'image/png') return '.png';
+  if (type === 'image/webp') return '.webp';
+  if (type === 'image/gif') return '.gif';
+  return '.jpg';
+}
+async function buildOrderZip(order, photos){
+  var meta = {
+    num: order.num, ts: order.ts, custName: order.custName || '', custMail: order.custMail || '',
+    sample: order.sample || '', shop: order.shop || '', patternName: order.patternName || '',
+    frames: order.frames || [], summary: order.summary || [],
+    photos: photos.map(function(p, i){
+      return {file: 'photos/' + String(i + 1).padStart(2, '0') + photoExt(p.name, p.type),
+        slot: p.slot, name: p.name, type: p.type, size: p.blob.size};
+    })
+  };
+  var lines = ['アーチデザイン工房 ご注文内容', '受付番号：' + order.num,
+    'お名前：' + meta.custName, 'メールアドレス：' + meta.custMail, '', '入力内容'];
+  (order.summary || []).forEach(function(it){ lines.push('・' + it[0] + '：' + it[1]); });
+  lines.push('', '写真：' + photos.length + '枚（このファイルの photos フォルダに入っています。画質は登録した通りのままです）');
+  var files = [
+    {name: 'order.json', bytes: new TextEncoder().encode(JSON.stringify(meta, null, 2))},
+    {name: 'order.txt', bytes: new TextEncoder().encode(lines.join('\n'))}
+  ];
+  for (var i = 0; i < photos.length; i++){
+    files.push({name: meta.photos[i].file, bytes: await blobBytes(photos[i].blob)});
+  }
+  return zipStore(files);
+}
+/* ---------- 受け口への送信（大きい時は写真を分けて送る） ---------- */
+function postToReceiver(obj){
+  return fetch(RECEIVER_URL, {
+    method: 'POST',
+    headers: {'Content-Type': 'text/plain;charset=utf-8'},
+    body: JSON.stringify(obj)
+  }).then(function(r){ return r.json(); }).then(function(j){
+    if (!j || !j.ok) throw new Error((j && j.error) || 'receiver error');
+    return j;
+  });
+}
+var CHUNK_BYTES = 4 * 1024 * 1024;
+async function sendToReceiver(order, photos){
+  if (!RECEIVER_URL){
+    /* 試作品モード：受け口のURLが未設定の間は、送信の流れだけを再現する */
+    await new Promise(function(res){ setTimeout(res, 1800); });
+    return {simulated: true};
+  }
+  var total = photos.reduce(function(a, p){ return a + p.blob.size; }, 0);
+  await postToReceiver({action: 'begin', num: order.num, custName: order.custName || '',
+    custMail: order.custMail || '', sample: order.sample || '', shop: order.shop || '',
+    patternName: order.patternName || '', frames: order.frames || [], summary: order.summary || [],
+    photoCount: photos.length, totalBytes: total});
+  var chunks = [], cur = [], curSize = 0;
+  photos.forEach(function(p){
+    if (cur.length && curSize + p.blob.size > CHUNK_BYTES){ chunks.push(cur); cur = []; curSize = 0; }
+    cur.push(p); curSize += p.blob.size;
+  });
+  if (cur.length) chunks.push(cur);
+  for (var seq = 0; seq < chunks.length; seq++){
+    var arr = [];
+    for (var i = 0; i < chunks[seq].length; i++){
+      var p = chunks[seq][i];
+      arr.push({slot: p.slot, name: p.name, type: p.type, data: b64FromBytes(await blobBytes(p.blob))});
+    }
+    await postToReceiver({action: 'chunk', num: order.num, seq: seq, photos: arr});
+  }
+  return postToReceiver({action: 'complete', num: order.num});
+}
+/* ---------- 画面の切り替えと自動送信の実行 ---------- */
+function showSendPanel(id){
+  ['sendView', 'doneView', 'sendErrView'].forEach(function(x){
+    var el = document.getElementById(x);
+    if (el) el.style.display = (x === id) ? 'block' : 'none';
+  });
+  var el = document.getElementById(id);
+  if (el) el.scrollIntoView({behavior: 'smooth', block: 'start'});
+}
+async function runAutoSend(num){
+  var order = null;
+  try { var raw = localStorage.getItem('koboOrderV1'); if (raw) order = JSON.parse(raw); } catch(e){}
+  document.getElementById('sendNum').textContent = num;
+  document.getElementById('doneNum').textContent = num;
+  document.getElementById('errNum').textContent = num;
+  showSendPanel('sendView');
+  if (!order || order.num !== num){
+    document.getElementById('errLead').textContent = 'この端末・このブラウザに、ご入力いただいた内容が保存されていませんでした。入力した時と同じスマホ・同じブラウザで開き直してください。それでも送れない場合は、受付番号を公式LINEでお伝えください。工房で確認して、送信のご案内を送り直します。';
+    var dl = document.getElementById('dlZipBtn'); if (dl) dl.style.display = 'none';
+    var rt = document.getElementById('retrySendBtn'); if (rt) rt.style.display = 'none';
+    showSendPanel('sendErrView');
+    return;
+  }
+  sendState.order = order;
+  var all = await idbAllPhotos();
+  var photos = all.filter(function(r){ return r.num === num; });
+  photos.sort(function(a, b){ return a.key < b.key ? -1 : 1; });
+  sendState.photos = photos;
+  try { sendState.zipBlob = await buildOrderZip(order, photos); } catch(e){ sendState.zipBlob = null; }
+  sendState.zipName = '注文内容_' + num + '.zip';
+  try {
+    var res = await sendToReceiver(order, photos);
+    if (res && res.simulated){
+      document.getElementById('doneMailLine').style.display = 'none';
+      document.getElementById('doneSimNote').style.display = 'block';
+    }
+    showSendPanel('doneView');
+  } catch(e){
+    showSendPanel('sendErrView');
+  }
+}
+(function(){
+  var paid = new URLSearchParams(location.search).get('paid');
+  if (!paid) return;
+  runAutoSend(paid);
+})();
+document.getElementById('dlZipBtn').addEventListener('click', function(){
+  if (!sendState.zipBlob) return;
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(sendState.zipBlob);
+  a.download = sendState.zipName;
+  document.body.appendChild(a); a.click(); a.remove();
+});
+document.getElementById('retrySendBtn').addEventListener('click', function(){
+  var num = (sendState.order && sendState.order.num) || new URLSearchParams(location.search).get('paid');
+  if (num) runAutoSend(num);
+});
+
+document.getElementById('orderForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  var err = document.getElementById('err');
+  if ((on('t-name') && !val('f-name')) || (on('t-tel') && !val('f-tel'))){ err.style.display = 'block'; return; }
+  err.style.display = 'none';
+  var items = [];
+  items.push(['色パターン', PAT_NAMES[curPattern]]);
+  if (on('t-name')) items.push(['お店の名前', val('f-name')]);
+  if (on('t-catch')) items.push(['キャッチコピー', val('f-catch').replace(/\n/g,' ')]);
+  if (on('t-facts')) items.push(['特徴の一行', val('f-facts')]);
+  if (on('t-tel')) items.push(['電話番号', val('f-tel')]);
+  if (on('t-courses')) items.push(['品目（' + courseData.length + '件）', courseData.map(function(c){ return c.n + ' ' + c.p; }).join('／')]);
+  if (on('t-place')) items.push(['場所', val('f-place')]);
+  if (on('t-hours')) items.push(['営業時間', val('f-hours')]);
+  if (on('t-seats')) items.push(['席数・その他', val('f-seats')]);
+  if (on('t-news')) items.push(['お知らせ', val('f-newsT')]);
+  if (on('t-faq')) items.push(['よくある質問', faqData.length + '件']);
+  if (on('t-link')) items.push(['リンク', val('f-linkT')]);
+  framesData.forEach(function(fr, fi){
+    var sel = fr.files.filter(function(f){ return f; }).length;
+    items.push(['追加の写真枠 ' + (fi + 1), fr.count + '枚の枠（' + framePosLabel(fr) + '）／写真 ' + sel + '枚選択']);
+  });
+  items.push(['写真', 'A：' + (on('t-photoA') ? (document.getElementById('f-photoA').files[0] ? '選択済み' : '見本のまま') : '入れない') + '／B：' + (on('t-photoB') ? (document.getElementById('f-photoB').files[0] ? '選択済み' : '見本のまま') : '入れない')]);
+  summaryPairs = items;
+  if (!receiptNum) receiptNum = genReceiptNum();
+  document.getElementById('receiptNum').textContent = receiptNum;
+  document.getElementById('confirmSummary').innerHTML = items.map(function(it){
+    return '<li>' + esc(it[0]) + '：' + esc(it[1]).replace(/\n/g, '<br>') + '</li>';
+  }).join('');
+  agreeCheck.checked = false;
+  agreeCheck.disabled = true;
+  payBtn.disabled = true;
+  termsBox.scrollTop = 0;
+  var cv = document.getElementById('confirmView');
+  cv.style.display = 'block';
+  cv.scrollIntoView({behavior: 'smooth', block: 'start'});
+  setTimeout(termsCheck, 60);
+});
+</script>
+</body>
+</html>
